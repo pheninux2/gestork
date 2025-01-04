@@ -23,9 +23,6 @@ public class CustomEmployeeDetailsService implements UserDetailsService {
     private final EmployeeRepository employeeRepository;
 
 
-    @Autowired
-    private BruteForceProtectionService bruteForceProtectionService;
-
     public CustomEmployeeDetailsService(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
@@ -39,12 +36,6 @@ public class CustomEmployeeDetailsService implements UserDetailsService {
         }
 
         Employee emp = employee.get();
-
-        boolean isValidCredentials = bruteForceProtectionService.validateCredentials(emp.getLogin(), emp.getPassword());
-
-        if (!isValidCredentials) {
-            throw new BadCredentialsException("Identifiants invalides");
-        }
 
         return new org.springframework.security.core.userdetails.User(
                 emp.getLogin(),
