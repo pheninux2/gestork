@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:hx="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentification</title>
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #a2c2e9, #d0f4e8);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #response {
+            display: none;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+        }
+
+        h1 {
+            color: #007acc; /* Couleur bleu pour le titre */
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            text-align: left; /* Aligner le texte à gauche */
+        }
+
+        .input-group {
+            margin-bottom: 15px; /* Espacement entre les champs */
+            text-align: left; /* Assure l'alignement à gauche */
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007acc; /* Couleur bleu pour le bouton */
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 80%; /* Réduit la largeur du bouton */
+            font-size: 16px;
+            margin-top: 10px; /* Ajoute une marge en haut */
+        }
+
+        button:hover {
+            background-color: #005f99; /* Couleur bleu foncé au survol */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <img src="" alt="Logo du Restaurant" class="logo"> <!-- Remplacez par le chemin de votre logo -->
+    <h1>Connexion</h1>
+    <form id="loginForm" method="post" hx-post="/employee/authenticate" hx-target="#response"
+          hx-swap="innerHTML">
+        <div class="input-group">
+            <label for="username">Login:</label> <!-- Label pour le champ Login -->
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="input-group">
+            <label for="password">Mot de passe:</label> <!-- Label pour le champ Mot de passe -->
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">LOGIN</button>
+        <div th:if="${param.error != null}" class="error">
+            Nom d'utilisateur ou mot de passe incorrect.
+        </div>
+    </form>
+    <div id="response"></div>
+</div>
+</body>
+</html>

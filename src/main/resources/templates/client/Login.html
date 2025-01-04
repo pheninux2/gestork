@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #f8d1e1, #e0f7fa);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+        }
+
+        h1 {
+            color: #ff6f61;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column; /* Colonne pour aligner le label et l'input */
+            align-items: flex-start; /* Aligne les éléments à gauche */
+            margin-bottom: 15px; /* Espacement entre les groupes */
+            text-align: left; /* Aligne le texte à gauche */
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px; /* Espacement entre le label et l'input */
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #ff6f61;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 80%; /* Réduit la largeur du bouton */
+            font-size: 16px;
+            margin-top: 10px; /* Ajoute une marge en haut */
+        }
+
+        button:hover {
+            background-color: #ff4f50;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px; /* Réduit le padding pour les petits écrans */
+            }
+
+            .logo {
+                width: 60px; /* Réduit la taille du logo */
+                height: 60px;
+            }
+
+            h1 {
+                font-size: 24px; /* Ajuste la taille du titre */
+            }
+
+            button {
+                width: 100%; /* Bouton prend toute la largeur */
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <img src="" alt="Logo du Restaurant" class="logo"> <!-- Remplacez par le chemin de votre logo -->
+    <h1>Connexion</h1>
+    <form action="/cli/authenticate" method="post">
+        <div class="input-group">
+            <label for="clientId">Identifiant Client:</label>
+            <input type="text" id="clientId" name="clientId" required>
+        </div>
+        <div class="input-group">
+            <label for="codeaccee">Code d'accès:</label>
+            <input type="text" id="codeaccee" name="codeaccee" required>
+        </div>
+        <button type="submit">LOGIN</button>
+    </form>
+</div>
+</body>
+</html>
