@@ -39,4 +39,5 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         response.setContentType("text/html");
         response.getWriter().write("<script>localStorage.setItem('jwt', '" + token + "'); window.location.href='/employee/home';</script>");
     }
+
 }

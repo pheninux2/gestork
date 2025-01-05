@@ -2,8 +2,6 @@ package pheninux.xdev.gestork.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,17 +29,15 @@ public class CustomEmployeeDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         Optional<Employee> employee = Optional.ofNullable(employeeRepository.findEmployeeByLogin(login));
 
-        if (employee.isEmpty()) {
-            throw new UsernameNotFoundException("Employé non trouvé pour login : " + login);
+        if (employee.isPresent()) {
+            return new org.springframework.security.core.userdetails.User(
+                    employee.get().getLogin(),
+                    employee.get().getPassword(),
+                    List.of(new SimpleGrantedAuthority("ROLE_" + employee.get().getRole().name()))
+            );
+        } else {
+            throw new UsernameNotFoundException("Utilisateur non trouvé pour login : " + login);
         }
-
-        Employee emp = employee.get();
-
-        return new org.springframework.security.core.userdetails.User(
-                emp.getLogin(),
-                emp.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_" + emp.getRole().name()))
-        );
     }
 }
 

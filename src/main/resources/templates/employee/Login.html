@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:hx="http://www.w3.org/1999/xhtml">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,10 +16,6 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-        }
-
-        #response {
-            display: none;
         }
 
         .container {
@@ -97,12 +93,9 @@
             <label for="password">Mot de passe:</label> <!-- Label pour le champ Mot de passe -->
             <input type="password" id="password" name="password" required>
         </div>
+        <div id="response"></div>
         <button type="submit">LOGIN</button>
-        <div th:if="${param.error != null}" class="error">
-            Nom d'utilisateur ou mot de passe incorrect.
-        </div>
     </form>
-    <div id="response"></div>
 </div>
 </body>
 </html>

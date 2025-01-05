@@ -4,16 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pheninux.xdev.gestork.filter.CustomAuthenticationFilter;
 import pheninux.xdev.gestork.service.CustomClientDetailsService;
@@ -62,7 +67,7 @@ public class SecurityConfig {
                         .loginPage("/employee/login")
                         .loginProcessingUrl("/employee/authenticate")
                         .successHandler(jwtAuthenticationSuccessHandler)
-                        .failureHandler(authenticationFailureHandler())
+                        .failureHandler(employeeAuthenticationFailureHandler())
                         .permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll)
@@ -82,21 +87,20 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 );
 
-        // Ajouter le CustomAuthenticationFilter
-        http.addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(employeeCustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-
-    private AuthenticationFailureHandler authenticationFailureHandler() {
-        SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
-        failureHandler.setDefaultFailureUrl("/employee/login?error=true");
-        return failureHandler;
+    private AuthenticationFailureHandler employeeAuthenticationFailureHandler() {
+        return (request, response, exception) -> {
+            response.setContentType("text/html");
+            response.getWriter().write("<div>Invalid username or password</div>");
+        };
     }
 
     @Bean
-    public CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
+    public CustomAuthenticationFilter employeeCustomAuthenticationFilter() throws Exception {
         CustomAuthenticationFilter filter = new CustomAuthenticationFilter(employeeDetailsService);
         filter.setAuthenticationManager(authManager(null)); // Utiliser l'AuthenticationManager configuré
         return filter;
@@ -115,7 +119,29 @@ public class SecurityConfig {
         return authenticationManagerBuilder.build();
     }
 
+    @Bean
+    public AuthenticationProvider customAuthenticationProvider(CustomEmployeeDetailsService userDetailsService) {
+        return new AuthenticationProvider() {
+            @Override
+            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+                String username = authentication.getName();
+                String password = (String) authentication.getCredentials();
 
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
+                if (userDetails == null || !passwordEncoder().matches(password, userDetails.getPassword())) {
+                    throw new BadCredentialsException("Invalid credentials");
+                }
+
+                return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+            }
+
+            @Override
+            public boolean supports(Class<?> authentication) {
+                return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+            }
+        };
+
+    }
 }
 
