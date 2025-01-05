@@ -7,8 +7,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import pheninux.xdev.gestork.repository.EmployeeRepository;
 
 @Controller
@@ -17,8 +19,12 @@ public class EmployeeLoginController {
 
 
     @GetMapping("/login")
-    public String login() {
-        return "employee/login";
+    public String login(@RequestParam(value = "error", required = false) String error, Model model) {
+        System.out.println("Login endpoint called"); // Ajoutez un log ici
+        if (error != null) {
+            model.addAttribute("error", "Invalid username or password.");
+        }
+        return "employee/login"; //
     }
 
     @GetMapping("/home")
