@@ -33,7 +33,7 @@ public class CustomEmployeeDetailsService implements UserDetailsService {
             return new org.springframework.security.core.userdetails.User(
                     employee.get().getLogin(),
                     employee.get().getPassword(),
-                    List.of(new SimpleGrantedAuthority("ROLE_" + employee.get().getRole().name()))
+                    List.of(new SimpleGrantedAuthority("ROLE_" + employee.get().getRole()))
             );
         } else {
             throw new UsernameNotFoundException("Utilisateur non trouvé pour login : " + login);

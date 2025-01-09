@@ -1,7 +1,6 @@
 package pheninux.xdev.gestork.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +12,6 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clientId; // Identifiant unique, clé primaire
-    @Getter
     private String login; // Identifiant du client
     private String password; // Identifiant du client
     private String email; // Adresse e-mail du client
@@ -34,6 +32,28 @@ public class Client {
     @ElementCollection(targetClass = Preferences.class)
     public List<Preferences> preferences;
 
+    @Enumerated(EnumType.STRING)
+    private ClientRole role;
+
+    // Unidirectional relationship to AccessCode
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccessCode> accessCodes;
+
+    public ClientRole getRole() {
+        return role;
+    }
+
+    public void setRole(ClientRole role) {
+        this.role = role;
+    }
+
+    public List<AccessCode> getAccessCodes() {
+        return accessCodes;
+    }
+
+    public void setAccessCodes(List<AccessCode> accessCodes) {
+        this.accessCodes = accessCodes;
+    }
 
     public Long getClientId() {
         return clientId;

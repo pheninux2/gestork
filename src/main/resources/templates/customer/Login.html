@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion Client</title>
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -102,17 +103,19 @@
 <div class="container">
     <img src="" alt="Logo du Restaurant" class="logo"> <!-- Remplacez par le chemin de votre logo -->
     <h1>Connexion</h1>
-    <form action="/cli/authenticate" method="post">
+    <form id="formLoginClient" method="post" hx-post="/customer/authenticate" hx-target="#response" hx-swap="innerHTML">
         <div class="input-group">
-            <label for="clientId">Identifiant Client:</label>
-            <input type="text" id="clientId" name="clientId" required>
+            <label for="loginClient">Identifiant Client:</label>
+            <input type="text" id="loginClient" name="username" required>
         </div>
         <div class="input-group">
-            <label for="codeaccee">Code d'accès:</label>
-            <input type="text" id="codeaccee" name="codeaccee" required>
+            <label for="codeaccess">Code d'accès:</label>
+            <input type="text" id="codeaccess" name="password" required>
         </div>
+        <div id="response"></div>
         <button type="submit">LOGIN</button>
     </form>
+
 </div>
 </body>
 </html>

@@ -1,8 +1,10 @@
 package pheninux.xdev.gestork.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,7 +22,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pheninux.xdev.gestork.filter.CustomAuthenticationFilter;
+import pheninux.xdev.gestork.filter.CustomClientAuthenticationFilter;
+import pheninux.xdev.gestork.filter.CustomEmployeeAuthenticationFilter;
+import pheninux.xdev.gestork.handler.JwtAuthenticationSuccessHandler;
 import pheninux.xdev.gestork.service.CustomClientDetailsService;
 import pheninux.xdev.gestork.service.CustomEmployeeDetailsService;
 
@@ -30,10 +34,10 @@ public class SecurityConfig {
 
 
     @Autowired
-    private CustomClientDetailsService clientDetailsService;
+    private CustomClientDetailsService customClientDetailsService;
 
     @Autowired
-    private CustomEmployeeDetailsService employeeDetailsService;
+    private CustomEmployeeDetailsService customEmployeeDetailsService;
 
     @Autowired
     private JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
@@ -44,24 +48,57 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(1)
+    public SecurityFilterChain CustomerSecurityFilterChain(HttpSecurity http) throws Exception {
         http
+                .securityMatcher("/customer/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/client/login").permitAll()
-                        .requestMatchers("/server/**").hasRole("SERVER")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/chef/**").hasRole("CHEF")
-                        .requestMatchers("/client/**").hasRole("CLIENT")
-                        .requestMatchers("/employee/login").permitAll()
-                        .requestMatchers("/employee/**").hasAnyRole("SERVER", "ADMIN", "CHEF")
+                        // .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/customer/login").permitAll()
+                        .requestMatchers("/customer/**").authenticated()
+                        .requestMatchers("/customer/home").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/client/login")
-                        .loginProcessingUrl("/client/authenticate")
-                        .defaultSuccessUrl("/client/home")
+                        .loginPage("/customer/login")
+                        .loginProcessingUrl("/customer/authenticate")
+                        .successHandler(jwtAuthenticationSuccessHandler)
+                        .failureHandler(clientAuthenticationFailureHandler())
                         .permitAll()
+                )
+                .logout(LogoutConfigurer::permitAll)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            String uri = request.getRequestURI();
+                            if (uri.startsWith("/client/")) {
+                                response.sendRedirect("/client/login");
+                            }
+                        })
+                )
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers
+                        .httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable)
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                );
+
+       // http.addFilterBefore(clientCustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain EmployeeSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/employee/**")
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/server/**").hasRole("SERVER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/chef/**").hasRole("CHEF")
+                        .requestMatchers("/employee/login").permitAll()
+                        .requestMatchers("/employee/**").hasAnyRole("SERVER", "ADMIN", "CHEF")
+                        .requestMatchers("/employee/home").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/employee/login")
@@ -74,9 +111,7 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             String uri = request.getRequestURI();
-                            if (uri.startsWith("/client/")) {
-                                response.sendRedirect("/client/login");
-                            } else if (uri.startsWith("/employee/")) {
+                            if (uri.startsWith("/employee/")) {
                                 response.sendRedirect("/employee/login");
                             }
                         })
@@ -87,10 +122,11 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 );
 
-        http.addFilterBefore(employeeCustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterBefore(employeeCustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
     private AuthenticationFailureHandler employeeAuthenticationFailureHandler() {
         return (request, response, exception) -> {
@@ -99,9 +135,23 @@ public class SecurityConfig {
         };
     }
 
+    private AuthenticationFailureHandler clientAuthenticationFailureHandler() {
+        return (request, response, exception) -> {
+            response.setContentType("text/html");
+            response.getWriter().write("<div>Invalid login or code access code</div>");
+        };
+    }
+
     @Bean
-    public CustomAuthenticationFilter employeeCustomAuthenticationFilter() throws Exception {
-        CustomAuthenticationFilter filter = new CustomAuthenticationFilter(employeeDetailsService);
+    public CustomClientAuthenticationFilter clientCustomAuthenticationFilter() throws Exception {
+        CustomClientAuthenticationFilter filter = new CustomClientAuthenticationFilter(customClientDetailsService);
+        filter.setAuthenticationManager(authManager(null)); // Utiliser l'AuthenticationManager configuré
+        return filter;
+    }
+
+    @Bean
+    public CustomEmployeeAuthenticationFilter employeeCustomAuthenticationFilter() throws Exception {
+        CustomEmployeeAuthenticationFilter filter = new CustomEmployeeAuthenticationFilter(customEmployeeDetailsService);
         filter.setAuthenticationManager(authManager(null)); // Utiliser l'AuthenticationManager configuré
         return filter;
     }
@@ -111,25 +161,32 @@ public class SecurityConfig {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder
-                .userDetailsService(employeeDetailsService)
+                .userDetailsService(customClientDetailsService)
                 .passwordEncoder(passwordEncoder());
         authenticationManagerBuilder
-                .userDetailsService(clientDetailsService)
+                .userDetailsService(customEmployeeDetailsService)
                 .passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
     }
 
     @Bean
-    public AuthenticationProvider customAuthenticationProvider(CustomEmployeeDetailsService userDetailsService) {
+    public AuthenticationProvider CustomerAuthenticationProvider(HttpServletRequest httpServletRequest) throws Exception {
         return new AuthenticationProvider() {
             @Override
             public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
                 String username = authentication.getName();
                 String password = (String) authentication.getCredentials();
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails;
 
-                if (userDetails == null || !passwordEncoder().matches(password, userDetails.getPassword())) {
+                if (httpServletRequest.getRequestURI().startsWith("/employee")) {
+                    userDetails = customEmployeeDetailsService.loadUserByUsername(username);
+                } else {
+                    userDetails = customClientDetailsService.loadUserByUsername(username);
+                }
+
+                if (!passwordEncoder().matches(password, userDetails.getPassword())) {
                     throw new BadCredentialsException("Invalid credentials");
                 }
 
@@ -141,7 +198,6 @@ public class SecurityConfig {
                 return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
             }
         };
-
     }
 }
 

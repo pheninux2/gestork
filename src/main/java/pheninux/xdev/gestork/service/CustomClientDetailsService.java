@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import pheninux.xdev.gestork.model.Client;
 import pheninux.xdev.gestork.repository.ClientRepository;
 
-import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomClientDetailsService implements UserDetailsService {
@@ -23,14 +24,16 @@ public class CustomClientDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        Client client = clientRepository.findClientByLogin(login);
-        if (client == null) {
-            throw new UsernameNotFoundException("Client non trouvé");
+        Optional<Client> client = Optional.ofNullable(clientRepository.findClientByLogin(login));
+
+        if (client.isPresent()) {
+            return new org.springframework.security.core.userdetails.User(
+                    client.get().getLogin(),
+                    client.get().getPassword(),
+                    List.of(new SimpleGrantedAuthority("ROLE_" + client.get().getRole()))
+            );
+        } else {
+            throw new UsernameNotFoundException("Utilisateur non trouvé pour login : " + login);
         }
-        return new org.springframework.security.core.userdetails.User(
-                client.getLogin(),
-                client.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("CLIENT")
-                ));
     }
 }
