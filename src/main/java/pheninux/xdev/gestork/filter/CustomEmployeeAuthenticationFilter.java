@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pheninux.xdev.gestork.service.CustomEmployeeDetailsService;
@@ -16,13 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class CustomEmployeeAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final CustomEmployeeDetailsService customEmployeeDetailsService;
+
     private static final int MAX_ATTEMPTS = 5;
     private Map<String, Integer> attemptsCache = new HashMap<>();
 
-    public CustomAuthenticationFilter(CustomEmployeeDetailsService customEmployeeDetailsService) {
+    public CustomEmployeeAuthenticationFilter(CustomEmployeeDetailsService customEmployeeDetailsService) {
         super();
         this.customEmployeeDetailsService = customEmployeeDetailsService;
     }
@@ -72,8 +74,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws ServletException, IOException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                            FilterChain chain, Authentication authResult) throws IOException, ServletException {
         super.successfulAuthentication(request, response, chain, authResult);
-        logger.info("Authentication successful for user: " + authResult.getName());
     }
 }

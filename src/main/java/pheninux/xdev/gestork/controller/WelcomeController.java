@@ -1,25 +1,39 @@
 package pheninux.xdev.gestork.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import pheninux.xdev.gestork.service.DishService;
 
 @Controller
 public class WelcomeController {
-    @Autowired
-    DishService dishService;
 
-    @GetMapping(value = "/welcome")
-    public String welcome() {
-        return "welcome";
+    @GetMapping("/employee/home")
+    public String employeeHomePage() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String role = authentication.getAuthorities().stream()
+                    .filter(authority -> authority.getAuthority() != null)
+                    .findFirst()
+                    .map(GrantedAuthority::getAuthority)
+                    .orElse(null);
+
+            switch (role) {
+                case "ROLE_SERVER":
+                    return "employee/server-home";
+                case "ROLE_ADMIN":
+                    return "employee/admin-home";
+                case "ROLE_CHEF":
+                    return "employee/chef-home";
+            }
+        }
+        return "employee/login";
     }
 
-    @GetMapping("/dish")
-    public String dish(Model model) {
-        model.addAttribute("dishes", dishService.getFakeDishes());
-        return "dish";
+    @GetMapping("/customer/home")
+    public String customerHomePage() {
+        return "customer/home";
     }
 
 }
