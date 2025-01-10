@@ -21,7 +21,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pheninux.xdev.gestork.filter.CustomClientAuthenticationFilter;
 import pheninux.xdev.gestork.filter.CustomEmployeeAuthenticationFilter;
 import pheninux.xdev.gestork.handler.JwtAuthenticationSuccessHandler;
@@ -53,7 +52,6 @@ public class SecurityConfig {
         http
                 .securityMatcher("/customer/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        // .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/customer/login").permitAll()
                         .requestMatchers("/customer/**").authenticated()
                         .requestMatchers("/customer/home").authenticated()
@@ -81,7 +79,7 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 );
 
-       // http.addFilterBefore(clientCustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        // http.addFilterBefore(clientCustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -125,6 +123,39 @@ public class SecurityConfig {
         //http.addFilterBefore(employeeCustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    @Order(3)
+    public SecurityFilterChain H2SecurityFilterChain(HttpSecurity http) throws Exception {
+
+        http.securityMatcher("/h2-console/**")
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/h2-console/**").authenticated()
+                        .anyRequest().authenticated()
+                )
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers
+                        .httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable)
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                );
+        return http.build();
+    }
+
+    @Bean
+    @Order(4)
+    public SecurityFilterChain StaticSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        // Autoriser l'accès aux fichiers statiques
+                        .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
+                        // Ajoutez d'autres règles de sécurité ici
+                        .anyRequest().authenticated()
+                )
+                .csrf(csrf -> csrf.disable()); // Désactiver CSRF si nécessaire
+
+        return http.build();
+
     }
 
 
