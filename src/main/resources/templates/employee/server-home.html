@@ -1,10 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil Employé</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #a2c2e9, #d0f4e8);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #007acc; /* Couleur bleu pour le titre */
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 15px;
+            width: 200px;
+            text-align: center;
+            position: relative; /* Pour positionner le cercle */
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05); /* Zoom léger au survol */
+        }
+
+        .button {
+            background-color: #007acc; /* Couleur bleu pour le bouton */
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #005f99; /* Couleur bleu foncé au survol */
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .notification-circle {
+            position: absolute;
+            top: -10px; /* Ajuster la position selon le besoin */
+            right: -10px; /* Ajuster la position selon le besoin */
+            width: 30px;
+            height: 30px;
+            background-color: #ff4d4d; /* Couleur rouge pour le cercle de notification */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-server home
+<h1>Bienvenue, Employé</h1>
+<div class="card-container">
+    <div class="card">
+        <h3>Générer un code d'accès</h3>
+        <button class="button" onclick="location.href='/generate-access-code'">Accéder</button>
+    </div>
+    <div class="card">
+        <h3>Consulter mes tables</h3>
+        <button class="button" onclick="location.href='/manage-tables'">Accéder</button>
+    </div>
+    <div class="card">
+        <h3>Consulter les commandes</h3>
+        <div class="notification-circle">3</div> <!-- Notification avec le nombre -->
+        <button class="button" onclick="location.href='/view-orders'">Accéder</button>
+    </div>
+    <div class="card">
+        <h3>Voir les demandes des clients</h3>
+        <div class="notification-circle">5</div> <!-- Notification avec le nombre -->
+        <button class="button" onclick="location.href='/customer-requests'">Accéder</button>
+    </div>
+    <div class="card">
+        <h3>Plats en cuisine</h3>
+        <div class="notification-circle">2</div> <!-- Notification avec le nombre -->
+        <button class="button" onclick="location.href='/dishes-in-kitchen'">Accéder</button>
+    </div>
+</div>
 </body>
 </html>
