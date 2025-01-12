@@ -23,23 +23,47 @@ public class AccessCodeService {
     }
 
     @PreAuthorize("hasRole('SERVER')")
-    public void generateAndSaveAccessCode(Client client) {
+    public String generateAndSaveAccessCode(Client client,int tableNumber) {
 
-        String code = UUID.randomUUID().toString();
-        Timestamp expiryDate = Timestamp.valueOf(LocalDateTime.now().plusHours(1)); // Code valide 1 heure
-
+        String code = generateAccessCode(tableNumber);
+        Timestamp expiryDate = Timestamp.valueOf(LocalDateTime.now().plusMinutes(6)); // Code valide 1 heure
         AccessCode accessCode = new AccessCode();
         accessCode.setClient(client);
-        accessCode.setCode(code);
+        accessCode.setCode(generateAccessCode(tableNumber));
         accessCode.setExpiryDate(expiryDate);
         accessCode.setUsed(false);
 
         try {
             accessCodeRepository.save(accessCode);
+            return code;
         } catch (Exception e) {
             throw new RuntimeException("Error to save generating access code", e);
         }
 
+
+    }
+
+    public String generateAccessCode(int tableNumber) {
+        // Générer un UUID
+        UUID uuid = UUID.randomUUID();
+
+        // Convertir l'UUID en chaîne et retirer les tirets
+        String uuidString = uuid.toString().replaceAll("-", "");
+
+        // Créer un StringBuilder pour le code d'accès
+        StringBuilder accessCode = new StringBuilder();
+
+        // Ajouter des caractères aléatoires (lettres et chiffres)
+        for (int i = 0; i < 6; i++) {
+            // Choisir un caractère aléatoire de l'UUID
+            char randomChar = uuidString.charAt((int) (Math.random() * uuidString.length()));
+            accessCode.append(randomChar);
+        }
+
+        // Ajouter le numéro de table
+        accessCode.append(tableNumber);
+
+        return accessCode.toString(); // Retourne le code d'accès
     }
 
     public boolean isAccessCodeValid(String code) {

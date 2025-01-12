@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +20,21 @@
 
         h1 {
             color: #007acc; /* Couleur bleu pour le titre */
-            margin-bottom: 40px;
+            margin-bottom: 20px;
+        }
+
+        .date-time {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
         }
 
         .card {
@@ -78,13 +92,24 @@
             font-weight: bold;
         }
     </style>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            document.getElementById('date-time').innerText = now.toLocaleDateString('fr-FR', options);
+        }
+
+        setInterval(updateDateTime, 1000); // Met à jour chaque seconde
+    </script>
 </head>
-<body>
-<h1>Bienvenue, Employé</h1>
+<body onload="updateDateTime()">
+<img src="/img/logo_rest.jpeg" alt="Logo du Restaurant" class="logo"> <!-- Remplacez par le chemin de votre logo -->
+<h1>Bienvenue, <span th:text="${username}">Employé</span></h1> <!-- Variable Thymeleaf -->
+<div class="date-time" id="date-time"></div>
 <div class="card-container">
     <div class="card">
         <h3>Générer un code d'accès</h3>
-        <button class="button" onclick="location.href='/generate-access-code'">Accéder</button>
+        <button class="button" onclick="location.href='/employee/generateCode-page'">Accéder</button>
     </div>
     <div class="card">
         <h3>Consulter mes tables</h3>
@@ -92,17 +117,17 @@
     </div>
     <div class="card">
         <h3>Consulter les commandes</h3>
-        <div class="notification-circle">3</div> <!-- Notification avec le nombre -->
+        <div class="notification-circle" th:text="${notificationOrders}">0</div> <!-- Notification dynamique -->
         <button class="button" onclick="location.href='/view-orders'">Accéder</button>
     </div>
     <div class="card">
         <h3>Voir les demandes des clients</h3>
-        <div class="notification-circle">5</div> <!-- Notification avec le nombre -->
+        <div class="notification-circle" th:text="${notificationRequests}">0</div> <!-- Notification dynamique -->
         <button class="button" onclick="location.href='/customer-requests'">Accéder</button>
     </div>
     <div class="card">
         <h3>Plats en cuisine</h3>
-        <div class="notification-circle">2</div> <!-- Notification avec le nombre -->
+        <div class="notification-circle" th:text="${notificationDishes}">0</div> <!-- Notification dynamique -->
         <button class="button" onclick="location.href='/dishes-in-kitchen'">Accéder</button>
     </div>
 </div>

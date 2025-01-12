@@ -59,6 +59,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/customer/login")
+                        .passwordParameter("accessCode")
                         .loginProcessingUrl("/customer/authenticate")
                         .successHandler(jwtAuthenticationSuccessHandler)
                         .failureHandler(clientAuthenticationFailureHandler())
@@ -90,9 +91,10 @@ public class SecurityConfig {
         http
                 .securityMatcher("/employee/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/server/**").hasRole("SERVER")
+                        .requestMatchers("/waiter/**").hasRole("SERVER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/chef/**").hasRole("CHEF")
+                        .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/employee/login").permitAll()
                         .requestMatchers("/employee/**").hasAnyRole("SERVER", "ADMIN", "CHEF")
                         .requestMatchers("/employee/home").authenticated()
@@ -151,8 +153,7 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                         // Ajoutez d'autres règles de sécurité ici
                         .anyRequest().authenticated()
-                )
-                .csrf(csrf -> csrf.disable()); // Désactiver CSRF si nécessaire
+                );
 
         return http.build();
 
@@ -214,7 +215,7 @@ public class SecurityConfig {
                 if (httpServletRequest.getRequestURI().startsWith("/employee")) {
                     userDetails = customEmployeeDetailsService.loadUserByUsername(username);
                 } else {
-                    userDetails = customClientDetailsService.loadUserByUsername(username);
+                    userDetails = customClientDetailsService.loadUserByUsername(username,password);
                 }
 
                 if (!passwordEncoder().matches(password, userDetails.getPassword())) {
