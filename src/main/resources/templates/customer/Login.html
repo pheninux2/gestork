@@ -101,7 +101,7 @@
 </head>
 <body>
 <div class="container">
-    <img src="" alt="Logo du Restaurant" class="logo"> <!-- Remplacez par le chemin de votre logo -->
+    <img src="/img/logo_rest.jpeg" alt="Logo du Restaurant" class="logo"> <!-- Remplacez par le chemin de votre logo -->
     <h1>Connexion</h1>
     <form id="formLoginClient" method="post" hx-post="/customer/authenticate" hx-target="#response" hx-swap="innerHTML">
         <div class="input-group">
@@ -109,8 +109,8 @@
             <input type="text" id="loginClient" name="username" required>
         </div>
         <div class="input-group">
-            <label for="codeaccess">Code d'accès:</label>
-            <input type="text" id="codeaccess" name="password" required>
+            <label for="accessCode">Code d'accès:</label>
+            <input type="text" id="accessCode" name="accessCode" required>
         </div>
         <div id="response"></div>
         <button type="submit">LOGIN</button>

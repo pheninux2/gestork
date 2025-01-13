@@ -13,11 +13,4 @@ public class ClientLoginController {
         return "customer/login";
     }
 
-//    @PostMapping("/authenticate")
-//    public String authenticate(@RequestParam("username") String username, @RequestParam("password") String password, Model model) {
-//        model.addAttribute("username", username);
-//        model.addAttribute("password", password);
-//        return "client/home";
-//    }
-
 }
