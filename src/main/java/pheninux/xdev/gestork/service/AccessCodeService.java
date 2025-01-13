@@ -29,12 +29,12 @@ public class AccessCodeService {
         Timestamp expiryDate = Timestamp.valueOf(LocalDateTime.now().plusMinutes(6)); // Code valide 1 heure
         AccessCode accessCode = new AccessCode();
         accessCode.setClient(client);
-        accessCode.setCode(generateAccessCode(tableNumber));
+        accessCode.setCode(code);
         accessCode.setExpiryDate(expiryDate);
         accessCode.setUsed(false);
 
         try {
-            accessCodeRepository.save(accessCode);
+            accessCodeRepository.saveAndFlush(accessCode);
             return code;
         } catch (Exception e) {
             throw new RuntimeException("Error to save generating access code", e);

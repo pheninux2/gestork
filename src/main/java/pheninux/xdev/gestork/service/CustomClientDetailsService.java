@@ -1,5 +1,6 @@
 package pheninux.xdev.gestork.service;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -58,7 +59,6 @@ public class CustomClientDetailsService implements UserDetailsService {
             );
 
         } else {
-            throw new UsernameNotFoundException("Utilisateur non trouvé pour login : " + login);
-        }
+            throw new BadCredentialsException("Invalid credentials");        }
     }
 }

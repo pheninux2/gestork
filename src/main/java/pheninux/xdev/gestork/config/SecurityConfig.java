@@ -153,7 +153,8 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                         // Ajoutez d'autres règles de sécurité ici
                         .anyRequest().authenticated()
-                );
+                )
+                .csrf(csrf -> csrf.disable()); // Désactiver CSRF si nécessaire
 
         return http.build();
 
@@ -216,6 +217,7 @@ public class SecurityConfig {
                     userDetails = customEmployeeDetailsService.loadUserByUsername(username);
                 } else {
                     userDetails = customClientDetailsService.loadUserByUsername(username,password);
+                    return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
                 }
 
                 if (!passwordEncoder().matches(password, userDetails.getPassword())) {
