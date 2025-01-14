@@ -1,7 +1,6 @@
 package pheninux.xdev.gestork.config;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -14,15 +13,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pheninux.xdev.gestork.filter.CustomClientAuthenticationFilter;
 import pheninux.xdev.gestork.filter.CustomEmployeeAuthenticationFilter;
+import pheninux.xdev.gestork.filter.JwtRequestFilter;
 import pheninux.xdev.gestork.handler.JwtAuthenticationSuccessHandler;
 import pheninux.xdev.gestork.service.CustomClientDetailsService;
 import pheninux.xdev.gestork.service.CustomEmployeeDetailsService;
@@ -31,15 +32,21 @@ import pheninux.xdev.gestork.service.CustomEmployeeDetailsService;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomClientDetailsService customClientDetailsService;
 
-    @Autowired
-    private CustomClientDetailsService customClientDetailsService;
+    private final CustomEmployeeDetailsService customEmployeeDetailsService;
 
-    @Autowired
-    private CustomEmployeeDetailsService customEmployeeDetailsService;
+    private final JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
 
-    @Autowired
-    private JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
+    private final JwtRequestFilter jwtRequestFilter;
+
+    public SecurityConfig(CustomClientDetailsService customClientDetailsService, CustomEmployeeDetailsService customEmployeeDetailsService, JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler, JwtRequestFilter jwtRequestFilter) {
+        this.customClientDetailsService = customClientDetailsService;
+        this.customEmployeeDetailsService = customEmployeeDetailsService;
+        this.jwtAuthenticationSuccessHandler = jwtAuthenticationSuccessHandler;
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -51,6 +58,9 @@ public class SecurityConfig {
     public SecurityFilterChain CustomerSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/customer/**")
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/customer/login").permitAll()
                         .requestMatchers("/customer/**").authenticated()
@@ -65,7 +75,11 @@ public class SecurityConfig {
                         .failureHandler(clientAuthenticationFailureHandler())
                         .permitAll()
                 )
-                .logout(LogoutConfigurer::permitAll)
+                .logout(logout -> logout
+                        .logoutUrl("/customer/logout")
+                        .logoutSuccessUrl("/customer/login?logout")
+                        .invalidateHttpSession(true)
+                )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             String uri = request.getRequestURI();
@@ -80,7 +94,7 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 );
 
-        // http.addFilterBefore(clientCustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -90,6 +104,9 @@ public class SecurityConfig {
     public SecurityFilterChain EmployeeSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/employee/**")
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/waiter/**").hasRole("SERVER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -107,7 +124,11 @@ public class SecurityConfig {
                         .failureHandler(employeeAuthenticationFailureHandler())
                         .permitAll()
                 )
-                .logout(LogoutConfigurer::permitAll)
+                .logout(logout -> logout
+                        .logoutUrl("/employee/logout")
+                        .logoutSuccessUrl("/employee/login?logout")
+                        .invalidateHttpSession(true)
+                )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             String uri = request.getRequestURI();
@@ -122,7 +143,7 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 );
 
-        //http.addFilterBefore(employeeCustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -164,14 +185,20 @@ public class SecurityConfig {
     private AuthenticationFailureHandler employeeAuthenticationFailureHandler() {
         return (request, response, exception) -> {
             response.setContentType("text/html");
-            response.getWriter().write("<div>Invalid username or password</div>");
+            response.getWriter().write("<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
+                    "<strong>Erreur d'authentification !</strong> Nom d'utilisateur ou mot de passe invalide." +
+                    "</div>" +
+                    "<script>setTimeout(function() { document.querySelector('.alert').remove(); }, 5000);</script>");
         };
     }
 
     private AuthenticationFailureHandler clientAuthenticationFailureHandler() {
         return (request, response, exception) -> {
             response.setContentType("text/html");
-            response.getWriter().write("<div>Invalid login or code access code</div>");
+            response.getWriter().write("<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
+                    "<strong>Erreur d'authentification !</strong> Login d'utilisateur ou code d'accès invalide." +
+                    "</div>" +
+                    "<script>setTimeout(function() { document.querySelector('.alert').remove(); }, 5000);</script>");
         };
     }
 
@@ -215,15 +242,12 @@ public class SecurityConfig {
 
                 if (httpServletRequest.getRequestURI().startsWith("/employee")) {
                     userDetails = customEmployeeDetailsService.loadUserByUsername(username);
+                    if (!passwordEncoder().matches(password, userDetails.getPassword())) {
+                        throw new BadCredentialsException("Invalid credentials");
+                    }
                 } else {
-                    userDetails = customClientDetailsService.loadUserByUsername(username,password);
-                    return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+                    userDetails = customClientDetailsService.loadUserByUsername(username, password);
                 }
-
-                if (!passwordEncoder().matches(password, userDetails.getPassword())) {
-                    throw new BadCredentialsException("Invalid credentials");
-                }
-
                 return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
             }
 

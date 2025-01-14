@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,13 +34,15 @@ public class ApiController {
 
     @PreAuthorize("hasRole('SERVER')")
     @PostMapping(value = "/generateCodeAccess")
-    public void generateCodeAccess(@RequestParam("clientLogin") String clientLogin, @RequestParam("tableNumber") int tableNumber, HttpServletResponse response) {
+    public String generateCodeAccess(@RequestParam("clientLogin") String clientLogin, @RequestParam("tableNumber") int tableNumber, HttpServletResponse response) {
         try {
             Client client = clientRepository.findClientByLogin(clientLogin);
             String code;
 
             if (client != null) {
                 code = accessCodeService.generateAndSaveAccessCode(client, tableNumber);
+                log.debug("<div class=\"alert alert-success\">Code créé avec succès pour le Client: " + clientLogin + ".</div>");
+
             } else {
                 Client newClient = new Client();
                 newClient.setLogin(clientLogin);
@@ -52,13 +53,18 @@ public class ApiController {
                 log.debug("<div class=\"alert alert-success\">Client créé avec succès pour le login: " + clientLogin + ".</div>");
             }
 
-            response.setContentType("text/html");
-            response.setStatus(HttpStatus.OK.value());
-            response.getWriter().write("<script>window.location.href='/employee/showAccessCode-page?code=" + code + "';</script>");
+            return "<script>window.location.href='/employee/showAccessCode-page?code=" + code + "';</script>";
+
         } catch (DataAccessException e) {
-            log.error("Database error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Database error: " + e.getMessage());
+            return "<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
+                    "<strong>Erreur de base de données !</strong> Veuillez réessayer." +
+                    "</div>";
         } catch (Exception e) {
-            log.error("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("An unexpected error occurred: " + e.getMessage());
+            return "<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
+                    "<strong>Erreur !</strong> Une erreur inattendue est survenue. Veuillez réessayer." +
+                    "</div>";
         }
 
     }

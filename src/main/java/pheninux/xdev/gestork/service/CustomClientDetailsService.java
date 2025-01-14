@@ -48,17 +48,21 @@ public class CustomClientDetailsService implements UserDetailsService {
         Client client = clientRepository.findClientByLogin(login);
         AccessCode accessCode = accessCodeRepository.findByCode(code);
 
-        if (client != null
-                && accessCode != null
-                && (accessCode.getCode().equals(code))
-                && accessCode.getExpiryDate().after(Timestamp.valueOf(LocalDateTime.now()))) {
-            return new org.springframework.security.core.userdetails.User(
-                    client.getLogin(),
-                    client.getPassword(),
-                    List.of(new SimpleGrantedAuthority("ROLE_" + client.getRole()))
-            );
+        if (client != null && accessCode != null && accessCode.getCode().equals(code)) {
+            Timestamp expiryDate = accessCode.getExpiryDate();
+            Timestamp currentDate = Timestamp.valueOf(LocalDateTime.now());
+            boolean isTokenValid = expiryDate.after(currentDate);
 
-        } else {
-            throw new BadCredentialsException("Invalid credentials");        }
+            if (isTokenValid) {
+                return new org.springframework.security.core.userdetails.User(
+                        client.getLogin(),
+                        client.getPassword(),
+                        List.of(new SimpleGrantedAuthority("ROLE_" + client.getRole()))
+                );
+            } else {
+                throw new BadCredentialsException("Token was expired");
+            }
+        }
+        throw new BadCredentialsException("Invalid credentials");
     }
 }
