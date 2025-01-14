@@ -88,8 +88,11 @@
 <body>
 <h1>Générer un Code d'Accès</h1>
 <div class="form-container">
-    <form id="generateCodeForm" method="post" hx-post="/api/generateCodeAccess" hx-target="#response"
-          hx-swap="innerHTML"> <!-- Remplacez par votre URL de traitement -->
+    <form id="generateCodeForm"
+          method="post"
+          hx-post="/api/generateCodeAccess"
+          hx-swap="innerHTML"
+          hx-target="#response">
         <div class="form-group">
             <label for="clientLogin">Login du Client</label>
             <input type="text" id="clientLogin" name="clientLogin" required>
@@ -105,17 +108,19 @@
 </div>
 </body>
 <script>
-
-    document.addEventListener('htmx:response', function (evt) {
-        console.log("htmx:response event triggered");
-        if (evt.detail.xhr.status === 200) {
-            const redirectUrl = evt.detail.xhr.responseText; // Récupérer l'URL de redirection
-            window.location.href = redirectUrl; // Rediriger vers l'URL
-        } else {
-            // Gérer les erreurs ici si nécessaire
-            console.error('Erreur lors de la soumission :', evt.detail.xhr.responseText);
-        }
+    htmx.on("htmx:configRequest", (e) => {
+        e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
     });
 
+    document.addEventListener('htmx:afterSwap', (event) => {
+        const responseElement = event.target;
+        const alertDivs = responseElement.querySelectorAll('.alert');
+
+        alertDivs.forEach(alertDiv => {
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        });
+    });
 </script>
 </html>
