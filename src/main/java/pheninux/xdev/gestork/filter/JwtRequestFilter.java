@@ -8,11 +8,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import pheninux.xdev.gestork.service.JwtService;
 
 import java.io.IOException;
 
@@ -22,9 +24,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     public static final String SECRET_KEY = "zDgIc0P7ORSqAp350mFZO1b9E7HUUBDeGWXNwM7f6fc";
 
     private final AuthenticationProvider authenticationProvider;
+    private final JwtService jwtService;
 
-    public JwtRequestFilter(@Lazy AuthenticationProvider authenticationProvider) {
+    public JwtRequestFilter(@Lazy AuthenticationProvider authenticationProvider, JwtService jwtService) {
         this.authenticationProvider = authenticationProvider;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -39,10 +43,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 return;
             }
             String username = "";
-            String jwt;
+            String jwt = "";
 
             // Vérifiez si le header de l'autorisation est présent et commence par "Bearer "
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            if (authorizationHeader.startsWith("Bearer ")) {
                 jwt = authorizationHeader.substring(7); // Enlevez "Bearer "
                 try {
                     username = Jwts.parser()
@@ -56,12 +60,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     System.out.println("JWT invalid");
                 }
             }
-            // Si l'utilisateur n'est pas déjà authentifié, le définir dans le contexte de sécurité
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                Authentication authRequest = new UsernamePasswordAuthenticationToken(username, null);
 
-                Authentication authResult = authenticationProvider.authenticate(authRequest);
-                SecurityContextHolder.getContext().setAuthentication(authResult);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                if (jwtService.validateToken(jwt, username)) {
+                    Authentication authRequest = new UsernamePasswordAuthenticationToken(username, null);
+                    Authentication authResult = authenticationProvider.authenticate(authRequest);
+                    SecurityContextHolder.getContext().setAuthentication(authResult);
+                } else {
+                    logger.error("Authentication failed for " + username + ", invalidate token");
+                    throw new BadCredentialsException("Token invalide");
+                }
             }
         }
 
