@@ -61,6 +61,7 @@ public class AccessCodeService {
         }
 
         // Ajouter le numéro de table
+        accessCode.append("-");
         accessCode.append(tableNumber);
 
         return accessCode.toString(); // Retourne le code d'accès

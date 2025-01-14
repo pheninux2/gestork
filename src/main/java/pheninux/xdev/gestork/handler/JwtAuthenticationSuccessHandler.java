@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import pheninux.xdev.gestork.repository.AccessCodeRepository;
 import pheninux.xdev.gestork.service.JwtService;
 
 import java.io.IOException;
@@ -21,7 +22,6 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
     @Autowired
     private JwtService jwtService;
-
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

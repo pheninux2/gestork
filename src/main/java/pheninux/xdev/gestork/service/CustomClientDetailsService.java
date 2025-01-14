@@ -48,12 +48,17 @@ public class CustomClientDetailsService implements UserDetailsService {
         Client client = clientRepository.findClientByLogin(login);
         AccessCode accessCode = accessCodeRepository.findByCode(code);
 
-        if (client != null && accessCode != null && accessCode.getCode().equals(code)) {
+        if (client != null
+                && accessCode != null
+                && accessCode.getCode().equals(code)
+                && !accessCode.isUsed()) {
             Timestamp expiryDate = accessCode.getExpiryDate();
             Timestamp currentDate = Timestamp.valueOf(LocalDateTime.now());
             boolean isTokenValid = expiryDate.after(currentDate);
 
             if (isTokenValid) {
+                accessCode.setUsed(Boolean.TRUE);
+                accessCodeRepository.save(accessCode);
                 return new org.springframework.security.core.userdetails.User(
                         client.getLogin(),
                         client.getPassword(),
