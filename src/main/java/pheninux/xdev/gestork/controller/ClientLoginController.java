@@ -13,4 +13,9 @@ public class ClientLoginController {
         return "customer/login";
     }
 
+    @GetMapping("/menu")
+    public String menu() {
+        return "customer/menu";
+    }
+
 }
