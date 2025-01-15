@@ -24,18 +24,21 @@ public class WelcomeController {
 
             switch (role) {
                 case "ROLE_SERVER":
-                    return "employee/waiter/waiter-home";
+                    return "employee/waiter/home";
                 case "ROLE_ADMIN":
-                    return "employee/admin/admin-home";
+                    return "employee/admin/home";
                 case "ROLE_CHEF":
-                    return "employee/chef/chef-home";
+                    return "employee/chef/home";
             }
         }
         return "employee/login";
     }
 
     @GetMapping("/customer/home")
-    public String customerHomePage() {
+    public String customerHomePage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        model.addAttribute("customerLogin", login);
         return "customer/home";
     }
 
