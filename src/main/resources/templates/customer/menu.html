@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu du Restaurant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin-left: 0;
+            margin-bottom: 40px;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #ff6f61;
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            color: white;
+            font-size: 2em;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            top: 0; /* Fixe en haut */
+            left: 0;
+            right: 0;
+            background-color: #ff6f61;
+            padding: 10px 0;
+            z-index: 1000; /* Au-dessus des autres éléments */
+        }
+        .button {
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        .button i {
+            margin-right: 5px;
+        }
+        .button:hover {
+            background-color: #ff4f50;
+        }
+        .category {
+            margin: 80px 0 20px; /* Espace pour les boutons fixes */
+            width: 90%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h2 {
+            border-bottom: 2px solid #ff6f61;
+            padding-bottom: 5px;
+        }
+        .dish {
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            align-items: center;
+        }
+        .dish img {
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+        .details {
+            flex-grow: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .description {
+            flex-grow: 1;
+            margin-right: 20px;
+        }
+        .price {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Alignement à droite */
+            width: 100%; /* Occuper toute la largeur */
+        }
+        footer {
+            margin-top: auto;
+            padding: 10px;
+            background-color: #ff6f61;
+            color: white;
+            width: 100%;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+        }
+        .modal {
+            display: none; /* Masquée par défaut */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal ul {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 40px; /* Augmentation du margin-bottom */
+        }
+        .modal ul li {
+            margin: 10px 0;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal #orderTotal {
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: right; /* Alignement à droite */
+        }
+        .remove-button {
+            background: none;
+            border: none;
+            color: red;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Menu du Restaurant
+</header>
+
+<div class="button-container">
+    <button class="button" onclick="showDetails()"><i class="fas fa-info-circle"></i>Détails de la Commande</button>
+    <button class="button" id="cartButton"><i class="fas fa-shopping-cart"></i>Panier (0)</button>
+    <button class="button" onclick="validateOrder()"><i class="fas fa-check-circle"></i>Valider ma Commande</button>
+</div>
+
+<div class="category">
+    <h2>Entrées</h2>
+    <div class="dish">
+        <img src="entree1.jpg" alt="Entrée 1">
+        <div class="details">
+            <div class="description">
+                <h3>Salade César</h3>
+                <p>Une salade fraîche avec du poulet grillé, des croûtons et une vinaigrette crémeuse.</p>
+            </div>
+            <div class="price">
+                <span>10€</span>
+                <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px" onclick="addToCart('Salade César', 10)"></i>
+            </div>
+        </div>
+    </div>
+    <div class="dish">
+        <img src="entree2.jpg" alt="Entrée 2">
+        <div class="details">
+            <div class="description">
+                <h3>Bruschetta</h3>
+                <p>Pain grillé garni de tomates fraîches, basilic et huile d'olive.</p>
+            </div>
+            <div class="price">
+                <span>8€</span>
+                <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px" onclick="addToCart('Bruschetta', 8)"></i>
+            </div>
+        </div>
+    </div>
+    <div class="dish">
+        <img src="entree3.jpg" alt="Entrée 3">
+        <div class="details">
+            <div class="description">
+                <h3>Soupe à l'oignon</h3>
+                <p>Soupe classique à l'oignon gratinée avec du fromage.</p>
+            </div>
+            <div class="price">
+                <span>7€</span>
+                <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px" onclick="addToCart('Soupe à l\'oignon', 7)"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="category">
+    <h2>Plats</h2>
+    <div class="dish">
+        <img src="plat1.jpg" alt="Plat 1">
+        <div class="details">
+            <div class="description">
+                <h3>Poulet Rôti</h3>
+                <p>Poulet rôti servi avec des légumes de saison.</p>
+            </div>
+            <div class="price">
+                <span>15€</span>
+                <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px" onclick="addToCart('Poulet Rôti', 15)"></i>
+            </div>
+        </div>
+    </div>
+    <div class="dish">
+        <img src="plat2.jpg" alt="Plat 2">
+        <div class="details">
+            <div class="description">
+                <h3>Saumon Grillé</h3>
+                <p>Saumon grillé avec une sauce citronnée, servi avec du riz.</p>
+            </div>
+            <div class="price">
+                <span>18€</span>
+                <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px" onclick="addToCart('Saumon Grillé', 18)"></i>
+            </div>
+        </div>
+    </div>
+    <div class="dish">
+        <img src="plat3.jpg" alt="Plat 3">
+        <div class="details">
+            <div class="description">
+                <h3>Pâtes Carbonara</h3>
+                <p>Pâtes crémeuses avec du bacon et du parmesan.</p>
+            </div>
+            <div class="price">
+                <span>12€</span>
+                <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px" onclick="addToCart('Pâtes Carbonara', 12)"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="category">
+    <h2>Desserts</h2>
+    <div class="dish">
+        <img src="dessert1.jpg" alt="Dessert 1">
+        <div class="details">
+            <div class="description">
+                <h3>Tarte Tatin</h3>
+                <p>Tarte aux pommes caramélisées servie chaude.</p>
+            </div>
+            <div class="price">
+                <span>6€</span>
+                <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px" onclick="addToCart('Tarte Tatin', 6)"></i>
+            </div>
+        </div>
+    </div>
+    <div class="dish">
+        <img src="dessert2.jpg" alt="Dessert 2">
+        <div class="details">
+            <div class="description">
+                <h3>Mousse au Chocolat</h3>
+                <p>Mousse légère et crémeuse au chocolat noir.</p>
+            </div>
+            <div class="price">
+                <span>5€</span>
+                <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px" onclick="addToCart('Mousse au Chocolat', 5)"></i>
+            </div>
+        </div>
+    </div>
+    <div class="dish">
+        <img src="dessert3.jpg" alt="Dessert 3">
+        <div class="details">
+            <div class="description">
+                <h3>Crème Brûlée</h3>
+                <p>Crème vanillée avec une croûte de sucre caramélisé.</p>
+            </div>
+            <div class="price">
+                <span>6€</span>
+                <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px" onclick="addToCart('Crème Brûlée', 6)"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3>Détails de la Commande</h3>
+        <ul id="orderList"></ul>
+        <div id="orderTotal"></div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2025 Votre Restaurant
+</footer>
+
+<script>
+    let total = 0;
+    let orderItems = {}; // Utilisation d'un objet pour stocker les plats et leur quantité
+
+    function addToCart(itemName, price) {
+        if (orderItems[itemName]) {
+            orderItems[itemName].quantity += 1; // Incrémente la quantité si l'élément existe
+        } else {
+            orderItems[itemName] = { price: price, quantity: 1 }; // Ajoute l'élément s'il n'existe pas
+        }
+        total += price;
+        document.getElementById('cartButton').innerText = 'Panier (' + getTotalItems() + ')';
+    }
+
+    function getTotalItems() {
+        return Object.values(orderItems).reduce((acc, item) => acc + item.quantity, 0);
+    }
+
+    function showDetails() {
+        const orderList = document.getElementById('orderList');
+        orderList.innerHTML = ''; // Effacez la liste actuelle
+        for (const item in orderItems) {
+            const li = document.createElement('li');
+            li.innerText = `${item} x ${orderItems[item].quantity} - ${orderItems[item].price.toFixed(2)}€`;
+            const removeButton = document.createElement('button');
+            removeButton.innerText = '✖'; // Bouton de suppression
+            removeButton.className = 'remove-button';
+            removeButton.onclick = () => removeFromCart(item);
+            li.appendChild(removeButton);
+            orderList.appendChild(li);
+        }
+        document.getElementById('orderTotal').innerText = 'Total : ' + total.toFixed(2) + '€';
+        openModal();
+    }
+
+    function removeFromCart(itemName) {
+        if (orderItems[itemName]) {
+            total -= orderItems[itemName].price; // Retire le prix du total
+            orderItems[itemName].quantity -= 1; // Décrémente la quantité
+            if (orderItems[itemName].quantity <= 0) {
+                delete orderItems[itemName]; // Supprime l'élément si la quantité est 0
+            }
+            document.getElementById('cartButton').innerText = 'Panier (' + getTotalItems() + ')';
+            showDetails(); // Met à jour l'affichage
+        }
+    }
+
+    function openModal() {
+        document.getElementById('orderModal').style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById('orderModal').style.display = "none";
+    }
+
+    function validateOrder() {
+        if (getTotalItems() > 0) {
+            alert('Commande validée avec succès !');
+            total = 0;
+            orderItems = {};
+            document.getElementById('cartButton').innerText = 'Panier (0)';
+        } else {
+            alert('Votre panier est vide.');
+        }
+    }
+
+    // Fermer la modal en cliquant en dehors
+    window.onclick = function(event) {
+        const modal = document.getElementById('orderModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
