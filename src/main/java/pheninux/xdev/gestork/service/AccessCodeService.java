@@ -3,9 +3,9 @@ package pheninux.xdev.gestork.service;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pheninux.xdev.gestork.model.AccessCode;
-import pheninux.xdev.gestork.model.Client;
+import pheninux.xdev.gestork.model.Customer;
 import pheninux.xdev.gestork.repository.AccessCodeRepository;
-import pheninux.xdev.gestork.repository.ClientRepository;
+import pheninux.xdev.gestork.repository.CustomerRepository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -15,20 +15,20 @@ import java.util.UUID;
 public class AccessCodeService {
 
     private final AccessCodeRepository accessCodeRepository;
-    private final ClientRepository clientRepository;
+    private final CustomerRepository customerRepository;
 
-    public AccessCodeService(AccessCodeRepository accessCodeRepository, ClientRepository clientRepository) {
+    public AccessCodeService(AccessCodeRepository accessCodeRepository, CustomerRepository customerRepository) {
         this.accessCodeRepository = accessCodeRepository;
-        this.clientRepository = clientRepository;
+        this.customerRepository = customerRepository;
     }
 
     @PreAuthorize("hasRole('SERVER')")
-    public String generateAndSaveAccessCode(Client client,int tableNumber) {
+    public String generateAndSaveAccessCode(Customer customer, int tableNumber) {
 
         String code = generateAccessCode(tableNumber);
         Timestamp expiryDate = Timestamp.valueOf(LocalDateTime.now().plusMinutes(6)); // Code valide 1 heure
         AccessCode accessCode = new AccessCode();
-        accessCode.setClient(client);
+        accessCode.setCustomer(customer);
         accessCode.setCode(code);
         accessCode.setExpiryDate(expiryDate);
         accessCode.setUsed(false);

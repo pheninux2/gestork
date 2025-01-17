@@ -1,29 +1,86 @@
 package pheninux.xdev.gestork.model;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
-@Data
 public class Dish {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long produitId;
+
     private String name;
-    private Double price;
+
+    @Lob
+    private String image;
+
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
+    private String description;
+
+    private double price;
+
+    private boolean isAvailable;
 
     public Dish() {
 
     }
 
-    public Dish(String name, Double price) {
-        this.name = name;
-        this.price = price;
+    public Long getProduitId() {
+        return produitId;
     }
+
+    public void setProduitId(Long produitId) {
+        this.produitId = produitId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String nom) {
+        this.name = nom;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double prix) {
+        this.price = prix;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        this.isAvailable = available;
+    }
+
 }

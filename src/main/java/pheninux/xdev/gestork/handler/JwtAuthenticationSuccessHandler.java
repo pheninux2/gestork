@@ -39,7 +39,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         // Renvoie une réponse HTML
         response.setContentType("text/html");
-        if (role.equals("[ROLE_CLIENT]")) {
+        if (role.equals("[ROLE_CUSTOMER]")) {
             response.getWriter().write("<script>localStorage.setItem('jwt', '" + token + "'); window.location.href='/customer/home';</script>");
         } else {
             response.getWriter().write("<script>localStorage.setItem('jwt', '" + token + "'); window.location.href='/employee/home';</script>");

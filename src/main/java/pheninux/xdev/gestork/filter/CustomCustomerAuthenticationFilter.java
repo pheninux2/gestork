@@ -9,7 +9,6 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pheninux.xdev.gestork.service.CustomClientDetailsService;
@@ -18,13 +17,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CustomClientAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class CustomCustomerAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final CustomClientDetailsService customClientDetailsService;
     private static final int MAX_ATTEMPTS = 5;
     private final Map<String, Integer> attemptsCache = new HashMap<>();
 
-    public CustomClientAuthenticationFilter(CustomClientDetailsService customClientDetailsService) {
+    public CustomCustomerAuthenticationFilter(CustomClientDetailsService customClientDetailsService) {
         this.customClientDetailsService = customClientDetailsService;
     }
 

@@ -2,7 +2,6 @@ package pheninux.xdev.gestork.model;
 
 public enum EmployeeRole {
     ADMIN,
-    SERVER,
+    WAITER,
     CHEF,
-    CLIENT
 }

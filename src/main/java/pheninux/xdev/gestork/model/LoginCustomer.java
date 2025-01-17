@@ -2,14 +2,12 @@ package pheninux.xdev.gestork.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
 
 @Entity
 @Data
-public class LoginClient {
+public class LoginCustomer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Identifiant unique pour chaque enregistrement
@@ -24,7 +22,7 @@ public class LoginClient {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate; // Date et heure de création du code d'accès
 
-    public LoginClient() {
+    public LoginCustomer() {
         this.createdDate = new Date();
     }
 }

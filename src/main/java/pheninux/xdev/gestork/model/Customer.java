@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Client {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long clientId; // Identifiant unique, clé primaire
+    private Long customerId; // Identifiant unique, clé primaire
     private String login; // Identifiant du client
     private String password; // Identifiant du client
     private String email; // Adresse e-mail du client
@@ -33,17 +33,17 @@ public class Client {
     public List<Preferences> preferences;
 
     @Enumerated(EnumType.STRING)
-    private ClientRole role;
+    private CustomerRole role;
 
     // Unidirectional relationship to AccessCode
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccessCode> accessCodes;
 
-    public ClientRole getRole() {
+    public CustomerRole getRole() {
         return role;
     }
 
-    public void setRole(ClientRole role) {
+    public void setRole(CustomerRole role) {
         this.role = role;
     }
 
@@ -55,12 +55,12 @@ public class Client {
         this.accessCodes = accessCodes;
     }
 
-    public Long getClientId() {
-        return clientId;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setClientId(Long clientId) {
-        this.clientId = clientId;
+    public void setCustomerId(Long clientId) {
+        this.customerId = clientId;
     }
 
     public String getLogin() {
@@ -154,12 +154,12 @@ public class Client {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Client client = (Client) o;
-        return profileCompleted == client.profileCompleted && Objects.equals(clientId, client.clientId) && Objects.equals(login, client.login) && Objects.equals(password, client.password) && Objects.equals(email, client.email) && Objects.equals(phoneNumber, client.phoneNumber) && Objects.equals(firstName, client.firstName) && Objects.equals(lastName, client.lastName) && Objects.equals(address, client.address) && Objects.equals(createdDate, client.createdDate) && Objects.equals(allergies, client.allergies) && Objects.equals(preferences, client.preferences);
+        Customer customer = (Customer) o;
+        return profileCompleted == customer.profileCompleted && Objects.equals(customer, customer.customerId) && Objects.equals(login, customer.login) && Objects.equals(password, customer.password) && Objects.equals(email, customer.email) && Objects.equals(phoneNumber, customer.phoneNumber) && Objects.equals(firstName, customer.firstName) && Objects.equals(lastName, customer.lastName) && Objects.equals(address, customer.address) && Objects.equals(createdDate, customer.createdDate) && Objects.equals(allergies, customer.allergies) && Objects.equals(preferences, customer.preferences);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clientId, login, password, email, phoneNumber, firstName, lastName, address, profileCompleted, createdDate, allergies, preferences);
+        return Objects.hash(customerId, login, password, email, phoneNumber, firstName, lastName, address, profileCompleted, createdDate, allergies, preferences);
     }
 }

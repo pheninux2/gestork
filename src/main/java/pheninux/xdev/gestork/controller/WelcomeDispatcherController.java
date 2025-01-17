@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class WelcomeController {
+public class WelcomeDispatcherController {
 
     @GetMapping("/employee/home")
     public String employeeHomePage(Model model) {
@@ -23,7 +23,7 @@ public class WelcomeController {
                     .orElse(null);
 
             switch (role) {
-                case "ROLE_SERVER":
+                case "ROLE_WAITER":
                     return "employee/waiter/home";
                 case "ROLE_ADMIN":
                     return "employee/admin/home";
