@@ -21,7 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pheninux.xdev.gestork.filter.CustomClientAuthenticationFilter;
+import pheninux.xdev.gestork.filter.CustomCustomerAuthenticationFilter;
 import pheninux.xdev.gestork.filter.CustomEmployeeAuthenticationFilter;
 import pheninux.xdev.gestork.filter.JwtRequestFilter;
 import pheninux.xdev.gestork.handler.JwtAuthenticationSuccessHandler;
@@ -108,12 +108,12 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/waiter/**").hasRole("SERVER")
+                        .requestMatchers("/waiter/**").hasRole("WAITER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/chef/**").hasRole("CHEF")
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/employee/login").permitAll()
-                        .requestMatchers("/employee/**").hasAnyRole("SERVER", "ADMIN", "CHEF")
+                        .requestMatchers("/employee/**").authenticated()
                         .requestMatchers("/employee/home").authenticated()
                         .anyRequest().authenticated()
                 )
@@ -203,8 +203,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CustomClientAuthenticationFilter clientCustomAuthenticationFilter() throws Exception {
-        CustomClientAuthenticationFilter filter = new CustomClientAuthenticationFilter(customClientDetailsService);
+    public CustomCustomerAuthenticationFilter clientCustomAuthenticationFilter() throws Exception {
+        CustomCustomerAuthenticationFilter filter = new CustomCustomerAuthenticationFilter(customClientDetailsService);
         filter.setAuthenticationManager(authManager(null)); // Utiliser l'AuthenticationManager configuré
         return filter;
     }

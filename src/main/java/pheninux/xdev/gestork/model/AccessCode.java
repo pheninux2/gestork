@@ -13,8 +13,8 @@ public class AccessCode {
     private Long codeId;
 
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @Column(unique = true, nullable = false)
     private String code;
@@ -34,12 +34,12 @@ public class AccessCode {
         this.codeId = codeId;
     }
 
-    public Client getClient() {
-        return client;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public String getCode() {

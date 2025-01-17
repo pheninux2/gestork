@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire d'Ajout de Plat</title>
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #e53935;
+            margin-bottom: 30px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"], textarea, select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+            border-color: #e53935;
+        }
+
+        input[type="file"] {
+            margin-bottom: 15px;
+        }
+
+        input[type="submit"] {
+            background-color: #f57c20;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #e64a19;
+        }
+
+        .message {
+            margin-top: 20px;
+            text-align: center;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Ajouter un Plat au Menu</h1>
+<form id="menuForm"
+      hx-encoding='multipart/form-data'
+      method="post"
+      hx-post="/api/addDish"
+      hx-target="#response"
+      hx-swap="innerHTML">
+
+    <label for="name">Nom du Plat :</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="description">Description :</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+
+    <label for="price">Prix (€) :</label>
+    <input type="number" id="price" name="price" step="0.01" required>
+
+    <label for="image">Image du Plat :</label>
+    <input type="file" id="image" name="image" accept="image/*" required>
+
+    <label for="category">Catégorie :</label>
+    <select id="category" name="category" required>
+
+        <option value="">Sélectionner une catégorie</option>
+        <option value="PLAT_CHEF">Plat du Chef</option>
+        <option value="PLAT">Plat</option>
+        <option value="ENTREE_CHAUDE">Entrée Chaude</option>
+        <option value="ENTREE_FROIDE">Entrée Froide</option>
+        <option value="ESSERT">Dessert</option>
+        <option value="BOISSON_CHAUDE">Boisson Chaude</option>
+        <option value="BOISSON_FROIDE">Boisson Froide</option>
+    </select>
+
+    <input type="submit" value="Ajouter Plat">
+    <div class="message" id="successMessage" style="display:none;">Plat ajouté avec succès !</div>
+    <div id="response"></div>
+</form>
+
+<script>
+
+    htmx.on("htmx:configRequest", (e) => {
+        e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
+    })
+
+    // document.getElementById('menuForm').onsubmit = function (event) {
+    //     event.preventDefault(); // Empêche le comportement par défaut
+    //
+    //     const formData = {
+    //         name: event.target.name.value,
+    //         description: event.target.description.value,
+    //         price: parseFloat(event.target.price.value),
+    //         category: event.target.category.value,
+    //     };
+    //
+    //     // Convertir l'objet en JSON
+    //     const jsonData = JSON.stringify(formData);
+    //
+    //     // Récupérer le token JWT du localStorage
+    //     const token = localStorage.getItem('jwt');
+    //
+    //     // Envoyer les données JSON avec HTMX
+    //     htmx.ajax('POST', event.target.getAttribute('hx-post'), {
+    //         body: jsonData,
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Accept': 'application/json',
+    //             'Authorization': 'Bearer ' + token, // Ajouter le token au header
+    //         }
+    //     }).then(response => {
+    //         // Afficher le message de succès
+    //         document.getElementById('successMessage').innerText = 'Plat ajouté avec succès !';
+    //         document.getElementById('successMessage').style.display = 'block';
+    //
+    //         // Réinitialiser le formulaire
+    //         event.target.reset();
+    //     }).catch(error => {
+    //         console.error('Erreur lors de l\'envoi:', error);
+    //     });
+    // };
+</script>
+
+</body>
+</html>

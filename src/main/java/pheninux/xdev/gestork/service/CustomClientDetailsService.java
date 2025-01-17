@@ -7,9 +7,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pheninux.xdev.gestork.model.AccessCode;
-import pheninux.xdev.gestork.model.Client;
+import pheninux.xdev.gestork.model.Customer;
 import pheninux.xdev.gestork.repository.AccessCodeRepository;
-import pheninux.xdev.gestork.repository.ClientRepository;
+import pheninux.xdev.gestork.repository.CustomerRepository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -20,18 +20,18 @@ import java.util.Optional;
 public class CustomClientDetailsService implements UserDetailsService {
 
 
-    private final ClientRepository clientRepository;
+    private final CustomerRepository customerRepository;
     private final AccessCodeRepository accessCodeRepository;
 
-    public CustomClientDetailsService(ClientRepository clientRepository, AccessCodeRepository accessCodeRepository) {
-        this.clientRepository = clientRepository;
+    public CustomClientDetailsService(CustomerRepository customerRepository, AccessCodeRepository accessCodeRepository) {
+        this.customerRepository = customerRepository;
         this.accessCodeRepository = accessCodeRepository;
     }
 
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        Optional<Client> client = Optional.ofNullable(clientRepository.findClientByLogin(login));
+        Optional<Customer> client = Optional.ofNullable(customerRepository.findClientByLogin(login));
 
         if (client.isPresent()) {
             return new org.springframework.security.core.userdetails.User(
@@ -45,10 +45,10 @@ public class CustomClientDetailsService implements UserDetailsService {
     }
 
     public UserDetails loadUserByUsername(String login, String code) throws UsernameNotFoundException {
-        Client client = clientRepository.findClientByLogin(login);
+        Customer customer = customerRepository.findClientByLogin(login);
         AccessCode accessCode = accessCodeRepository.findByCode(code);
 
-        if (client != null
+        if (customer != null
                 && accessCode != null
                 && accessCode.getCode().equals(code)
                 && !accessCode.isUsed()) {
@@ -60,9 +60,9 @@ public class CustomClientDetailsService implements UserDetailsService {
                 accessCode.setUsed(Boolean.TRUE);
                 accessCodeRepository.save(accessCode);
                 return new org.springframework.security.core.userdetails.User(
-                        client.getLogin(),
-                        client.getPassword(),
-                        List.of(new SimpleGrantedAuthority("ROLE_" + client.getRole()))
+                        customer.getLogin(),
+                        customer.getPassword(),
+                        List.of(new SimpleGrantedAuthority("ROLE_" + customer.getRole()))
                 );
             } else {
                 throw new BadCredentialsException("Token was expired");
