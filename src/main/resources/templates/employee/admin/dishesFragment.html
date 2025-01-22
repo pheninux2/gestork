@@ -1,0 +1,20 @@
+<div id="toto">
+    <div th:each="category : ${T(pheninux.xdev.gestork.model.Category).values()}">
+        <h2 th:text="${category.description}"></h2>
+        <div class="dish" th:each="dish : ${dishes}"
+             th:if="${dish.category == category}">
+            <img th:src="'data:image/png;base64,' + ${dish.image}" th:alt="${dish.name}"/>
+            <div class="details">
+                <div class="description">
+                    <h3 th:text="${dish.name}"></h3>
+                    <p th:text="${dish.description}"></p>
+                </div>
+                <div class="price">
+                    <span th:id="${dish.name}" th:text="${dish.price}+' €'" ></span>
+                    <input type="number" class="price-input" th:value="${dish.specialPrice}" placeholder="Prix Spécial"/>
+                    <button class="button" th:data-id="${dish.id}" onclick="updateSpecialPrice(this)">Mettre à jour</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
