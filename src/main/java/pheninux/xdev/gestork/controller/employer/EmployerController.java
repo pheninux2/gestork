@@ -9,10 +9,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import pheninux.xdev.gestork.exception.CustomServiceException;
+import pheninux.xdev.gestork.model.Dish;
+import pheninux.xdev.gestork.service.DishService;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/employee")
 public class EmployerController {
+
+    private final DishService dishService;
+
+    public EmployerController(DishService dishService) {
+        this.dishService = dishService;
+    }
 
     @GetMapping("/login")
     public String login() {
@@ -34,14 +45,31 @@ public class EmployerController {
 
     @GetMapping("/admin/addDish-page")
     public String displayAddDishPage() {
+        isAdmin();
+        return "employee/admin/addDish";
+    }
+
+    @GetMapping("/admin/manageSpecialPrices")
+    public String manageSpecialPrices() {
+        isAdmin();
+        return "employee/admin/specialPrices";
+    }
+
+    @GetMapping("/admin/getDishes")
+    public String getDishes(Model model) throws CustomServiceException {
+        isAdmin();
+        List<Dish> dishes = dishService.getDishes();
+        model.addAttribute("dishes", dishes);
+        return "employee/admin/dishesFragment";
+    }
+
+    private static void isAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
         if (!isAdmin) {
             throw new AccessDeniedException("Vous n'avez pas la permission d'accéder à cette page.");
         }
-
-        return "employee/admin/addDish";
     }
 
 }

@@ -30,7 +30,7 @@ public class DishService {
 
     }
 
-    public List<Dish> getDishRepository() throws CustomServiceException {
+    public List<Dish> getDishes() throws CustomServiceException {
         try {
             return dishRepository.findAll();
         } catch (DataAccessException e) {
