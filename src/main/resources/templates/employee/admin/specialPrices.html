@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Prix Spéciaux</title>
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -87,10 +86,7 @@
     Gestion des Prix Spéciaux
 </header>
 
-<div class="toto"
-     hx-get="/employee/admin/getDishes"
-     hx-trigger="load"
-     hx-target="#toto">
+<div id="dishesContainer" hx-get="/employee/admin/getDishes" hx-trigger="load" hx-target="#dishesContainer">
 </div>
 
 
@@ -99,6 +95,11 @@
 </footer>
 
 <script>
+
+    htmx.on("htmx:configRequest", (e) => {
+        e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
+    })
+
     function updateSpecialPrice(button) {
         const dishId = button.getAttribute('data-id');
         const specialPrice = button.previousElementSibling.value;
