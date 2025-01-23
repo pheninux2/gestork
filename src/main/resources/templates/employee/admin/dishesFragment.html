@@ -1,4 +1,4 @@
-<div id="toto">
+<div id="dishesContainer">
     <div th:each="category : ${T(pheninux.xdev.gestork.model.Category).values()}">
         <h2 th:text="${category.description}"></h2>
         <div class="dish" th:each="dish : ${dishes}"
@@ -11,8 +11,8 @@
                 </div>
                 <div class="price">
                     <span th:id="${dish.name}" th:text="${dish.price}+' €'" ></span>
-                    <input type="number" class="price-input" th:value="${dish.specialPrice}" placeholder="Prix Spécial"/>
-                    <button class="button" th:data-id="${dish.id}" onclick="updateSpecialPrice(this)">Mettre à jour</button>
+                    <input type="number" class="price-input" th:value="" placeholder="Prix Spécial"/>
+                    <button class="button" th:data-id="" onclick="updateSpecialPrice(this)">Mettre à jour</button>
                 </div>
             </div>
         </div>
