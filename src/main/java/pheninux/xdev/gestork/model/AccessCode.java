@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "ACCESS_CODE")
 public class AccessCode {
 
     @Id

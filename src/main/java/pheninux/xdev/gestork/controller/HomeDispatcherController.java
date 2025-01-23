@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class WelcomeDispatcherController {
+public class HomeDispatcherController {
 
     @GetMapping("/employee/home")
     public String employeeHomePage(Model model) {
