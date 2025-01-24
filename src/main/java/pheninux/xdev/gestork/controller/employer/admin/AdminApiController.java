@@ -4,14 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pheninux.xdev.gestork.exception.CustomServiceException;
 import pheninux.xdev.gestork.model.Category;
 import pheninux.xdev.gestork.model.Dish;
 import pheninux.xdev.gestork.repository.DishRepository;
+import pheninux.xdev.gestork.service.DishService;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -24,10 +23,11 @@ public class AdminApiController {
     private static final Logger log = LoggerFactory.getLogger(AdminApiController.class);
 
 
-    private final DishRepository dishRepository;
+    private final DishService dishService;
 
-    public AdminApiController(DishRepository dishRepository) {
-        this.dishRepository = dishRepository;
+    public AdminApiController(DishService dishService) {
+
+        this.dishService = dishService;
     }
 
     @PostMapping(value = "/addDish")
@@ -56,7 +56,7 @@ public class AdminApiController {
             dish.setImage(base64Image);
             dish.setCategory(Category.valueOf(category));
 
-            dishRepository.save(dish);
+            dishService.save(dish);
         } catch (IOException e) {
             return new ResponseEntity<>("<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
                     "<strong>Erreur !</strong> Une erreur est survenue lors du traitement de l'image." +
@@ -69,9 +69,9 @@ public class AdminApiController {
     }
 
 
-    @PostMapping("/getDishes")
-    public ResponseEntity<List<Dish>> getDishes() {
-        return new ResponseEntity<>(dishRepository.findAll(), HttpStatus.OK);
+    @GetMapping("/getDishes")
+    public ResponseEntity<List<Dish>> findAll() throws CustomServiceException {
+        return new ResponseEntity<>(dishService.findAll(), HttpStatus.OK);
     }
 
 }

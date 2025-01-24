@@ -33,7 +33,7 @@ public class CustomerController {
 
     @GetMapping("/getDishes")
     public String getDishes(Model model) throws CustomServiceException {
-        List<Dish> dishes = dishService.getDishes();
+        List<Dish> dishes = dishService.findAll();
         model.addAttribute("dishes", dishes);
         return "customer/dish/dishesFragment";
     }
