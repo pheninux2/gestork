@@ -13,15 +13,16 @@ import java.util.List;
 @Service
 public class DishService {
 
-    private final DishRepository dishRepository;
     private final Logger logger = LoggerFactory.getLogger(DishService.class);
+    private final DishRepository dishRepository;
+
 
     public DishService(DishRepository dishRepository) {
         this.dishRepository = dishRepository;
     }
 
 
-    public void addDish(Dish dish) {
+    public void save(Dish dish) {
         try {
             dishRepository.save(dish);
         } catch (Exception e) {
@@ -30,12 +31,11 @@ public class DishService {
 
     }
 
-    public List<Dish> getDishes() throws CustomServiceException {
+    public List<Dish> findAll() throws CustomServiceException {
         try {
             return dishRepository.findAll();
         } catch (DataAccessException e) {
             logger.error("Database error while retrieving dishes: {}", e.getMessage());
-            // Vous pouvez également lancer une exception personnalisée si nécessaire
             throw new CustomServiceException("Could not retrieve dishes", e);
         } catch (Exception e) {
             logger.error("Unexpected error while retrieving dishes: {}", e.getMessage());

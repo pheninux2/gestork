@@ -43,7 +43,7 @@ public class AdminViewController {
     @GetMapping("/admin/getDishes")
     public String getDishes(Model model) throws CustomServiceException {
         isAdmin();
-        List<Dish> dishes = dishService.getDishes();
+        List<Dish> dishes = dishService.findAll();
         model.addAttribute("dishes", dishes);
         return "employee/admin/dishesFragment";
     }
