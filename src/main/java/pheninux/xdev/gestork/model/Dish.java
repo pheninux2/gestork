@@ -1,13 +1,17 @@
 package pheninux.xdev.gestork.model;
 
 import jakarta.persistence.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 public class Dish {
+
+    public Dish() {
+
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long produitId;
+    private Long id;
 
     private String name;
 
@@ -21,18 +25,17 @@ public class Dish {
 
     private double price;
 
+    @Transient
     private boolean isAvailable;
 
-    public Dish() {
+    private boolean isSpecialPrice;
 
+    public Long getId() {
+        return id;
     }
 
-    public Long getProduitId() {
-        return produitId;
-    }
-
-    public void setProduitId(Long produitId) {
-        this.produitId = produitId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -81,6 +84,14 @@ public class Dish {
 
     public void setAvailable(boolean available) {
         this.isAvailable = available;
+    }
+
+    public boolean isSpecialPrice() {
+        return isSpecialPrice;
+    }
+
+    public void setSpecialPrice(boolean specialPrice) {
+        isSpecialPrice = specialPrice;
     }
 
 }
