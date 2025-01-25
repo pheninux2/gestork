@@ -4,19 +4,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import pheninux.xdev.gestork.exception.CustomServiceException;
 import pheninux.xdev.gestork.model.Category;
 import pheninux.xdev.gestork.model.Dish;
-import pheninux.xdev.gestork.repository.DishRepository;
 import pheninux.xdev.gestork.service.DishService;
+import pheninux.xdev.gestork.utils.Utils;
 
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api")
 public class AdminApiController {
 
@@ -72,6 +77,32 @@ public class AdminApiController {
     @GetMapping("/getDishes")
     public ResponseEntity<List<Dish>> findAll() throws CustomServiceException {
         return new ResponseEntity<>(dishService.findAll(), HttpStatus.OK);
+    }
+
+    @PostMapping("/updateDishPrice")
+    public String updateDishPrice(
+            @RequestParam("dishId") Long dishId,
+            @RequestParam("oldPrice") double oldPrice,
+            @RequestParam("newPrice") double newPrice,
+            @RequestParam(value = "specialPrice" , defaultValue = "false") boolean specialPrice) {
+        if (!Utils.isAdmin()) {
+            return "redirect:error/403";
+        }
+
+        try {
+            Dish dish = dishService.findById(dishId);
+            if (dish == null) {
+                return "redirect:error/500";
+            }
+            dish.setPrice(newPrice);
+            dish.setSpecialPrice(specialPrice);
+            dishService.save(dish);
+
+            return "redirect:/employee/admin/getDishes";
+        } catch (Exception e) {
+            log.error("Error while updating dish price: {}", e.getMessage());
+            return "redirect:error/500";
+        }
     }
 
 }

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreur</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .error-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .error-container h1 {
+            font-size: 64px;
+            color: #e74c3c; /* Couleur rouge pour l'erreur */
+            margin: 0;
+        }
+
+        .error-container p {
+            font-size: 20px;
+            margin: 20px 0;
+        }
+
+        .error-code {
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            display: inline-block;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #3498db; /* Couleur du bouton */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 18px;
+        }
+
+        .back-button:hover {
+            background-color: #2980b9; /* Couleur au survol */
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1>Oups !</h1>
+    <p>Une erreur est survenue. Veuillez réessayer plus tard.</p>
+    <div class="error-code">
+        <h2>Erreur 500</h2>
+    </div>
+    <a href="/" class="back-button">Retour à l'accueil</a>
+</div>
+</body>
+</html>

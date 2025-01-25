@@ -42,7 +42,9 @@ public class AdminViewController {
 
     @GetMapping("/admin/getDishes")
     public String getDishes(Model model) throws CustomServiceException {
-        isAdmin();
+        if (!isAdmin()) {
+            return "redirect:error/403";
+        }
         List<Dish> dishes = dishService.findAll();
         model.addAttribute("dishes", dishes);
         return "employee/admin/dishesFragment";

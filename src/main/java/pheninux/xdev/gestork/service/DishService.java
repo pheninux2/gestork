@@ -42,4 +42,8 @@ public class DishService {
             throw new CustomServiceException("An unexpected error occurred", e);
         }
     }
+
+    public Dish findById(Long dishId) {
+        return dishRepository.findById(dishId).orElse(null);
+    }
 }
