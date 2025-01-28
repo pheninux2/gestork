@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pheninux.xdev.gestork.exception.CustomServiceException;
 import pheninux.xdev.gestork.model.Category;
 import pheninux.xdev.gestork.model.Dish;
+import pheninux.xdev.gestork.model.DishStatus;
 import pheninux.xdev.gestork.service.DishService;
 import pheninux.xdev.gestork.utils.Utils;
 
@@ -41,8 +41,14 @@ public class AdminApiController {
             @RequestParam("description") String description,
             @RequestParam("price") Double price,
             @RequestParam("image") MultipartFile imageFile,
-            @RequestParam("category") String category) {
+            @RequestParam("category") String category,
+            @RequestParam("dishStatus") DishStatus dishStatus) {
 
+        if (!Utils.isAdmin()) {
+            return new ResponseEntity<>("<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
+                    "<strong>Erreur !</strong> Vous n'êtes pas autorisé à effectuer cette action." +
+                    "</div><script>setTimeout(function() { document.querySelector('.alert-danger').remove(); }, 5000);</script>", HttpStatus.FORBIDDEN);
+        }
 
         if (imageFile == null || imageFile.isEmpty()) {
             return new ResponseEntity<>("<div class=\"alert alert-warning\" style=\"margin-top: 20px; border: 1px solid #ffc107; background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
@@ -60,6 +66,7 @@ public class AdminApiController {
             dish.setPrice(price);
             dish.setImage(base64Image);
             dish.setCategory(Category.valueOf(category));
+            dish.setStatus(dishStatus);
 
             dishService.save(dish);
         } catch (IOException e) {
@@ -84,7 +91,7 @@ public class AdminApiController {
             @RequestParam("dishId") Long dishId,
             @RequestParam("oldPrice") double oldPrice,
             @RequestParam("newPrice") double newPrice,
-            @RequestParam(value = "specialPrice" , defaultValue = "false") boolean specialPrice) {
+            @RequestParam(value = "specialPrice", defaultValue = "false") boolean specialPrice) {
         if (!Utils.isAdmin()) {
             return "redirect:error/403";
         }

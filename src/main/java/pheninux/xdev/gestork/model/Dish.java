@@ -25,10 +25,10 @@ public class Dish {
 
     private double price;
 
-    @Transient
-    private boolean isAvailable;
-
     private boolean isSpecialPrice;
+
+    @Enumerated(EnumType.STRING)
+    private DishStatus status;
 
     public Long getId() {
         return id;
@@ -78,20 +78,16 @@ public class Dish {
         this.price = prix;
     }
 
-    public boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(boolean available) {
-        this.isAvailable = available;
-    }
-
-    public boolean isSpecialPrice() {
-        return isSpecialPrice;
-    }
-
     public void setSpecialPrice(boolean specialPrice) {
         isSpecialPrice = specialPrice;
+    }
+
+    public DishStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(DishStatus status) {
+        this.status = status;
     }
 
 }
