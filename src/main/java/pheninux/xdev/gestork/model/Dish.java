@@ -78,6 +78,10 @@ public class Dish {
         this.price = prix;
     }
 
+    public boolean isSpecialPrice() {
+        return isSpecialPrice;
+    }
+
     public void setSpecialPrice(boolean specialPrice) {
         isSpecialPrice = specialPrice;
     }
@@ -88,6 +92,18 @@ public class Dish {
 
     public void setStatus(DishStatus status) {
         this.status = status;
+    }
+
+    public boolean isAvailable() {
+        return status == DishStatus.AVAILABLE;
+    }
+
+    public boolean isNotAvailable() {
+        return status == DishStatus.NOT_AVAILABLE;
+    }
+
+    public boolean isComingSoon() {
+        return status == DishStatus.COMING_SOON;
     }
 
 }
