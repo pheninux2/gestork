@@ -49,6 +49,13 @@ public class WaiterApiController {
             }
 
             CustomerTable customerTable = tableRepository.findTableByNumber(tableNumber);
+
+            if (!doesTableExist(tableNumber)) {
+                return "<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
+                        "<strong>Erreur !</strong> La table n'existe pas." +
+                        "</div>";
+            }
+
             if (customerTable.getStatut() == TableStatus.BUSY) {
                 return "<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
                         "<strong>Erreur !</strong> La table est deja occupée." +
@@ -88,5 +95,9 @@ public class WaiterApiController {
                     "</div>";
         }
 
+    }
+
+    private boolean doesTableExist(int tableNumber) {
+        return tableRepository.findTableByNumber(tableNumber) != null;
     }
 }

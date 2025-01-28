@@ -35,7 +35,7 @@ public class AdminApiController {
         this.dishService = dishService;
     }
 
-    @PostMapping(value = "/addDish")
+    @PostMapping(value = "/admin/add/dish")
     public ResponseEntity<String> addDish(
             @RequestParam("name") String name,
             @RequestParam("description") String description,
@@ -81,12 +81,12 @@ public class AdminApiController {
     }
 
 
-    @GetMapping("/getDishes")
+    @GetMapping("/admin/dishes")
     public ResponseEntity<List<Dish>> findAll() throws CustomServiceException {
         return new ResponseEntity<>(dishService.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping("/updateDishPrice")
+    @PostMapping("/admin/dish/update")
     public String updateDishPrice(
             @RequestParam("dishId") Long dishId,
             @RequestParam("oldPrice") double oldPrice,
@@ -105,7 +105,7 @@ public class AdminApiController {
             dish.setSpecialPrice(specialPrice);
             dishService.save(dish);
 
-            return "redirect:/employee/admin/getDishes";
+            return "redirect:/employee/admin/dishes";
         } catch (Exception e) {
             log.error("Error while updating dish price: {}", e.getMessage());
             return "redirect:error/500";

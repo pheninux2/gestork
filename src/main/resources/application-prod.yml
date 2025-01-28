@@ -1,0 +1,36 @@
+spring:
+
+  h2:
+    console: localhost:8080/h2-console
+    enabled: true
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/./data/gestokdb
+    driver-class-name: org.h2.Driver
+    username: admin
+    password: admin
+
+    jpa:
+      hibernate:
+        ddl-auto: CREATE
+        show-sql: false
+
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.H2Dialect
+
+logging:
+
+  level:
+    org:
+    springframework:
+      web: INFO
+      data: INFO
+      security: INFO
+    com:
+    gestok:
+      controller: INFO
+      service: INFO
+      repository: INFO
+      model: INFO
+      security: INFO
