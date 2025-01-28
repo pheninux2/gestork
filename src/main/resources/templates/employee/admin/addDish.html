@@ -12,6 +12,7 @@
             background-color: #f0f4f8;
             color: #333;
             padding: 40px;
+            margin: 0;
         }
 
         h1 {
@@ -31,27 +32,41 @@
             flex-direction: column;
         }
 
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
         label {
-            margin: 10px 0 5px;
+            margin-bottom: 5px;
             font-weight: bold;
         }
 
-        input[type="text"], input[type="number"], textarea, select {
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
             padding: 10px;
-            margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
             outline: none;
             transition: border-color 0.3s;
+            width: 100%;
+            box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur totale */
         }
 
-        input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
             border-color: #e53935;
         }
 
         input[type="file"] {
             margin-bottom: 15px;
+            width: 100%;
         }
 
         input[type="submit"] {
@@ -63,6 +78,7 @@
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s;
+            align-self: flex-end; /* Aligne le bouton à droite */
         }
 
         input[type="submit"]:hover {
@@ -74,6 +90,16 @@
             text-align: center;
             color: green;
             font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                padding: 15px;
+            }
+
+            input[type="submit"] {
+                width: 100%; /* Bouton responsive */
+            }
         }
     </style>
 </head>
@@ -87,30 +113,48 @@
       hx-target="#response"
       hx-swap="innerHTML">
 
-    <label for="name">Nom du Plat :</label>
-    <input type="text" id="name" name="name" required>
+    <div class="form-group">
+        <label for="name">Nom du Plat :</label>
+        <input type="text" id="name" name="name" required>
+    </div>
 
-    <label for="description">Description :</label>
-    <textarea id="description" name="description" rows="4" required></textarea>
+    <div class="form-group">
+        <label for="description">Description :</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+    </div>
 
-    <label for="price">Prix (€) :</label>
-    <input type="number" id="price" name="price" step="0.01" required>
+    <div class="form-group">
+        <label for="price">Prix (€) :</label>
+        <input type="number" id="price" name="price" step="0.01" required>
+    </div>
 
-    <label for="image">Image du Plat :</label>
-    <input type="file" id="image" name="image" accept="image/*" required>
+    <div class="form-group">
+        <label for="image">Image du Plat :</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+    </div>
 
-    <label for="category">Catégorie :</label>
-    <select id="category" name="category" required>
+    <div class="form-group">
+        <label for="category">Catégorie :</label>
+        <select id="category" name="category" required>
+            <option value="">Sélectionner une catégorie</option>
+            <option value="PLAT_CHEF">Plat du Chef</option>
+            <option value="PLAT">Plat</option>
+            <option value="ENTREE_CHAUDE">Entrée Chaude</option>
+            <option value="ENTREE_FROIDE">Entrée Froide</option>
+            <option value="DESSERT">Dessert</option>
+            <option value="BOISSON_CHAUDE">Boisson Chaude</option>
+            <option value="BOISSON_FROIDE">Boisson Froide</option>
+        </select>
+    </div>
 
-        <option value="">Sélectionner une catégorie</option>
-        <option value="PLAT_CHEF">Plat du Chef</option>
-        <option value="PLAT">Plat</option>
-        <option value="ENTREE_CHAUDE">Entrée Chaude</option>
-        <option value="ENTREE_FROIDE">Entrée Froide</option>
-        <option value="DESSERT">Dessert</option>
-        <option value="BOISSON_CHAUDE">Boisson Chaude</option>
-        <option value="BOISSON_FROIDE">Boisson Froide</option>
-    </select>
+    <div class="form-group">
+        <label for="dishStatus">État du plat :</label>
+        <select id="dishStatus" name="dishStatus">
+            <option value="AVAILABLE">Disponible</option>
+            <option value="NOT_AVAILABLE">Non disponible</option>
+            <option value="COMING_SOON">À venir</option>
+        </select>
+    </div>
 
     <input type="submit" value="Ajouter">
     <div class="message" id="successMessage" style="display:none;">Plat ajouté avec succès !</div>
@@ -118,46 +162,9 @@
 </form>
 
 <script>
-
     htmx.on("htmx:configRequest", (e) => {
         e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
-    })
-
-    // document.getElementById('menuForm').onsubmit = function (event) {
-    //     event.preventDefault(); // Empêche le comportement par défaut
-    //
-    //     const formData = {
-    //         name: event.target.name.value,
-    //         description: event.target.description.value,
-    //         price: parseFloat(event.target.price.value),
-    //         category: event.target.category.value,
-    //     };
-    //
-    //     // Convertir l'objet en JSON
-    //     const jsonData = JSON.stringify(formData);
-    //
-    //     // Récupérer le token JWT du localStorage
-    //     const token = localStorage.getItem('jwt');
-    //
-    //     // Envoyer les données JSON avec HTMX
-    //     htmx.ajax('POST', event.target.getAttribute('hx-post'), {
-    //         body: jsonData,
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Accept': 'application/json',
-    //             'Authorization': 'Bearer ' + token, // Ajouter le token au header
-    //         }
-    //     }).then(response => {
-    //         // Afficher le message de succès
-    //         document.getElementById('successMessage').innerText = 'Plat ajouté avec succès !';
-    //         document.getElementById('successMessage').style.display = 'block';
-    //
-    //         // Réinitialiser le formulaire
-    //         event.target.reset();
-    //     }).catch(error => {
-    //         console.error('Erreur lors de l\'envoi:', error);
-    //     });
-    // };
+    });
 </script>
 
 </body>
