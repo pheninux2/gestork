@@ -211,7 +211,7 @@
         }
 
         .modal-content {
-            background-color: #fff;
+            background-color: #fff; /* Couleur de fond blanche */
             margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
@@ -220,6 +220,53 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             animation: fadeIn 0.3s;
+            color: #333; /* Couleur du texte */
+        }
+
+        .modal-content h3 {
+            color: #e53935; /* Couleur du titre */
+            margin-bottom: 20px; /* Espacement sous le titre */
+        }
+
+        .modal ul {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 40px;
+        }
+
+        .modal ul li {
+            margin: 10px 0;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9f9f9; /* Couleur de fond des éléments */
+            border-radius: 5px; /* Coins arrondis */
+            transition: background-color 0.3s; /* Effet de transition */
+        }
+
+        .modal ul li:hover {
+            background-color: #ffe0b2; /* Couleur de survol */
+        }
+
+        strong {
+            color: #4caf50; /* Couleur du prix */
+            margin-right: 20px; /* Espace à droite du prix */
+        }
+
+        button {
+            background-color: #ffb300; /* Couleur de fond des boutons */
+            color: white; /* Couleur du texte des boutons */
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Effet de transition */
+        }
+
+        button:hover {
+            background-color: #ffa000; /* Couleur de survol des boutons */
         }
 
         @keyframes fadeIn {
@@ -267,9 +314,13 @@
         }
 
         .modal #orderTotal {
-            font-weight: bold;
-            margin-top: 15px;
-            text-align: right;
+            color: #e53935; /* Couleur du texte pour le total */
+            margin-top: 20px; /* Espacement au-dessus du total */
+            text-align: right; /* Aligner le texte à droite */
+            padding: 10px; /* Ajouter du padding pour un meilleur rendu */
+            background-color: #ffe0b2; /* Couleur de fond pour le total */
+            border-radius: 5px; /* Coins arrondis */
+            border: 1px solid #e53935; /* Bordure pour délimiter le total */
         }
 
         /* Media Queries pour les appareils mobiles */
@@ -345,7 +396,7 @@
         <span class="close" onclick="closeModal()">&times;</span>
         <h3>Détails de la Commande</h3>
         <ul id="orderList"></ul>
-        <div id="orderTotal"></div>
+        <div id="orderTotal" style="font-weight: bold; font-size: 1.5em; text-align: right; margin-top: 20px;"></div>
     </div>
 </div>
 
@@ -417,6 +468,7 @@
             priceElement.innerText = `${orderItems[item].price.toFixed(2)}€`;
             priceElement.style.marginLeft = '10px'; // Ajouter une marge à gauche du prix
             priceElement.style.marginLeft = 'auto'; // Pousse le prix à droite
+            priceElement.style.marginRight = '5px'; // Ajoute une marge à droite du prix
             li.appendChild(priceElement); // Ajouter le prix au li
 
             // Créer un conteneur pour les boutons
@@ -444,9 +496,14 @@
 
     function decreaseQuantity(item) {
         if (orderItems[item].quantity > 1) {
+            // Réduire la quantité
             orderItems[item].quantity -= 1;
+
+            // Soustraire le prix d'un seul article
+            total -= orderItems[item].price / (orderItems[item].quantity + 1);
             orderItems[item].price -= orderItems[item].price / (orderItems[item].quantity + 1);
-            total -= orderItems[item].price;
+
+            // Mettre à jour l'interface utilisateur
             document.querySelector('.button-container .button').innerText = 'Panier (' + getTotalItems() + ')';
             updateTotalPrice();
             showDetails();
