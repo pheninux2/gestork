@@ -103,6 +103,12 @@
             margin-right: 15px;
         }
 
+        @media (max-width: 768px) {
+            .dish img {
+                margin-right: 0; /* Ajustement pour les petits écrans */
+            }
+        }
+
         .details {
             flex-grow: 1;
             display: flex;
@@ -160,6 +166,25 @@
             bottom: 10px; /* Ajustez selon vos besoins */
             right: 10px; /* Ajustez selon vos besoins */
             font-weight: bold;
+        }
+
+        .status {
+            position: absolute; /* En haut à droite par défaut */
+            top: 10px;
+            right: 10px;
+            font-weight: bold;
+        }
+
+        /* Media query pour les écrans plus petits */
+        @media (max-width: 768px) {
+            .status {
+                position: relative; /* Déplace en bas à gauche */
+                top: auto;
+                right: auto;
+                left: 0;
+                bottom: 0;
+                margin-top: 10px; /* Espace en bas */
+            }
         }
 
         footer {
@@ -269,8 +294,12 @@
             }
 
             .details {
-                flex-direction: column; /* Détails en colonne */
-                align-items: flex-start;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between; /* Espace entre les éléments, pousse le statut en bas */
+                height: 100%; /* Assure que la zone prend toute la hauteur disponible */
+                padding: 10px;
+                position: relative;
             }
 
             .price {
@@ -291,6 +320,7 @@
                 font-size: 1em; /* Réduit la taille de la police des boutons */
             }
         }
+
     </style>
 </head>
 <body>
