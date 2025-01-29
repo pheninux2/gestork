@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.controller.employer.admin;
+package pheninux.xdev.gestork.controller.employee.admin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,20 +22,20 @@ import java.util.Base64;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api")
-public class AdminApiController {
+@RequestMapping("/api/admin/dish")
+public class DishController {
 
-    private static final Logger log = LoggerFactory.getLogger(AdminApiController.class);
+    private static final Logger log = LoggerFactory.getLogger(DishController.class);
 
 
     private final DishService dishService;
 
-    public AdminApiController(DishService dishService) {
+    public DishController(DishService dishService) {
 
         this.dishService = dishService;
     }
 
-    @PostMapping(value = "/admin/add/dish")
+    @PostMapping(value = "/add")
     public ResponseEntity<String> addDish(
             @RequestParam("name") String name,
             @RequestParam("description") String description,
@@ -81,17 +81,18 @@ public class AdminApiController {
     }
 
 
-    @GetMapping("/admin/dishes")
+    @GetMapping("/dishes")
     public ResponseEntity<List<Dish>> findAll() throws CustomServiceException {
         return new ResponseEntity<>(dishService.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping("/admin/dish/update")
+    @PostMapping("/update")
     public String updateDishPrice(
             @RequestParam("dishId") Long dishId,
             @RequestParam("oldPrice") double oldPrice,
-            @RequestParam("newPrice") double newPrice,
+            @RequestParam(value = "newPrice", defaultValue = "0.0") double newPrice,
             @RequestParam(value = "specialPrice", defaultValue = "false") boolean specialPrice) {
+
         if (!Utils.isAdmin()) {
             return "redirect:error/403";
         }
@@ -108,6 +109,21 @@ public class AdminApiController {
             return "redirect:/employee/admin/dishes";
         } catch (Exception e) {
             log.error("Error while updating dish price: {}", e.getMessage());
+            return "redirect:error/500";
+        }
+    }
+
+    @PostMapping("/delete")
+    public String deleteDish(@RequestParam("dishId") Long dishId) {
+        if (!Utils.isAdmin()) {
+            return "redirect:error/403";
+        }
+
+        try {
+            dishService.deleteById(dishId);
+            return "redirect:/employee/admin/dishes";
+        } catch (Exception e) {
+            log.error("Error while deleting dish: {}", e.getMessage());
             return "redirect:error/500";
         }
     }

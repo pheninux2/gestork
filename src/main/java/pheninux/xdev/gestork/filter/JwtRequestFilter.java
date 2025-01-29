@@ -37,7 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader("Authorization");
         String requestURI = request.getRequestURI();
 
-        if (requestURI.startsWith("/api")) {
+        if (requestURI.startsWith("/api/**")) {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is required");
                 return;

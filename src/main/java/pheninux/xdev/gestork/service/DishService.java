@@ -46,4 +46,8 @@ public class DishService {
     public Dish findById(Long dishId) {
         return dishRepository.findById(dishId).orElse(null);
     }
+
+    public void deleteById(Long dishId) {
+        dishRepository.deleteById(dishId);
+    }
 }

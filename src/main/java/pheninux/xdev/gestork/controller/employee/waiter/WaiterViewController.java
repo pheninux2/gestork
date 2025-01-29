@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.controller.employer.waiter;
+package pheninux.xdev.gestork.controller.employee.waiter;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

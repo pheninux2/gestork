@@ -6,6 +6,7 @@
     <title>Gestion des Prix Spéciaux</title>
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -30,7 +31,6 @@
         }
 
         .dish {
-            display: flex;
             align-items: center;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -88,21 +88,41 @@
         }
 
         .button-container {
-            margin-top: 10px; /* Espace au-dessus du bouton */
+            display: flex;
+            justify-content: center; /* Centre les boutons horizontalement */
+            gap: 10px; /* Espace entre les boutons */
+            margin-top: 10px; /* Espacement au-dessus des boutons */
         }
 
-        .button {
-            background-color: #4CAF50; /* Couleur du bouton */
-            color: white; /* Couleur du texte du bouton */
-            border: none; /* Pas de bordure */
-            border-radius: 5px; /* Coins arrondis */
-            padding: 10px 15px; /* Espacement interne */
-            cursor: pointer; /* Curseur pointer sur hover */
-            transition: background-color 0.3s; /* Transition douce pour l'effet hover */
-        }
 
         .button:hover {
             background-color: #45a049; /* Couleur du bouton au survol */
+        }
+
+        .button {
+            position: relative; /* Nécessaire pour le positionnement du tooltip */
+        }
+
+        .tooltip {
+            visibility: hidden; /* Masquer le tooltip par défaut */
+            width: 120px; /* Largeur du tooltip */
+            background-color: #555; /* Couleur de fond */
+            color: #fff; /* Couleur du texte */
+            text-align: center; /* Centrer le texte */
+            border-radius: 5px; /* Coins arrondis */
+            padding: 5px; /* Espacement interne */
+            position: absolute; /* Positionnement absolu */
+            z-index: 1; /* Assurer qu'il est au-dessus d'autres éléments */
+            bottom: 125%; /* Positionner au-dessus du bouton */
+            left: 50%; /* Centrer horizontalement */
+            margin-left: -60px; /* Ajuster pour centrer */
+            opacity: 0; /* Rendre invisible */
+            transition: opacity 0.3s; /* Transition douce */
+        }
+
+        .button:hover .tooltip {
+            visibility: visible; /* Afficher le tooltip au survol */
+            opacity: 1; /* Rendre visible */
         }
 
         input[type="number"] {
@@ -113,12 +133,106 @@
             margin-right: 5px;
         }
 
+        .modal {
+            display: none; /* Cacher le modal par défaut */
+            position: fixed; /* Rester en place */
+            z-index: 1; /* Au-dessus du contenu */
+            left: 0;
+            top: 0;
+            width: 100%; /* Pleine largeur */
+            height: 100%; /* Pleine hauteur */
+            overflow: auto; /* Activer le défilement si nécessaire */
+            background-color: rgb(0, 0, 0); /* Fond noir */
+            background-color: rgba(0, 0, 0, 0.4); /* Fond avec transparence */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 10px; /* Rounded corners for the modal */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow for better visibility */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button {
+            background-color: #e53935; /* Button background color */
+            color: white; /* Button text color */
+            border: none; /* Remove border */
+            padding: 10px 20px; /* Padding for the button */
+            text-align: center; /* Center the text */
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Inline-block display */
+            font-size: 16px; /* Font size */
+            margin: 10px 2px; /* Margin around the button */
+            cursor: pointer; /* Pointer cursor on hover */
+            border-radius: 50px; /* Rounded button */
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+
+        .button:hover {
+            background-color: #d32f2f; /* Darker background color on hover */
+        }
+
         footer {
             margin-top: 20px;
             padding: 10px;
             background-color: #e53935;
             color: white;
             text-align: center;
+        }
+
+        .button-confirm {
+            background-color: #4caf50; /* Green background for confirmation */
+            color: white; /* White text */
+            border: none; /* Remove border */
+            padding: 10px 20px; /* Padding for the button */
+            text-align: center; /* Center the text */
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Inline-block display */
+            font-size: 16px; /* Font size */
+            margin: 10px 2px; /* Margin around the button */
+            cursor: pointer; /* Pointer cursor on hover */
+            border-radius: 50px; /* Rounded button */
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+
+        .button-confirm:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        .button-cancel {
+            background-color: #f44336; /* Red background for cancellation */
+            color: white; /* White text */
+            border: none; /* Remove border */
+            padding: 10px 20px; /* Padding for the button */
+            text-align: center; /* Center the text */
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Inline-block display */
+            font-size: 16px; /* Font size */
+            margin: 10px 2px; /* Margin around the button */
+            cursor: pointer; /* Pointer cursor on hover */
+            border-radius: 50px; /* Rounded button */
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+
+        .button-cancel:hover {
+            background-color: #d32f2f; /* Darker red on hover */
         }
 
         /* Media Queries pour la réactivité */
@@ -157,6 +271,30 @@
 <div id="dishesContainer" hx-get="/employee/admin/dishes" hx-trigger="load" hx-target="#dishesContainer">
 </div>
 
+<!-- Modal de confirmation -->
+<div id="confirmationModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h2>Confirmation</h2>
+        <p>Êtes-vous sûr de vouloir mettre à jour le plat avec les informations suivantes ?</p>
+        <div id="confirmationDetails"></div>
+        <button id="confirmUpdate" class="button-confirm">Confirmer</button>
+        <button id="cancelUpdate" class="button-cancel">Annuler</button>
+    </div>
+</div>
+
+<!-- Modal de confirmation de suppression -->
+<div id="deleteConfirmationModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" id="closeDeleteModal">&times;</span>
+        <h2>Confirmation de suppression</h2>
+        <p>Êtes-vous sûr de vouloir supprimer ce plat ?</p>
+        <div id="deleteConfirmationDetails"></div>
+        <button id="confirmDelete" class="button-confirm">Confirmer</button>
+        <button id="cancelDelete" class="button-cancel">Annuler</button>
+    </div>
+</div>
+
 <footer>
     &copy; 2025 Votre Restaurant
 </footer>
@@ -166,35 +304,96 @@
         e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
     });
 
-    // function updateSpecialPrice(button) {
-    //     const dishId = button.getAttribute('data-id');
-    //     const specialPrice = button.previousElementSibling.value;
-    //
-    //     if (specialPrice < 0) {
-    //         alert("Le prix spécial ne peut pas être négatif !");
-    //         return;
-    //     }
-    //
-    //     // Envoi de la requête pour mettre à jour le prix spécial
-    //     fetch(`/admin/updateSpecialPrice/${dishId}`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': 'Bearer ' + localStorage.getItem('jwt')
-    //         },
-    //         body: JSON.stringify({specialPrice: specialPrice})
-    //     })
-    //         .then(response => {
-    //             if (response.ok) {
-    //                 alert("Prix spécial mis à jour avec succès !");
-    //             } else {
-    //                 alert("Erreur lors de la mise à jour du prix spécial.");
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error("Erreur :", error);
-    //         });
-    // }
+    function showUpdateConfirmationModal(button) {
+        const form = button.closest('form');
+        const newPriceInput = form.querySelector('#newPrice');
+
+        if (!newPriceInput.checkValidity()) {
+            newPriceInput.reportValidity();
+            return;
+        }
+
+        const oldPrice = form.querySelector('#oldPrice').value;
+        const newPrice = form.querySelector('#newPrice').value;
+        const specialPrice = form.querySelector('#specialPrice').checked;
+
+        const confirmationDetails = document.getElementById('confirmationDetails');
+        confirmationDetails.innerHTML = `
+        <p><strong>Ancien prix :</strong> ${oldPrice} €</p>
+        <p><strong>Nouveau prix :</strong> ${newPrice} €</p>
+        <p><strong>Prix spécial :</strong> ${specialPrice ? 'Oui' : 'Non'}</p>
+    `;
+
+        const modal = document.getElementById('confirmationModal');
+        modal.style.display = "block";
+
+        document.getElementById('confirmUpdate').onclick = function () {
+            htmx.ajax('POST', form.action, {
+                target: form.getAttribute('hx-target'),
+                swap: form.getAttribute('hx-swap'),
+                values: {
+                    dishId: form.querySelector('input[name="dishId"]').value,
+                    oldPrice: oldPrice,
+                    newPrice: newPrice,
+                    specialPrice: specialPrice
+                }
+            });
+            modal.style.display = "none";  // Close the modal
+        };
+
+        document.getElementById('cancelUpdate').onclick = function () {
+            modal.style.display = "none"; // Close the modal
+        };
+
+        document.getElementById('closeModal').onclick = function () {
+            modal.style.display = "none"; // Close the modal
+        };
+    }
+
+    window.onclick = function (event) {
+        const modal = document.getElementById('confirmationModal');
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    function showDeleteConfirmationModal(button) {
+        const form = button.closest('form');
+        const dishId = form.querySelector('input[name="dishId"]').value;
+        const dishName = form.closest('.dish').querySelector('h3').innerText;
+
+        const deleteConfirmationDetails = document.getElementById('deleteConfirmationDetails');
+        deleteConfirmationDetails.innerHTML = `<p><strong>Plat :</strong> ${dishName}</p>`;
+
+        const deleteModal = document.getElementById('deleteConfirmationModal');
+        deleteModal.style.display = "block";
+
+        document.getElementById('confirmDelete').onclick = function () {
+            htmx.ajax('POST', '/api/admin/dish/delete', {
+                target: form.getAttribute('hx-target'),
+                swap: form.getAttribute('hx-swap'),
+                values: {
+                    dishId: dishId
+                }
+            });
+            deleteModal.style.display = "none";  // Close the modal
+        };
+
+        document.getElementById('cancelDelete').onclick = function () {
+            deleteModal.style.display = "none"; // Close the modal
+        };
+
+        document.getElementById('closeDeleteModal').onclick = function () {
+            deleteModal.style.display = "none"; // Close the modal
+        };
+    }
+
+    window.onclick = function (event) {
+        const deleteModal = document.getElementById('deleteConfirmationModal');
+        if (event.target === deleteModal) {
+            deleteModal.style.display = "none";
+        }
+    };
 </script>
 </body>
 </html>

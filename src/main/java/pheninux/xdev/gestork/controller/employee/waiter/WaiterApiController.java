@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.controller.employer.waiter;
+package pheninux.xdev.gestork.controller.employee.waiter;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
