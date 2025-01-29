@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.controller.employer;
+package pheninux.xdev.gestork.controller.employee;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;

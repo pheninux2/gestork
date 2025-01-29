@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.controller.employer.admin;
+package pheninux.xdev.gestork.controller.employee.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
