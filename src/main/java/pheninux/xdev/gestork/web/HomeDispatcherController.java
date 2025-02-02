@@ -24,11 +24,11 @@ public class HomeDispatcherController {
 
             switch (role) {
                 case "ROLE_WAITER":
-                    return "employee/waiter/home";
+                    return "employee/waiter/layout/home";
                 case "ROLE_ADMIN":
-                    return "employee/admin/home";
+                    return "employee/admin/layout/home";
                 case "ROLE_CHEF":
-                    return "employee/chef/home";
+                    return "employee/chef/layout/home";
             }
         }
         return "employee/login";

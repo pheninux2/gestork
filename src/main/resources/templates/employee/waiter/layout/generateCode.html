@@ -63,7 +63,7 @@
             padding: 10px 15px;
             border: none;
             border-radius: 4px;
-            cursor: pointer;margin-left: 15px
+            cursor: pointer;margin-left: 15px;
             font-size: 16px;
             transition: background-color 0.3s;
             width: 100%; /* Prend toute la largeur */
@@ -90,7 +90,7 @@
 <div class="form-container">
     <form id="generateCodeForm"
           method="post"
-          hx-post="/api/waiter/generateCodeAccess"
+          hx-post="/api/waiter/generateCode"
           hx-swap="innerHTML"
           hx-target="#response">
         <div class="form-group">
@@ -114,8 +114,14 @@
 
     document.addEventListener('htmx:afterSwap', (event) => {
         const responseElement = event.target;
-        const alertDivs = responseElement.querySelectorAll('.alert');
 
+        // Affichez le message d'alerte même pour les statuts d'erreur
+        const responseText = responseElement.innerHTML;
+        if (responseText.includes('alert')) {
+            responseElement.innerHTML = responseText; // Affiche le contenu
+        }
+
+        const alertDivs = responseElement.querySelectorAll('.alert');
         alertDivs.forEach(alertDiv => {
             setTimeout(() => {
                 alertDiv.remove();

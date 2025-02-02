@@ -21,8 +21,8 @@ public class WaiterViewController {
         return "employee/waiter/layout/generateCode";
     }
 
-    @GetMapping("/showAccessCode")
-    public String displayAccessCodePage(@RequestParam("code") String code, Model model) {
+    @GetMapping("/displayCode")
+    public String displayCodePage(@RequestParam("code") String code, Model model) {
         model.addAttribute("accessCode", code);
         return "employee/waiter/layout/displayCode";
     }

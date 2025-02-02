@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +19,7 @@ import pheninux.xdev.gestork.repository.CustomerRepository;
 import pheninux.xdev.gestork.repository.TableRepository;
 import pheninux.xdev.gestork.service.AccessCodeService;
 
-import static pheninux.xdev.gestork.utils.Utils.isAdmin;
-import static pheninux.xdev.gestork.utils.Utils.isWaiter;
+import static pheninux.xdev.gestork.utils.Utils.*;
 
 @RestController
 @RequestMapping(value = "/api/waiter")
@@ -38,28 +39,24 @@ public class WaiterApiController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping(value = "/generateCodeAccess")
-    public String generateCodeAccess(@RequestParam("clientLogin") String clientLogin, @RequestParam("tableNumber") int tableNumber, HttpServletResponse response) {
+    @PostMapping(value = "/generateCode")
+    public ResponseEntity<String> generateCode(@RequestParam("clientLogin") String clientLogin, @RequestParam("tableNumber") int tableNumber, HttpServletResponse response) {
         try {
             if (!isAdmin() && !isWaiter()) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return "<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
-                        "<strong>Accès refusé !</strong> Vous n'êtes pas autorisé à accéder à cette ressource." +
-                        "</div>";
+                String alert = renderAlert("alert-danger", "Vous n'êtes pas autorisé à accéder à cette ressource.");
+                return new ResponseEntity<>(alert, HttpStatus.OK);
             }
 
             CustomerTable customerTable = tableRepository.findTableByNumber(tableNumber);
 
             if (!doesTableExist(tableNumber)) {
-                return "<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
-                        "<strong>Erreur !</strong> La table n'existe pas." +
-                        "</div>";
+                String alert = renderAlert("alert-danger", "La table n'existe pas.");
+                return new ResponseEntity<>(alert, HttpStatus.OK);
             }
 
             if (customerTable.getStatut() == TableStatus.BUSY) {
-                return "<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
-                        "<strong>Erreur !</strong> La table est deja occupée." +
-                        "</div>";
+                String alert = renderAlert("alert-danger", "La table est déjà occupée.");
+                return new ResponseEntity<>(alert, HttpStatus.OK);
             }
 
             Customer customer = customerRepository.findClientByLogin(clientLogin);
@@ -68,7 +65,7 @@ public class WaiterApiController {
             if (customer != null) {
                 code = accessCodeService.generateAndSaveAccessCode(customer, tableNumber);
                 tableRepository.updateTableStatus(TableStatus.BUSY, tableNumber);
-                log.debug("<div class=\"alert alert-success\">Code créé avec succès pour le Client: " + clientLogin + ".</div>");
+                log.debug("Code créé avec succès pour le Client: " + clientLogin);
 
             } else {
                 Customer newCustomer = new Customer();
@@ -78,21 +75,23 @@ public class WaiterApiController {
                 customerRepository.saveAndFlush(newCustomer);
                 code = accessCodeService.generateAndSaveAccessCode(newCustomer, tableNumber);
                 tableRepository.updateTableStatus(TableStatus.BUSY, tableNumber);
-                log.debug("<div class=\"alert alert-success\">Client créé avec succès pour le login: " + clientLogin + ".</div>");
+                log.debug("Client créé avec succès pour le login: " + clientLogin);
             }
 
-            return "<script>window.location.href='/waiter/showAccessCode-page?code=" + code + "';</script>";
+            // Réponse HTML avec redirection
+            String htmlResponse = "<script>window.location.href='/waiter/displayCode?code=" + code + "';</script>";
+            return ResponseEntity.ok(htmlResponse);
 
         } catch (DataAccessException e) {
             log.error("Database error: " + e.getMessage());
-            return "<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
-                    "<strong>Erreur de base de données !</strong> Veuillez réessayer." +
-                    "</div>";
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(renderAlert("alert-danger", "Erreur de base de données ! Veuillez réessayer."));
         } catch (Exception e) {
             log.error("An unexpected error occurred: " + e.getMessage());
-            return "<div class=\"alert alert-danger\" style=\"margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\">" +
-                    "<strong>Erreur !</strong> Une erreur inattendue est survenue. Veuillez réessayer." +
-                    "</div>";
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(renderAlert("alert-danger", "Une erreur inattendue est survenue. Veuillez réessayer."));
         }
 
     }
