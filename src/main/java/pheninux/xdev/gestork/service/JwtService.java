@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Service;
-import pheninux.xdev.gestork.filter.JwtRequestFilter;
+import pheninux.xdev.gestork.security.filter.JwtRequestFilter;
 
 import java.util.Date;
 import java.util.HashMap;

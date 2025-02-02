@@ -1,6 +1,5 @@
 package pheninux.xdev.gestork.service;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pheninux.xdev.gestork.model.AccessCode;
 import pheninux.xdev.gestork.model.Customer;
@@ -15,14 +14,12 @@ import java.util.UUID;
 public class AccessCodeService {
 
     private final AccessCodeRepository accessCodeRepository;
-    private final CustomerRepository customerRepository;
+
 
     public AccessCodeService(AccessCodeRepository accessCodeRepository, CustomerRepository customerRepository) {
         this.accessCodeRepository = accessCodeRepository;
-        this.customerRepository = customerRepository;
     }
 
-    @PreAuthorize("hasRole('SERVER')")
     public String generateAndSaveAccessCode(Customer customer, int tableNumber) {
 
         String code = generateAccessCode(tableNumber);
@@ -39,32 +36,24 @@ public class AccessCodeService {
         } catch (Exception e) {
             throw new RuntimeException("Error to save generating access code", e);
         }
-
-
     }
 
     public String generateAccessCode(int tableNumber) {
-        // Générer un UUID
-        UUID uuid = UUID.randomUUID();
 
-        // Convertir l'UUID en chaîne et retirer les tirets
+        UUID uuid = UUID.randomUUID();
         String uuidString = uuid.toString().replaceAll("-", "");
 
-        // Créer un StringBuilder pour le code d'accès
         StringBuilder accessCode = new StringBuilder();
 
-        // Ajouter des caractères aléatoires (lettres et chiffres)
         for (int i = 0; i < 6; i++) {
-            // Choisir un caractère aléatoire de l'UUID
             char randomChar = uuidString.charAt((int) (Math.random() * uuidString.length()));
             accessCode.append(randomChar);
         }
 
-        // Ajouter le numéro de table
         accessCode.append("-");
         accessCode.append(tableNumber);
 
-        return accessCode.toString(); // Retourne le code d'accès
+        return accessCode.toString();
     }
 
     public boolean isAccessCodeValid(String code) {
@@ -72,6 +61,7 @@ public class AccessCodeService {
         if (accessCode == null || accessCode.isUsed() || accessCode.getExpiryDate().before(new Timestamp(System.currentTimeMillis()))) {
             return false;
         }
+
         return true;
     }
 }
