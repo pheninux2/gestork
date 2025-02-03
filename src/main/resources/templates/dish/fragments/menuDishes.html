@@ -1,0 +1,36 @@
+<div id="menu">
+    <div th:each="category : ${T(pheninux.xdev.gestork.core.dish.model.Category).values()}">
+        <h2 th:text="${category.description}"></h2>
+        <div class="dish" th:each="dish : ${dishes}"
+             th:if="${dish.category.getDescription() == category.getDescription()}">
+            <img th:src="'data:image/png;base64,' + ${dish.image}" th:alt="${dish.name}"/>
+            <div class="details">
+                <div class="status">
+                    <div th:if="${dish.isAvailable()}" class="alert-available" style="color: green;">
+                        <span>Disponible</span>
+                    </div>
+                    <div th:if="${dish.isNotAvailable()}" class="alert-unavailable" style="color: red;">
+                        <span>N'est pas disponible.</span>
+                    </div>
+                    <div th:if="${dish.isComingSoon()}" class="alert-coming-soon" style="color: orange;">
+                        <span>À venir bientôt !</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <h3 th:text="${dish.name}"></h3>
+                    <p th:text="${dish.description}"></p>
+                </div>
+                <div class="price">
+                    <span th:id="${dish.name}" th:text="${dish.price}+' €'" ></span>
+                    <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px"
+                       th:data-name="${dish.name}"
+                       th:data-price="${dish.price}"
+                       onclick="addToCart(this.dataset.name, this.dataset.price)"></i>
+                </div>
+            </div>
+            <div th:if="${dish.isSpecialPrice()}" class="alert-price-special">
+                <span>Prix spécial !</span>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+<form id="menuForm"
+      hx-encoding='multipart/form-data'
+      method="post"
+      hx-post="/api/admin/dish/add"
+      hx-target="#response"
+      hx-swap="innerHTML">
+
+    <div class="form-group">
+        <label for="name">Nom du Plat :</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description :</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="price">Prix (€) :</label>
+        <input type="number" id="price" name="price" step="0.01" required>
+    </div>
+
+    <div class="form-group">
+        <label for="image">Image du Plat :</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+    </div>
+
+    <div class="form-group">
+        <label for="category">Catégorie :</label>
+        <select id="category" name="category" required>
+            <option value="">Sélectionner une catégorie</option>
+            <option value="PLAT_CHEF">Plat du Chef</option>
+            <option value="PLAT">Plat</option>
+            <option value="ENTREE_CHAUDE">Entrée Chaude</option>
+            <option value="ENTREE_FROIDE">Entrée Froide</option>
+            <option value="DESSERT">Dessert</option>
+            <option value="BOISSON_CHAUDE">Boisson Chaude</option>
+            <option value="BOISSON_FROIDE">Boisson Froide</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="dishStatus">État du plat :</label>
+        <select id="dishStatus" name="dishStatus">
+            <option value="AVAILABLE">Disponible</option>
+            <option value="NOT_AVAILABLE">Non disponible</option>
+            <option value="COMING_SOON">À venir</option>
+        </select>
+    </div>
+
+    <input type="submit" value="Ajouter">
+    <div class="message" id="successMessage" style="display:none;">Plat ajouté avec succès !</div>
+    <div id="response"></div>
+</form>

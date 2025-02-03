@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Prix Spéciaux</title>
+    <script src="/js/dish.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff3e0;
+            color: #333;
+        }
+
+        header {
+            background-color: #e53935;
+            padding: 15px;
+            text-align: center;
+            color: white;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .dish-container {
+            margin-bottom: 20px;
+        }
+
+        .dish {
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #ffffff;
+            flex-wrap: wrap; /* Permet aux éléments de passer à la ligne si nécessaire */
+        }
+
+        .dish img {
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+
+        .details {
+            margin-bottom: 15px; /* Espace entre les plats */
+        }
+
+        .form-container {
+            display: flex; /* Utilise flexbox pour organiser les éléments */
+            flex-direction: column; /* Aligne les éléments verticalement */
+            margin-top: 10px; /* Espace au-dessus du formulaire */
+        }
+
+        .form-group {
+            display: flex; /* Utilise flexbox pour aligner le label et l'input */
+            align-items: center; /* Aligne verticalement */
+            margin-bottom: 5px; /* Espace entre les groupes de formulaires */
+        }
+
+        .form-group label {
+            flex: 0 0 150px; /* Largeur fixe pour les labels */
+            margin-right: 10px; /* Espace entre le label et l'input */
+        }
+
+        .input-group {
+            display: flex; /* Utilise flexbox pour aligner l'input et le symbole */
+            align-items: center; /* Aligne verticalement */
+        }
+
+        .input-group input[type="number"] {
+            width: 100px; /* Largeur de l'input pour le prix */
+            margin-right: 5px; /* Espace entre l'input et le symbole */
+        }
+
+        .euro-symbol {
+            font-weight: bold; /* Met le symbole en gras */
+            font-size: 1.2em; /* Ajuste la taille du symbole */
+        }
+
+        .form-group input[type="checkbox"] {
+            margin-left: 5px; /* Ajoute de l'espace à gauche pour le checkbox */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center; /* Centre les boutons horizontalement */
+            gap: 10px; /* Espace entre les boutons */
+            margin-top: 10px; /* Espacement au-dessus des boutons */
+        }
+
+
+        .button:hover {
+            background-color: #45a049; /* Couleur du bouton au survol */
+        }
+
+        .button {
+            position: relative; /* Nécessaire pour le positionnement du tooltip */
+        }
+
+        .tooltip {
+            visibility: hidden; /* Masquer le tooltip par défaut */
+            width: 120px; /* Largeur du tooltip */
+            background-color: #555; /* Couleur de fond */
+            color: #fff; /* Couleur du texte */
+            text-align: center; /* Centrer le texte */
+            border-radius: 5px; /* Coins arrondis */
+            padding: 5px; /* Espacement interne */
+            position: absolute; /* Positionnement absolu */
+            z-index: 1; /* Assurer qu'il est au-dessus d'autres éléments */
+            bottom: 125%; /* Positionner au-dessus du bouton */
+            left: 50%; /* Centrer horizontalement */
+            margin-left: -60px; /* Ajuster pour centrer */
+            opacity: 0; /* Rendre invisible */
+            transition: opacity 0.3s; /* Transition douce */
+        }
+
+        .button:hover .tooltip {
+            visibility: visible; /* Afficher le tooltip au survol */
+            opacity: 1; /* Rendre visible */
+        }
+
+        input[type="number"] {
+            padding: 5px; /* Espacement interne de l'input */
+            border: 1px solid #ddd; /* Bordure grise */
+            border-radius: 5px; /* Coins arrondis */
+            width: 100px; /* Largeur de l'input */
+            margin-right: 5px;
+        }
+
+        .modal {
+            display: none; /* Cacher le modal par défaut */
+            position: fixed; /* Rester en place */
+            z-index: 1; /* Au-dessus du contenu */
+            left: 0;
+            top: 0;
+            width: 100%; /* Pleine largeur */
+            height: 100%; /* Pleine hauteur */
+            overflow: auto; /* Activer le défilement si nécessaire */
+            background-color: rgb(0, 0, 0); /* Fond noir */
+            background-color: rgba(0, 0, 0, 0.4); /* Fond avec transparence */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 10px; /* Rounded corners for the modal */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow for better visibility */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button {
+            background-color: #e53935; /* Button background color */
+            color: white; /* Button text color */
+            border: none; /* Remove border */
+            padding: 10px 20px; /* Padding for the button */
+            text-align: center; /* Center the text */
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Inline-block display */
+            font-size: 16px; /* Font size */
+            margin: 10px 2px; /* Margin around the button */
+            cursor: pointer; /* Pointer cursor on hover */
+            border-radius: 50px; /* Rounded button */
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+
+        .button:hover {
+            background-color: #d32f2f; /* Darker background color on hover */
+        }
+
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e53935;
+            color: white;
+            text-align: center;
+        }
+
+        .button-confirm {
+            background-color: #4caf50; /* Green background for confirmation */
+            color: white; /* White text */
+            border: none; /* Remove border */
+            padding: 10px 20px; /* Padding for the button */
+            text-align: center; /* Center the text */
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Inline-block display */
+            font-size: 16px; /* Font size */
+            margin: 10px 2px; /* Margin around the button */
+            cursor: pointer; /* Pointer cursor on hover */
+            border-radius: 50px; /* Rounded button */
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+
+        .button-confirm:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        .button-cancel {
+            background-color: #f44336; /* Red background for cancellation */
+            color: white; /* White text */
+            border: none; /* Remove border */
+            padding: 10px 20px; /* Padding for the button */
+            text-align: center; /* Center the text */
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Inline-block display */
+            font-size: 16px; /* Font size */
+            margin: 10px 2px; /* Margin around the button */
+            cursor: pointer; /* Pointer cursor on hover */
+            border-radius: 50px; /* Rounded button */
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+
+        .button-cancel:hover {
+            background-color: #d32f2f; /* Darker red on hover */
+        }
+
+        /* Media Queries pour la réactivité */
+        @media (max-width: 768px) {
+            .dish {
+                flex-direction: column; /* Empile les éléments sur les écrans plus petits */
+                align-items: flex-start; /* Aligne les éléments à gauche */
+            }
+
+            .dish img {
+                margin-bottom: 10px; /* Espace en bas de l'image */
+            }
+
+            .price-input {
+                width: 60px; /* Réduit la largeur de l'input sur les petits écrans */
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                font-size: 1.5em; /* Réduit la taille de la police de l'en-tête */
+            }
+
+            .button {
+                padding: 8px; /* Réduit le padding du bouton */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Gestion des Prix Spéciaux
+</header>
+
+<div id="dishesContainer" hx-get="/fragments/dish/list" hx-trigger="load" hx-target="#dishesContainer">
+</div>
+
+<!-- Modal de confirmation -->
+<div id="confirmationModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h2>Confirmation</h2>
+        <p>Êtes-vous sûr de vouloir mettre à jour le plat avec les informations suivantes ?</p>
+        <div id="confirmationDetails"></div>
+        <button id="confirmUpdate" class="button-confirm">Confirmer</button>
+        <button id="cancelUpdate" class="button-cancel">Annuler</button>
+    </div>
+</div>
+
+<!-- Modal de confirmation de suppression -->
+<div id="deleteConfirmationModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" id="closeDeleteModal">&times;</span>
+        <h2>Confirmation de suppression</h2>
+        <p>Êtes-vous sûr de vouloir supprimer ce plat ?</p>
+        <div id="deleteConfirmationDetails"></div>
+        <button id="confirmDelete" class="button-confirm">Confirmer</button>
+        <button id="cancelDelete" class="button-cancel">Annuler</button>
+    </div>
+</div>
+
+<footer>
+    &copy; 2025 Votre Restaurant
+</footer>
+
+<script>
+    htmx.on("htmx:configRequest", (e) => {
+        e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
+    });
+</script>
+</body>
+</html>

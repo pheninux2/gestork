@@ -1,0 +1,38 @@
+<!-- src/main/resources/templates/alert/alerts.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Alerts</title>
+</head>
+<body>
+<div th:fragment="alert-danger(message)">
+    <div class="alert alert-danger"
+         style="margin-top: 20px; border: 1px solid #ff0000; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <strong>Erreur !</strong> <span th:text="${message}"></span>
+    </div>
+    <script>setTimeout(function () {
+        document.querySelector('.alert-danger').remove();
+    }, 5000);</script>
+</div>
+
+<div th:fragment="alert-warning(message)">
+    <div class="alert alert-warning"
+         style="margin-top: 20px; border: 1px solid #ffc107; background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <strong>Attention !</strong> <span th:text="${message}"></span>
+    </div>
+    <script>setTimeout(function () {
+        document.querySelector('.alert-warning').remove();
+    }, 5000);</script>
+</div>
+
+<div th:fragment="alert-success(message)">
+    <div class="alert alert-success"
+         style="margin-top: 20px; border: 1px solid #28a745; background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <strong>Succès !</strong> <span th:text="${message}"></span>
+    </div>
+    <script>setTimeout(function () {
+        document.querySelector('.alert-success').remove();
+    }, 5000);</script>
+</div>
+</body>
+</html>
