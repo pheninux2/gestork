@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.service;
+package pheninux.xdev.gestork.security.service;
 
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -6,10 +6,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pheninux.xdev.gestork.model.AccessCode;
-import pheninux.xdev.gestork.model.Customer;
-import pheninux.xdev.gestork.repository.AccessCodeRepository;
-import pheninux.xdev.gestork.repository.CustomerRepository;
+import pheninux.xdev.gestork.core.accessCode.model.AccessCode;
+import pheninux.xdev.gestork.core.customer.model.Customer;
+import pheninux.xdev.gestork.core.accessCode.repository.AccessCodeRepository;
+import pheninux.xdev.gestork.core.customer.repository.CustomerRepository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

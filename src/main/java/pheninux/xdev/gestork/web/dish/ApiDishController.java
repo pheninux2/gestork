@@ -8,10 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.TemplateEngine;
+import pheninux.xdev.gestork.core.dish.model.Category;
 import pheninux.xdev.gestork.core.dish.model.Dish;
 import pheninux.xdev.gestork.core.dish.model.DishStatus;
 import pheninux.xdev.gestork.core.dish.service.DishService;
-import pheninux.xdev.gestork.model.Category;
 import pheninux.xdev.gestork.utils.Utils;
 
 import java.io.IOException;

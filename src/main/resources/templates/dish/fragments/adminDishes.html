@@ -1,5 +1,5 @@
 <div id="dishesContainer">
-    <div th:each="category : ${T(pheninux.xdev.gestork.model.Category).values()}">
+    <div th:each="category : ${T(pheninux.xdev.gestork.core.dish.model.Category).values()}">
         <h2 th:text="${category.description}"></h2>
         <div class="dish" th:each="dish : ${dishes}" th:if="${dish.category.getDescription() == category.getDescription()}">
             <img th:src="'data:image/png;base64,' + ${dish.image}" th:alt="${dish.name}"/>

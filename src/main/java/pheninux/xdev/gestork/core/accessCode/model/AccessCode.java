@@ -1,6 +1,8 @@
-package pheninux.xdev.gestork.model;
+package pheninux.xdev.gestork.core.accessCode.model;
 
 import jakarta.persistence.*;
+import pheninux.xdev.gestork.core.customer.model.Customer;
+import pheninux.xdev.gestork.core.employee.model.Employee;
 
 import java.sql.Timestamp;
 
@@ -23,6 +25,10 @@ public class AccessCode {
 
     @Column(nullable = false)
     private boolean used = false;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 
     // Getters et Setters
     public Long getCodeId() {
@@ -63,5 +69,13 @@ public class AccessCode {
 
     public void setUsed(boolean used) {
         this.used = used;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 }

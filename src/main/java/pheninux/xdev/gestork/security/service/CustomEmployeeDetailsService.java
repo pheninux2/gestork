@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.service;
+package pheninux.xdev.gestork.security.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pheninux.xdev.gestork.model.Employee;
-import pheninux.xdev.gestork.repository.EmployeeRepository;
+import pheninux.xdev.gestork.core.employee.model.Employee;
+import pheninux.xdev.gestork.core.employee.repository.EmployeeRepository;
 
 import java.util.List;
 import java.util.Optional;

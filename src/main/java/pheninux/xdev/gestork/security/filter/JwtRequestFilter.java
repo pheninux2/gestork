@@ -14,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pheninux.xdev.gestork.service.JwtService;
+import pheninux.xdev.gestork.security.service.JwtService;
 
 import java.io.IOException;
 

@@ -1,7 +1,6 @@
 package pheninux.xdev.gestork.web.customer;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -13,12 +12,6 @@ public class CustomerController {
     @GetMapping("/login")
     public String login() {
         return "customer/layout/login";
-    }
-
-
-    @GetMapping("/menu")
-    public String menu() {
-        return "customer/layout/menu";
     }
 
 }

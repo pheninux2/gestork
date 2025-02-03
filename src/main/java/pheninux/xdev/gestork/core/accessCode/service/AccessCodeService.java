@@ -1,10 +1,13 @@
-package pheninux.xdev.gestork.service;
+package pheninux.xdev.gestork.core.accessCode.service;
 
 import org.springframework.stereotype.Service;
-import pheninux.xdev.gestork.model.AccessCode;
-import pheninux.xdev.gestork.model.Customer;
-import pheninux.xdev.gestork.repository.AccessCodeRepository;
-import pheninux.xdev.gestork.repository.CustomerRepository;
+import pheninux.xdev.gestork.core.accessCode.model.AccessCode;
+import pheninux.xdev.gestork.core.accessCode.repository.AccessCodeRepository;
+import pheninux.xdev.gestork.core.customer.model.Customer;
+import pheninux.xdev.gestork.core.customer.repository.CustomerRepository;
+import pheninux.xdev.gestork.core.employee.model.Employee;
+import pheninux.xdev.gestork.core.employee.repository.EmployeeRepository;
+import pheninux.xdev.gestork.utils.Utils;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -14,23 +17,27 @@ import java.util.UUID;
 public class AccessCodeService {
 
     private final AccessCodeRepository accessCodeRepository;
+    private final EmployeeRepository employeeRepository;
 
 
-    public AccessCodeService(AccessCodeRepository accessCodeRepository, CustomerRepository customerRepository) {
+    public AccessCodeService(AccessCodeRepository accessCodeRepository, CustomerRepository customerRepository, EmployeeRepository employeeRepository) {
         this.accessCodeRepository = accessCodeRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     public String generateAndSaveAccessCode(Customer customer, int tableNumber) {
 
-        String code = generateAccessCode(tableNumber);
-        Timestamp expiryDate = Timestamp.valueOf(LocalDateTime.now().plusMinutes(6)); // Code valide 1 heure
-        AccessCode accessCode = new AccessCode();
-        accessCode.setCustomer(customer);
-        accessCode.setCode(code);
-        accessCode.setExpiryDate(expiryDate);
-        accessCode.setUsed(false);
-
         try {
+            Employee waiter = employeeRepository.findEmployeeByLogin(Utils.getLogin());
+            String code = generateAccessCode(tableNumber);
+            Timestamp expiryDate = Timestamp.valueOf(LocalDateTime.now().plusMinutes(6)); // Code valide 1 heure
+            AccessCode accessCode = new AccessCode();
+            accessCode.setCustomer(customer);
+            accessCode.setEmployee(waiter);
+            accessCode.setCode(code);
+            accessCode.setExpiryDate(expiryDate);
+            accessCode.setUsed(false);
+
             accessCodeRepository.saveAndFlush(accessCode);
             return code;
         } catch (Exception e) {

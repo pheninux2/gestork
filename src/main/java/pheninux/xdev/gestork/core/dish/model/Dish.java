@@ -1,7 +1,7 @@
 package pheninux.xdev.gestork.core.dish.model;
 
 import jakarta.persistence.*;
-import pheninux.xdev.gestork.model.Category;
+
 
 @Entity
 public class Dish {

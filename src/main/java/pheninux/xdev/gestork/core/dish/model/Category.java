@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.model;
+package pheninux.xdev.gestork.core.dish.model;
 
 public enum Category {
     PLAT_CHEF("Plat du Chef"),

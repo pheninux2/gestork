@@ -25,8 +25,8 @@ import pheninux.xdev.gestork.handler.JwtAuthenticationSuccessHandler;
 import pheninux.xdev.gestork.security.filter.CustomCustomerAuthenticationFilter;
 import pheninux.xdev.gestork.security.filter.CustomEmployeeAuthenticationFilter;
 import pheninux.xdev.gestork.security.filter.JwtRequestFilter;
-import pheninux.xdev.gestork.service.CustomClientDetailsService;
-import pheninux.xdev.gestork.service.CustomEmployeeDetailsService;
+import pheninux.xdev.gestork.security.service.CustomClientDetailsService;
+import pheninux.xdev.gestork.security.service.CustomEmployeeDetailsService;
 
 import static pheninux.xdev.gestork.utils.Utils.renderAlert;
 

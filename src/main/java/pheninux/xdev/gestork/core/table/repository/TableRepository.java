@@ -1,12 +1,12 @@
-package pheninux.xdev.gestork.repository;
+package pheninux.xdev.gestork.core.table.repository;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import pheninux.xdev.gestork.model.CustomerTable;
-import pheninux.xdev.gestork.model.TableStatus;
+import pheninux.xdev.gestork.core.table.model.CustomerTable;
+import pheninux.xdev.gestork.core.table.model.TableStatus;
 
 public interface TableRepository extends JpaRepository<CustomerTable, Long> {
 

@@ -1,7 +1,7 @@
-package pheninux.xdev.gestork.repository;
+package pheninux.xdev.gestork.core.accessCode.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pheninux.xdev.gestork.model.AccessCode;
+import pheninux.xdev.gestork.core.accessCode.model.AccessCode;
 
 public interface AccessCodeRepository extends JpaRepository<AccessCode, String> {
     AccessCode findByCode(String code);

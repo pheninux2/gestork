@@ -211,6 +211,14 @@
             padding-top: 60px;
         }
 
+        .modal .confirmBtn {
+            display: inline-block;
+            padding: 12px; /* Espacement supplémentaire */
+            font-size: 1.2em; /* Agrandir la taille de police */
+            margin-top: 20px; /* Espace au-dessus du bouton */
+            text-align: center; /* Centrer le texte du bouton */
+        }
+
         .modal-content {
             background-color: #fff; /* Couleur de fond blanche */
             margin: 5% auto;
@@ -373,6 +381,17 @@
             }
         }
 
+        .tooltip {
+            display: none; /* Cacher par défaut */
+            position: absolute;
+            background-color: #f57c20;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 100;
+            margin-top: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -384,7 +403,7 @@
 <div class="button-container">
     <div class="total-price" id="totalPrice">Total : 0.00€</div>
     <button class="button" onclick="showDetails()">Panier (0)</button>
-    <button class="button" onclick="validateOrder()">Valider ma Commande</button>
+    <div id="tooltip" class="tooltip">Aucun plat sélectionné</div>
 </div>
 
 <div id="menu" hx-get="/fragments/dish/list" hx-trigger="load" hx-target="#menu">
@@ -398,6 +417,9 @@
         <h3>Détails de la Commande</h3>
         <ul id="orderList"></ul>
         <div id="orderTotal" style="font-weight: bold; font-size: 1.5em; text-align: right; margin-top: 20px;"></div>
+        <div style="text-align: center;">
+            <button id="confirmBtn" class="confirmBtn" onclick="validateOrder()">Confirmer la Commande</button>
+        </div>
     </div>
 </div>
 

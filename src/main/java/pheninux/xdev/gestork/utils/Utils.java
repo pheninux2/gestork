@@ -30,6 +30,31 @@ public class Utils {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_WAITER"));
     }
 
+    public static boolean isChef() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_CHEF"));
+    }
+
+    public static boolean isCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_CUSTOMER"));
+    }
+
+    public static boolean isManager() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_MANAGER"));
+    }
+
+
+    public static String getLogin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
+
+
     public static String renderAlert(String fragmentName, String message) {
         Context context = new Context();
         context.setVariable("message", message);

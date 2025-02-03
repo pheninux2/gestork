@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.service;
+package pheninux.xdev.gestork.security.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -39,6 +39,12 @@ function getTotalItems() {
 }
 
 function showDetails() {
+
+    if (total === 0) {
+        document.getElementById('confirmBtn').style.display = 'none';
+    } else {
+        document.getElementById('confirmBtn').style.display = 'inline-block';
+    }
     const orderList = document.getElementById('orderList');
     orderList.innerHTML = '';
     for (const item in orderItems) {
@@ -80,6 +86,7 @@ function showDetails() {
         orderList.appendChild(li);
     }
     document.getElementById('orderTotal').innerText = 'Total : ' + total.toFixed(2) + '€';
+
     openModal();
 }
 

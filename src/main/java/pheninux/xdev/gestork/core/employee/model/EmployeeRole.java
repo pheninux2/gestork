@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.model;
+package pheninux.xdev.gestork.core.employee.model;
 
 public enum EmployeeRole {
     ADMIN,

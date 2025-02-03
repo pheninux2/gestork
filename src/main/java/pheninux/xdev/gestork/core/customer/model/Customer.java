@@ -1,6 +1,7 @@
-package pheninux.xdev.gestork.model;
+package pheninux.xdev.gestork.core.customer.model;
 
 import jakarta.persistence.*;
+import pheninux.xdev.gestork.core.accessCode.model.AccessCode;
 
 import java.util.Date;
 import java.util.List;
