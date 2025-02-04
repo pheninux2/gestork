@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affecter des Tables</title>
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #f0f4f8, #d0e1f9);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #004080;
+            margin-bottom: 20px;
+        }
+
+        .date-time {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 15px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-container select, .form-container input {
+            width: 150px;
+            padding: 10px;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block;
+        }
+
+        .form-container button {
+            background-color: #007acc;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: calc(100% - 20px);
+            font-size: 16px;
+            margin: 10px auto;
+            transition: background-color 0.3s;
+            display: block;
+        }
+
+        .form-container button:hover {
+            background-color: #005f99;
+        }
+    </style>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            document.getElementById('date-time').innerText = now.toLocaleDateString('fr-FR', options);
+        }
+
+        setInterval(updateDateTime, 1000);
+    </script>
+</head>
+<body onload="updateDateTime()">
+<h1>Affectation des tables</h1>
+<div class="date-time" id="date-time"></div>
+<div class="form-container">
+    <form hx-post="/employee/admin/table/assignTables" method="post" hx-trigger="submit" hx-swap="innerHTML" hx-target="#response">
+        <label for="waiter">Sélectionner un Serveur:</label>
+        <select id="waiter" name="waiter">
+            <option th:each="waiter : ${waiters}" th:value="${waiter.getEmployeeId()}" th:text="${waiter.getLogin()}"></option>
+        </select>
+        <label for="tables">Tables à Affecter (séparées par des virgules):</label>
+        <input type="text" id="tables" name="tables" placeholder="Ex: 1,2,3,4">
+        <button type="submit">Affecter</button>
+    </form>
+    <div id="response"></div>
+</div>
+</body>
+<script>
+    htmx.on("htmx:configRequest", (e) => {
+        e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
+    })
+</script>
+</html>

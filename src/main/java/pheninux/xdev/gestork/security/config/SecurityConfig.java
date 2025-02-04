@@ -28,7 +28,7 @@ import pheninux.xdev.gestork.security.filter.JwtRequestFilter;
 import pheninux.xdev.gestork.security.service.CustomClientDetailsService;
 import pheninux.xdev.gestork.security.service.CustomEmployeeDetailsService;
 
-import static pheninux.xdev.gestork.utils.Utils.renderAlert;
+import static pheninux.xdev.gestork.utils.Utils.renderAlertSingle;
 
 @Configuration
 @EnableWebSecurity
@@ -187,14 +187,14 @@ public class SecurityConfig {
     private AuthenticationFailureHandler employeeAuthenticationFailureHandler() {
         return (request, response, exception) -> {
             response.setContentType("text/html");
-            response.getWriter().write(renderAlert("alert-danger", "Nom d'utilisateur ou mot de passe invalide."));
+            response.getWriter().write(renderAlertSingle("alert-danger", "Nom d'utilisateur ou mot de passe invalide."));
         };
     }
 
     private AuthenticationFailureHandler clientAuthenticationFailureHandler() {
         return (request, response, exception) -> {
             response.setContentType("text/html");
-            response.getWriter().write(renderAlert("alert-danger", "Login d'utilisateur ou code d'accès invalide."));
+            response.getWriter().write(renderAlertSingle("alert-danger", "Login d'utilisateur ou code d'accès invalide."));
         };
     }
 

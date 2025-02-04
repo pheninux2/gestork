@@ -32,7 +32,7 @@ public class WaiterApiController {
     @PostMapping(value = "/generateCode")
     public ResponseEntity<String> generateCode(@RequestParam("clientLogin") String clientLogin, @RequestParam("tableNumber") int tableNumber, HttpServletResponse response) {
         if (!isAdmin() && !isWaiter()) {
-            String alert = renderAlert("alert-danger", "Vous n'êtes pas autorisé à accéder à cette ressource.");
+            String alert = renderAlertSingle("alert-danger", "Vous n'êtes pas autorisé à accéder à cette ressource.");
             return new ResponseEntity<>(alert, HttpStatus.OK);
         }
         return tableService.generateCode(clientLogin, tableNumber);

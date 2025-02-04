@@ -19,7 +19,7 @@ import java.net.URI;
 import java.util.Base64;
 import java.util.List;
 
-import static pheninux.xdev.gestork.utils.Utils.renderAlert;
+import static pheninux.xdev.gestork.utils.Utils.renderAlertSingle;
 
 @Controller
 @RequestMapping("/api/dish")
@@ -44,12 +44,12 @@ public class ApiDishController {
             @RequestParam("dishStatus") DishStatus dishStatus) {
 
         if (!Utils.isAdmin()) {
-            String alert = renderAlert("alert-danger", "Vous n'êtes pas autorisé à effectuer cette action.");
+            String alert = renderAlertSingle("alert-danger", "Vous n'êtes pas autorisé à effectuer cette action.");
             return new ResponseEntity<>(alert, HttpStatus.FORBIDDEN);
         }
 
         if (imageFile == null || imageFile.isEmpty()) {
-            String alert = renderAlert("alert-warning", "L'image est requise.");
+            String alert = renderAlertSingle("alert-warning-single", "L'image est requise.");
             return new ResponseEntity<>(alert, HttpStatus.BAD_REQUEST);
         }
 
@@ -67,11 +67,11 @@ public class ApiDishController {
 
             dishService.save(dish);
         } catch (IOException e) {
-            String alert = renderAlert("alert-danger", "Une erreur est survenue lors du traitement de l'image.");
+            String alert = renderAlertSingle("alert-danger", "Une erreur est survenue lors du traitement de l'image.");
             return new ResponseEntity<>(alert, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        String alert = renderAlert("alert-success", "Le plat est ajouté avec succès.");
+        String alert = renderAlertSingle("alert-success", "Le plat est ajouté avec succès.");
         return new ResponseEntity<>(alert, HttpStatus.OK);
     }
 

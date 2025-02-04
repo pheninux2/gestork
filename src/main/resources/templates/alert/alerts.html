@@ -15,7 +15,7 @@
     }, 5000);</script>
 </div>
 
-<div th:fragment="alert-warning(message)">
+<div th:fragment="alert-warning-single(message)">
     <div class="alert alert-warning"
          style="margin-top: 20px; border: 1px solid #ffc107; background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
         <strong>Attention !</strong> <span th:text="${message}"></span>
@@ -23,6 +23,21 @@
     <script>setTimeout(function () {
         document.querySelector('.alert-warning').remove();
     }, 5000);</script>
+</div>
+
+<div th:fragment="alert-warning-multiple(message)">
+    <div class="alert alert-warning"
+         style="margin-top: 20px; border: 1px solid #ffc107; background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <strong>Attention !</strong>
+        <ul>
+            <li th:each="message : ${messages}" th:text="${message}"></li>
+        </ul>
+    </div>
+    <script>
+        setTimeout(function () {
+            document.querySelector('.alert-warning').remove();
+        }, 5000);
+    </script>
 </div>
 
 <div th:fragment="alert-success(message)">
