@@ -18,7 +18,7 @@ public class Employee {
     private String phoneNumber; // Numéro de téléphone de l'employé
 
     @Enumerated(EnumType.STRING)
-    private EmployeeRole employeeRole; // Rôle de l'employé (ADMIN, SERVER, CHEF)
+    private EmployeeRole role; // Rôle de l'employé (ADMIN, SERVER, CHEF)
 
     private String login; // Identifiant de connexion
     private String password; // Mot de passe (généré lors de l'embauche)
@@ -67,11 +67,11 @@ public class Employee {
     }
 
     public EmployeeRole getRole() {
-        return employeeRole;
+        return role;
     }
 
     public void setRole(EmployeeRole employeeRole) {
-        this.employeeRole = employeeRole;
+        this.role = employeeRole;
     }
 
     public String getLogin() {
@@ -110,11 +110,11 @@ public class Employee {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return Objects.equals(employeeId, employee.employeeId) && Objects.equals(name, employee.name) && Objects.equals(email, employee.email) && Objects.equals(phoneNumber, employee.phoneNumber) && employeeRole == employee.employeeRole && Objects.equals(login, employee.login) && Objects.equals(password, employee.password) && Objects.equals(lastLogin, employee.lastLogin) && Objects.equals(createdDate, employee.createdDate);
+        return Objects.equals(employeeId, employee.employeeId) && Objects.equals(name, employee.name) && Objects.equals(email, employee.email) && Objects.equals(phoneNumber, employee.phoneNumber) && role == employee.role && Objects.equals(login, employee.login) && Objects.equals(password, employee.password) && Objects.equals(lastLogin, employee.lastLogin) && Objects.equals(createdDate, employee.createdDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(employeeId, name, email, phoneNumber, employeeRole, login, password, lastLogin, createdDate);
+        return Objects.hash(employeeId, name, email, phoneNumber, role, login, password, lastLogin, createdDate);
     }
 }

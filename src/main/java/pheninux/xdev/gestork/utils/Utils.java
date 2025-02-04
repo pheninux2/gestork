@@ -7,6 +7,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -55,11 +56,33 @@ public class Utils {
     }
 
 
-    public static String renderAlert(String fragmentName, String message) {
+    public static String renderAlertSingle(String fragmentName, String message) {
         Context context = new Context();
         context.setVariable("message", message);
         Set<String> fragmentsSelectors = new HashSet<>();
         fragmentsSelectors.add(fragmentName);
         return templateEngine.process("alert/alerts", fragmentsSelectors, context);
+    }
+
+    public static String renderAlertMultiple(String fragmentName, List<String> messages) {
+        Context context = new Context();
+        context.setVariable("messages", messages);
+        Set<String> fragmentsSelectors = new HashSet<>();
+        fragmentsSelectors.add(fragmentName);
+        return templateEngine.process("alert/alerts", fragmentsSelectors, context);
+    }
+
+    public static Set<Integer> parseTableNumbers(String tableNumbers) {
+        Set<Integer> tables = new HashSet<>();
+        String[] tableNumbersArray = tableNumbers.split(",");
+        for (String tableNumber : tableNumbersArray) {
+            tables.add(Integer.parseInt(tableNumber));
+        }
+        return tables;
+    }
+
+    public static boolean isValidTableFormat(String tables) {
+        String regex = "^\\d+(,\\d+)*$";
+        return tables != null && tables.matches(regex);
     }
 }

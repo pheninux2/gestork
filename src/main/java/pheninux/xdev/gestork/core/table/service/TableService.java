@@ -12,14 +12,12 @@ import pheninux.xdev.gestork.core.accessCode.service.AccessCodeService;
 import pheninux.xdev.gestork.core.customer.model.Customer;
 import pheninux.xdev.gestork.core.customer.model.CustomerRole;
 import pheninux.xdev.gestork.core.customer.repository.CustomerRepository;
-import pheninux.xdev.gestork.core.employee.model.Employee;
 import pheninux.xdev.gestork.core.employee.repository.EmployeeRepository;
 import pheninux.xdev.gestork.core.table.model.CustomerTable;
 import pheninux.xdev.gestork.core.table.model.TableStatus;
 import pheninux.xdev.gestork.core.table.repository.TableRepository;
 
-import static pheninux.xdev.gestork.utils.Utils.getLogin;
-import static pheninux.xdev.gestork.utils.Utils.renderAlert;
+import static pheninux.xdev.gestork.utils.Utils.renderAlertSingle;
 
 @Service
 public class TableService {
@@ -43,12 +41,12 @@ public class TableService {
             CustomerTable customerTable = tableRepository.findTableByNumber(tableNumber);
 
             if (!doesTableExist(tableNumber)) {
-                String alert = renderAlert("alert-danger", "La table n'existe pas.");
+                String alert = renderAlertSingle("alert-danger", "La table n'existe pas.");
                 return new ResponseEntity<>(alert, HttpStatus.OK);
             }
 
             if (customerTable.getStatut() == TableStatus.BUSY) {
-                String alert = renderAlert("alert-danger", "La table est déjà occupée.");
+                String alert = renderAlertSingle("alert-danger", "La table est déjà occupée.");
                 return new ResponseEntity<>(alert, HttpStatus.OK);
             }
 
@@ -80,12 +78,12 @@ public class TableService {
             log.error("Database error: " + e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(renderAlert("alert-danger", "Erreur de base de données ! Veuillez réessayer."));
+                    .body(renderAlertSingle("alert-danger", "Erreur de base de données ! Veuillez réessayer."));
         } catch (Exception e) {
             log.error("An unexpected error occurred: " + e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(renderAlert("alert-danger", "Une erreur inattendue est survenue. Veuillez réessayer."));
+                    .body(renderAlertSingle("alert-danger", "Une erreur inattendue est survenue. Veuillez réessayer."));
         }
     }
 
