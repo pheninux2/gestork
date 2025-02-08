@@ -1,0 +1,26 @@
+@startuml
+actor Employee
+participant "Web Browser" as Browser
+participant "DishPageController" as Controller
+participant "HTML Page" as Page
+
+Employee -> Browser: Request (GET /employee/admin/dish/add)
+Browser -> Controller: HTTP GET /employee/admin/dish/add
+alt User is not admin
+    Controller -> Browser: Redirect to error/403
+else User is admin
+    Controller -> Page: Render HTML (employee/admin/layout/addDish)
+    Page -> Browser: HTML Content
+end
+Browser -> Employee: Display HTML Page
+
+Employee -> Browser: Request (GET /employee/admin/dish/update)
+Browser -> Controller: HTTP GET /employee/admin/dish/update
+alt User is not admin
+    Controller -> Browser: Redirect to error/403
+else User is admin
+    Controller -> Page: Render HTML (employee/admin/layout/updateDish)
+    Page -> Browser: HTML Content
+end
+Browser -> Employee: Display HTML Page
+@enduml

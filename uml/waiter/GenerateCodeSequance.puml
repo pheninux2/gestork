@@ -1,0 +1,21 @@
+@startuml
+actor Customer
+actor Employee
+
+Customer -> AccessCodeService: generateAndSaveAccessCode(customer, tableNumber)
+AccessCodeService -> EmployeeRepository: findEmployeeByLogin(Utils.getLogin())
+EmployeeRepository -> AccessCodeService: Employee
+AccessCodeService -> AccessCodeService: generateAccessCode(tableNumber)
+AccessCodeService -> AccessCodeRepository: saveAndFlush(accessCode)
+AccessCodeRepository -> AccessCodeService: void
+AccessCodeService -> Customer: String (code)
+
+Customer -> AccessCodeService: isAccessCodeValid(code)
+AccessCodeService -> AccessCodeRepository: findByCode(code)
+AccessCodeRepository -> AccessCodeService: AccessCode
+alt Access code is invalid
+    AccessCodeService -> Customer: false
+else Access code is valid
+    AccessCodeService -> Customer: true
+end
+@enduml

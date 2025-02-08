@@ -1,0 +1,18 @@
+@startuml
+actor Employee
+participant "Web Browser" as Browser
+participant "TablePageController" as Controller
+participant "EmployeeService" as EmployeeService
+participant "TableAssignmentService" as TableAssignmentService
+participant "HTML Page" as Page
+
+Employee -> Browser: Request (GET /employee/admin/tables/assign)
+Browser -> Controller: HTTP GET /employee/admin/tables/assign
+Controller -> EmployeeService: getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name"))
+EmployeeService -> Controller: List of Waiters
+Controller -> TableAssignmentService: getAssignedTableByEmployeeId(waiter.getEmployeeId())
+TableAssignmentService -> Controller: List of Assigned Tables
+Controller -> Page: Render HTML (employee/admin/layout/assignTables)
+Page -> Browser: HTML Content
+Browser -> Employee: Display HTML Page
+@enduml

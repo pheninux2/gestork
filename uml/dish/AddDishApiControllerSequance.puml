@@ -1,0 +1,22 @@
+@startuml
+actor Admin
+Admin -> DishApiController: addDish(name, description, price, imageFile, category, dishStatus)
+DishApiController -> Utils: isAdmin()
+alt Admin is not authorized
+    Utils -> DishApiController: false
+    DishApiController -> Admin: ResponseEntity<String> (FORBIDDEN)
+else Admin is authorized
+    Utils -> DishApiController: true
+    alt Image is null or empty
+        DishApiController -> Admin: ResponseEntity<String> (BAD_REQUEST)
+    else Image is valid
+        DishApiController -> MultipartFile: getBytes()
+        MultipartFile -> DishApiController: byte[]
+        DishApiController -> Base64: encodeToString(bytes)
+        Base64 -> DishApiController: String (base64Image)
+        DishApiController -> DishService: save(dish)
+        DishService -> DishApiController: void
+        DishApiController -> Admin: ResponseEntity<String> (OK)
+    end
+end
+@enduml
