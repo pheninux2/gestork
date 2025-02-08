@@ -1,0 +1,12 @@
+@startuml
+actor Customer
+participant "Web Browser" as Browser
+participant "LoginPageController" as Controller
+participant "HTML Page" as Page
+
+Customer -> Browser: Request (GET /customer/login)
+Browser -> Controller: HTTP GET /customer/login
+Controller -> Page: Render HTML (customer/login)
+Page -> Browser: HTML Content
+Browser -> Customer: Display HTML Page
+@enduml

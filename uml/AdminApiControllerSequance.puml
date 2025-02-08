@@ -1,0 +1,70 @@
+@startuml
+actor Admin
+
+' Sequence for adding a dish
+Admin -> DishApiController: addDish(name, description, price, imageFile, category, dishStatus)
+DishApiController -> Utils: isAdmin()
+alt Admin is not authorized
+    Utils -> DishApiController: false
+    DishApiController -> Admin: ResponseEntity<String> (FORBIDDEN)
+else Admin is authorized
+    Utils -> DishApiController: true
+    alt Image is null or empty
+        DishApiController -> Admin: ResponseEntity<String> (BAD_REQUEST)
+    else Image is valid
+        DishApiController -> MultipartFile: getBytes()
+        MultipartFile -> DishApiController: byte[]
+        DishApiController -> Base64: encodeToString(bytes)
+        Base64 -> DishApiController: String (base64Image)
+        DishApiController -> DishService: save(dish)
+        DishService -> DishApiController: void
+        DishApiController -> Admin: ResponseEntity<String> (OK)
+    end
+end
+
+' Sequence for updating a dish
+Admin -> DishApiController: updateDish(id, newPrice, specialPrice)
+DishApiController -> Utils: isAdmin()
+alt Admin is not authorized
+    Utils -> DishApiController: false
+    DishApiController -> Admin: ResponseEntity<Void> (FORBIDDEN)
+else Admin is authorized
+    Utils -> DishApiController: true
+    DishApiController -> DishService: findById(id)
+    DishService -> DishApiController: Dish
+    alt Dish not found
+        DishApiController -> Admin: ResponseEntity<Void> (NOT_FOUND)
+    else Dish found
+        DishApiController -> DishService: save(dish)
+        DishService -> DishApiController: void
+        DishApiController -> Admin: ResponseEntity<Void> (OK)
+    end
+end
+
+' Sequence for deleting a dish
+Admin -> DishApiController: deleteDish(id)
+DishApiController -> Utils: isAdmin()
+alt Admin is not authorized
+    Utils -> DishApiController: false
+    DishApiController -> Admin: ResponseEntity<Void> (FORBIDDEN)
+else Admin is authorized
+    Utils -> DishApiController: true
+    DishApiController -> DishService: deleteById(id)
+    DishService -> DishApiController: void
+    DishApiController -> Admin: ResponseEntity<Void> (OK)
+end
+
+' Sequence for finding all dishes
+Admin -> DishApiController: findAll()
+DishApiController -> Utils: isAdmin()
+alt Admin is not authorized
+    Utils -> DishApiController: false
+    DishApiController -> Admin: ResponseEntity<List<Dish>> (FORBIDDEN)
+else Admin is authorized
+    Utils -> DishApiController: true
+    DishApiController -> DishService: findAll()
+    DishService -> DishApiController: List<Dish>
+    DishApiController -> Admin: ResponseEntity<List<Dish>> (OK)
+end
+
+@enduml

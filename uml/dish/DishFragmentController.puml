@@ -1,0 +1,25 @@
+@startuml
+actor Employee
+participant "Web Browser" as Browser
+participant "DishFragmentController" as Controller
+participant "DishService" as DishService
+participant "HTML Page" as Page
+
+Employee -> Browser: Request (GET /fragments/dish/list)
+Browser -> Controller: HTTP GET /fragments/dish/list
+Controller -> DishService: findAll()
+DishService -> Controller: List of Dishes
+alt User is admin
+    Controller -> Page: Render HTML (dish/fragments/adminDishes)
+else User is not admin
+    Controller -> Page: Render HTML (dish/fragments/menuDishes)
+end
+Page -> Browser: HTML Content
+Browser -> Employee: Display HTML Page
+
+Employee -> Browser: Request (GET /fragments/dish/form)
+Browser -> Controller: HTTP GET /fragments/dish/form
+Controller -> Page: Render HTML (dish/fragments/dishForm)
+Page -> Browser: HTML Content
+Browser -> Employee: Display HTML Page
+@enduml

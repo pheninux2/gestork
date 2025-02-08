@@ -1,0 +1,14 @@
+@startuml
+actor Admin
+Admin -> DishApiController: deleteDish(id: Long)
+DishApiController -> Utils: isAdmin()
+alt Admin is not authorized
+    Utils -> DishApiController: false
+    DishApiController -> Admin: ResponseEntity<Void> (FORBIDDEN)
+else Admin is authorized
+    Utils -> DishApiController: true
+    DishApiController -> DishService: deleteById(id)
+    DishService -> DishApiController: void
+    DishApiController -> Admin: ResponseEntity<Void> (OK)
+end
+@enduml

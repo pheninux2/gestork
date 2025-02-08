@@ -1,0 +1,53 @@
+@startuml
+class DishApiController {
+    - DishService dishService
+    - TemplateEngine templateEngine
+    + addDish(name: String, description: String, price: Double, imageFile: MultipartFile, category: String, dishStatus: DishStatus): ResponseEntity<String>
+    + updateDish(id: Long, newPrice: double, specialPrice: boolean): ResponseEntity<Void>
+    + deleteDish(id: Long): ResponseEntity<Void>
+    + findAll(): ResponseEntity<List<Dish>>
+}
+
+class DishService {
+    + save(dish: Dish)
+    + findById(id: Long): Dish
+    + deleteById(id: Long)
+    + findAll(): List<Dish>
+}
+
+class Dish {
+    - String name
+    - String description
+    - Double price
+    - String image
+    - Category category
+    - DishStatus status
+    + getName(): String
+    + getDescription(): String
+    + getPrice(): Double
+    + getImage(): String
+    + getCategory(): Category
+    + getStatus(): DishStatus
+}
+
+enum Category {
+        PLAT_CHEF,
+        PLAT,
+        ENTREE_CHAUDE,
+        ENTREE_FROIDE,
+        BOISSON_CHAUDE,
+        BOISSON_FROIDE,
+        DESSERT;
+}
+
+enum DishStatus {
+       AVAILABLE,
+       NOT_AVAILABLE,
+       COMING_SOON;
+}
+
+DishApiController --> DishService
+DishService --> Dish
+Dish --> Category
+Dish --> DishStatus
+@enduml

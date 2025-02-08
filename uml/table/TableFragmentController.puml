@@ -1,0 +1,26 @@
+@startuml
+actor Employee
+participant "Web Browser" as Browser
+participant "TableFragmentController" as Controller
+participant "EmployeeService" as EmployeeService
+participant "TableAssignmentService" as TableAssignmentService
+participant "HTML Page" as Page
+
+Employee -> Browser: Request (GET /employee/admin/fragment/assignTablesForm)
+Browser -> Controller: HTTP GET /employee/admin/fragment/assignTablesForm
+Controller -> EmployeeService: getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name"))
+EmployeeService -> Controller: List of Waiters
+Controller -> Page: Render HTML (table/fragment/assignTablesForm)
+Page -> Browser: HTML Content
+Browser -> Employee: Display HTML Page
+
+Employee -> Browser: Request (GET /employee/admin/fragment/assignedTablesList)
+Browser -> Controller: HTTP GET /employee/admin/fragment/assignedTablesList
+Controller -> EmployeeService: getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name"))
+EmployeeService -> Controller: List of Waiters
+Controller -> TableAssignmentService: getAssignedTableByEmployeeId(waiter.getEmployeeId())
+TableAssignmentService -> Controller: List of Assigned Tables
+Controller -> Page: Render HTML (table/fragment/assignedTablesList)
+Page -> Browser: HTML Content
+Browser -> Employee: Display HTML Page
+@enduml

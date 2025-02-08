@@ -1,0 +1,12 @@
+@startuml
+actor Customer
+participant "Web Browser" as Browser
+participant "MenuPageController" as Controller
+participant "HTML Page" as Page
+
+Customer -> Browser: Request (GET /customer/menu)
+Browser -> Controller: HTTP GET /customer/menu
+Controller -> Page: Render HTML (dish/layout/menu)
+Page -> Browser: HTML Content
+Browser -> Customer: Display HTML Page
+@enduml

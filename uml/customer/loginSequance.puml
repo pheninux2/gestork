@@ -1,0 +1,17 @@
+@startuml
+actor Customer
+Customer -> CustomerApiController: login(username: String, password: String)
+CustomerApiController -> AuthService: authenticate(username, password)
+alt Authentication failed
+    AuthService -> CustomerApiController: false
+    CustomerApiController -> Customer: ResponseEntity<String> (UNAUTHORIZED)
+else Authentication succeeded
+    AuthService -> CustomerApiController: true
+    CustomerApiController -> Customer: ResponseEntity<String> (OK)
+end
+
+Customer -> CustomerApiController: consultMenu()
+CustomerApiController -> DishService: findAll()
+DishService -> CustomerApiController: List<Dish>
+CustomerApiController -> Customer: ResponseEntity<List<Dish>> (OK)
+@enduml
