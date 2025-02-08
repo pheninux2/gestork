@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.web.employee.admin.view;
+package pheninux.xdev.gestork.web.employee.admin.fragment;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -14,19 +14,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/employee")
-public class TableViewController {
+@RequestMapping("/employee/admin/fragment")
+public class TableFragmentController {
 
-    private final EmployeeService employeeService;
     private final TableAssignmentService tableAssignmentService;
+    private final EmployeeService employeeService;
 
-    public TableViewController(EmployeeService employeeService, TableAssignmentService tableAssignmentService) {
-        this.employeeService = employeeService;
+
+    public TableFragmentController(TableAssignmentService tableAssignmentService, EmployeeService employeeService) {
         this.tableAssignmentService = tableAssignmentService;
+        this.employeeService = employeeService;
     }
 
-    @GetMapping("/admin/tables/assign")
-    public String showAssignTablesPage(Model model) {
+    @GetMapping("/assignTablesForm")
+    public String assignTablesList(Model model) {
+        model.addAttribute("waiters", employeeService.getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name")));
+        return "table/fragment/assignTablesForm";
+    }
+
+    @GetMapping("/assignedTablesList")
+    public String getAssignedTables(Model model) {
         List<AssignedTableDto> assignedTableDtoList = new ArrayList<>();
         employeeService.getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name")).forEach(waiter -> {
             AssignedTableDto assignedTableDto = new AssignedTableDto();
@@ -35,7 +42,6 @@ public class TableViewController {
             assignedTableDtoList.add(assignedTableDto);
         });
         model.addAttribute("employeeAssignedTables", assignedTableDtoList);
-        return "employee/admin/layout/assignTables";
+        return "table/fragment/assignedTablesList";
     }
-
 }

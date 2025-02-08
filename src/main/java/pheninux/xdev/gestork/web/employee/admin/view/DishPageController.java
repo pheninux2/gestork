@@ -1,20 +1,15 @@
 package pheninux.xdev.gestork.web.employee.admin.view;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pheninux.xdev.gestork.core.employee.model.EmployeeRole;
-import pheninux.xdev.gestork.core.employee.repository.EmployeeRepository;
-import pheninux.xdev.gestork.core.employee.service.EmployeeService;
 import pheninux.xdev.gestork.utils.Utils;
 
 import static pheninux.xdev.gestork.utils.Utils.isAdmin;
 
 @Controller
 @RequestMapping("/employee")
-public class DishViewController {
+public class DishPageController {
 
 
     @GetMapping("/admin/dish/add")

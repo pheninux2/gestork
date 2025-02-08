@@ -1,11 +1,10 @@
-package pheninux.xdev.gestork.web.employee.admin.fragment;
+package pheninux.xdev.gestork.web.employee.admin.view;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import pheninux.xdev.gestork.core.employee.model.EmployeeRole;
 import pheninux.xdev.gestork.core.employee.model.dto.AssignedTableDto;
 import pheninux.xdev.gestork.core.employee.service.EmployeeService;
@@ -15,26 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/employee/admin/fragment")
-public class fragmentTableController {
+@RequestMapping("/employee")
+public class TablePageController {
 
-    private final TableAssignmentService tableAssignmentService;
     private final EmployeeService employeeService;
+    private final TableAssignmentService tableAssignmentService;
 
-
-    public fragmentTableController(TableAssignmentService tableAssignmentService, EmployeeService employeeService) {
-        this.tableAssignmentService = tableAssignmentService;
+    public TablePageController(EmployeeService employeeService, TableAssignmentService tableAssignmentService) {
         this.employeeService = employeeService;
+        this.tableAssignmentService = tableAssignmentService;
     }
 
-    @GetMapping("/assignTablesForm")
-    public String assignTablesList(Model model) {
-        model.addAttribute("waiters", employeeService.getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name")));
-        return "table/fragment/assignTablesForm";
-    }
-
-    @GetMapping("/assignedTablesList")
-    public String getAssignedTables(Model model) {
+    @GetMapping("/admin/tables/assign")
+    public String showAssignTablesPage(Model model) {
         List<AssignedTableDto> assignedTableDtoList = new ArrayList<>();
         employeeService.getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name")).forEach(waiter -> {
             AssignedTableDto assignedTableDto = new AssignedTableDto();
@@ -43,6 +35,7 @@ public class fragmentTableController {
             assignedTableDtoList.add(assignedTableDto);
         });
         model.addAttribute("employeeAssignedTables", assignedTableDtoList);
-        return "table/fragment/assignedTablesList";
+        return "employee/admin/layout/assignTables";
     }
+
 }

@@ -112,7 +112,7 @@ public class DishApiController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<Void> deleteDish(@PathVariable Long id) {
 
         if (!Utils.isAdmin()) {

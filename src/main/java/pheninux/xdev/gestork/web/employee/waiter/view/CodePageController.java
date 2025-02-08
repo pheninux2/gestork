@@ -11,7 +11,7 @@ import static pheninux.xdev.gestork.utils.Utils.isWaiter;
 
 @Controller
 @RequestMapping("/waiter")
-public class CodeViewController {
+public class CodePageController {
 
     @GetMapping("/generateCode")
     public String displayGenerateCodePage() {

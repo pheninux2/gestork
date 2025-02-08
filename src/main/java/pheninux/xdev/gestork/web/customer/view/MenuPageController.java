@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/customer")
-public class LoginViewController {
-    @GetMapping("/login")
-    public String login() {
-        return "customer/login";
+public class MenuPageController {
+
+    @GetMapping("/menu")
+    public String menu() {
+        return "dish/layout/menu";
     }
 }

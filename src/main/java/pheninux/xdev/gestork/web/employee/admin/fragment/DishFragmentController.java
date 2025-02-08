@@ -11,11 +11,11 @@ import static pheninux.xdev.gestork.utils.Utils.isAdmin;
 
 @Controller
 @RequestMapping("/fragments/dish")
-public class FragmentDishController {
+public class DishFragmentController {
 
     private final DishService dishService;
 
-    public FragmentDishController(DishService dishService) {
+    public DishFragmentController(DishService dishService) {
         this.dishService = dishService;
     }
 
