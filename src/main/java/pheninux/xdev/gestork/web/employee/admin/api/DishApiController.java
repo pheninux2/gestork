@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.web.dish;
+package pheninux.xdev.gestork.web.employee.admin.api;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +22,14 @@ import java.util.List;
 import static pheninux.xdev.gestork.utils.Utils.renderAlertSingle;
 
 @Controller
-@RequestMapping("/api/dish")
-public class ApiDishController {
+@RequestMapping("/api/admin/dish")
+public class DishApiController {
 
-    private static final Logger log = LoggerFactory.getLogger(ApiDishController.class);
+    private static final Logger log = LoggerFactory.getLogger(DishApiController.class);
     private final DishService dishService;
     private final TemplateEngine templateEngine;
 
-    public ApiDishController(DishService dishService, TemplateEngine templateEngine) {
+    public DishApiController(DishService dishService, TemplateEngine templateEngine) {
         this.dishService = dishService;
         this.templateEngine = templateEngine;
     }

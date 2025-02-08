@@ -1,0 +1,17 @@
+<div class="form-container">
+    <form id="assignForm" hx-post="/employee/admin/table/assignTables" method="post" hx-swap="innerHTML"
+          hx-target="#response">
+        <label for="waiter">Sélectionner un Serveur:</label>
+        <select id="waiter" name="waiter" hx-trigger="change"
+                hx-get="/employee/admin/fragment/assignedTablesList"
+                hx-target="#response"
+                hx-include="[name='tables']">
+            <option th:each="waiter : ${waiters}" th:value="${waiter.getEmployeeId()}"
+                    th:text="${waiter.getLogin()}"></option>
+        </select>
+        <label for="tables">Tables à Affecter (séparées par des virgules):</label>
+        <input type="text" id="tables" name="tables" placeholder="Ex: 1,2,3,4">
+        <button type="submit">Affecter</button>
+    </form>
+    <div id="response"></div>
+</div>

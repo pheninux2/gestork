@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.web.employee.waiter;
+package pheninux.xdev.gestork.web.employee.waiter.api;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -19,13 +19,13 @@ import static pheninux.xdev.gestork.utils.Utils.*;
 
 @RestController
 @RequestMapping(value = "/api/waiter")
-public class WaiterApiController {
+public class CodeApiController {
 
-    private static final Logger log = LoggerFactory.getLogger(WaiterApiController.class);
+    private static final Logger log = LoggerFactory.getLogger(CodeApiController.class);
 
     private final TableService tableService;
 
-    public WaiterApiController(CustomerRepository customerRepository, TableRepository tableRepository, TableService tableService, AccessCodeService accessCodeService, BCryptPasswordEncoder passwordEncoder) {
+    public CodeApiController(CustomerRepository customerRepository, TableRepository tableRepository, TableService tableService, AccessCodeService accessCodeService, BCryptPasswordEncoder passwordEncoder) {
         this.tableService = tableService;
     }
 

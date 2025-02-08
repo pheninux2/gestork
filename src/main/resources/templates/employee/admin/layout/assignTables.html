@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Affecter des Tables</title>
+    <title>Affectation des Tables aux Serveurs</title>
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <script src="https://unpkg.com/htmx-ext-path-deps@2.0.0/path-deps.js"></script>
+    <script src="https://unpkg.com/htmx-ext-path-params@2.0.0/path-params.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -30,6 +35,10 @@
             color: #555;
         }
 
+        .alert {
+
+        }
+
         .form-container {
             background-color: white;
             border-radius: 12px;
@@ -37,41 +46,67 @@
             padding: 20px;
             margin: 15px;
             width: 100%;
-            max-width: 400px;
+            max-width: 800px;
             text-align: center;
         }
 
-        .form-container label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+        .search-container {
+            margin-bottom: 20px;
         }
 
-        .form-container select, .form-container input {
-            width: 150px;
+        .search-container input {
             padding: 10px;
-            margin: 10px auto;
             border: 1px solid #ccc;
             border-radius: 4px;
-            display: block;
+            width: 100%;
+            max-width: 300px;
         }
 
-        .form-container button {
+        .waiter {
+            border: 1px solid #007acc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fafafa;
+            text-align: left;
+        }
+
+        .waiter h2 {
+            color: #007acc;
+            margin: 0 0 10px;
+        }
+
+        .add-table {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .add-table input {
+            flex: 1;
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .add-table button {
             background-color: #007acc;
             color: white;
             padding: 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            width: calc(100% - 20px);
-            font-size: 16px;
-            margin: 10px auto;
             transition: background-color 0.3s;
-            display: block;
         }
 
-        .form-container button:hover {
+        .add-table button:hover {
             background-color: #005f99;
+        }
+
+        .empty-message {
+            color: #ff0000;
+            font-weight: bold;
         }
     </style>
     <script>
@@ -90,27 +125,39 @@
         }
 
         setInterval(updateDateTime, 1000);
+
+        function filterWaiters() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const waiters = document.querySelectorAll('.waiter');
+            waiters.forEach(waiter => {
+                const name = waiter.querySelector('h2').textContent.toLowerCase();
+                waiter.style.display = name.includes(input) ? '' : 'none';
+            });
+        }
     </script>
 </head>
 <body onload="updateDateTime()">
-<h1>Affectation des tables</h1>
+<h1>Affectation des Tables aux Serveurs</h1>
 <div class="date-time" id="date-time"></div>
-<div class="form-container">
-    <form hx-post="/employee/admin/table/assignTables" method="post" hx-trigger="submit" hx-swap="innerHTML" hx-target="#response">
-        <label for="waiter">Sélectionner un Serveur:</label>
-        <select id="waiter" name="waiter">
-            <option th:each="waiter : ${waiters}" th:value="${waiter.getEmployeeId()}" th:text="${waiter.getLogin()}"></option>
-        </select>
-        <label for="tables">Tables à Affecter (séparées par des virgules):</label>
-        <input type="text" id="tables" name="tables" placeholder="Ex: 1,2,3,4">
-        <button type="submit">Affecter</button>
-    </form>
-    <div id="response"></div>
+<div id="response" class="alert"></div>
+
+<div hx-ext="path-deps" class="form-container">
+    <div th:if="${!employeeAssignedTables.isEmpty()}" class="search-container">
+        <input type="text" id="searchInput" placeholder="Rechercher par nom..." onkeyup="filterWaiters()"/>
+    </div>
+    <div hx-get="/employee/admin/fragment/assignedTablesList"
+         hx-trigger="load"
+         hx-swap="innerHTML"></div>
+
+    <div class="empty-message" th:if="${employeeAssignedTables.isEmpty()}">Aucun serveur disponible.</div>
+    <div hx-get="/employee/admin/fragment/assignedTablesList" hx-trigger="path-deps" hx-target="#assignedTables"
+         path-deps="/api/admin/table/assignTables"></div>
 </div>
-</body>
+
 <script>
     htmx.on("htmx:configRequest", (e) => {
         e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
-    })
+    });
 </script>
+</body>
 </html>

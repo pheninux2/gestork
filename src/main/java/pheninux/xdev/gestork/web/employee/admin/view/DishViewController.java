@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.web.employee.admin;
+package pheninux.xdev.gestork.web.employee.admin.view;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -14,15 +14,7 @@ import static pheninux.xdev.gestork.utils.Utils.isAdmin;
 
 @Controller
 @RequestMapping("/employee")
-public class AdminViewController {
-
-    private final EmployeeService employeeService;
-    private final EmployeeRepository employeeRepository;
-
-    public AdminViewController(EmployeeService employeeService, EmployeeRepository employeeRepository) {
-        this.employeeService = employeeService;
-        this.employeeRepository = employeeRepository;
-    }
+public class DishViewController {
 
 
     @GetMapping("/admin/dish/add")
@@ -42,10 +34,5 @@ public class AdminViewController {
     }
 
 
-    @GetMapping("/admin/assignTables")
-    public String showAssignTablesPage(Model model) {
-        model.addAttribute("waiters", employeeService.getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name")));
-        return "employee/admin/layout/assignTables";
-    }
 
 }
