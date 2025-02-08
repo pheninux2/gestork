@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.web.employee.admin;
+package pheninux.xdev.gestork.web.employee.admin.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,20 +6,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import pheninux.xdev.gestork.core.table.service.EmployeeTableAssignmentService;
+import pheninux.xdev.gestork.core.table.service.TableAssignmentService;
 
 import java.net.URI;
 
 import static pheninux.xdev.gestork.utils.Utils.isAdmin;
 
 @Controller
-@RequestMapping("/employee/admin/table")
-public class AdminTableController {
+@RequestMapping("/api/admin/table")
+public class TableApiController {
 
-    private final EmployeeTableAssignmentService employeeTableAssignmentService;
+    private final TableAssignmentService tableAssignmentService;
 
-    public AdminTableController(EmployeeTableAssignmentService employeeTableAssignmentService) {
-        this.employeeTableAssignmentService = employeeTableAssignmentService;
+    public TableApiController(TableAssignmentService tableAssignmentService) {
+        this.tableAssignmentService = tableAssignmentService;
     }
 
     @PostMapping("/assignTables")
@@ -29,7 +29,7 @@ public class AdminTableController {
                     .location(URI.create("/error/403"))
                     .build();
         }
-        return employeeTableAssignmentService.assignEmployeeToTable(waiterId, tables);
+        return tableAssignmentService.assignTables(waiterId, tables);
 
     }
 }

@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.web.dish;
+package pheninux.xdev.gestork.web.employee.admin.fragment;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

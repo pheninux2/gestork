@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import pheninux.xdev.gestork.core.employee.model.Employee;
 
 @Entity
-public class EmployeeTableAssignment {
+public class TableAssignment {
 
 
-    public EmployeeTableAssignment() {
+    public TableAssignment() {
     }
 
     @Id
@@ -23,7 +23,7 @@ public class EmployeeTableAssignment {
     private int tableNumber;
 
 
-    public EmployeeTableAssignment(Employee employee, int tableNumber) {
+    public TableAssignment(Employee employee, int tableNumber) {
         this.employee = employee;
         this.tableNumber = tableNumber;
     }

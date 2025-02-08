@@ -1,4 +1,4 @@
-package pheninux.xdev.gestork.web.employee.waiter;
+package pheninux.xdev.gestork.web.employee.waiter.view;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +11,7 @@ import static pheninux.xdev.gestork.utils.Utils.isWaiter;
 
 @Controller
 @RequestMapping("/waiter")
-public class WaiterViewController {
+public class CodeViewController {
 
     @GetMapping("/generateCode")
     public String displayGenerateCodePage() {

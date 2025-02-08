@@ -1,0 +1,16 @@
+<div id="assignedTables">
+    <div  hx-ext="path-deps" th:each="assignedTables, iterStat : ${employeeAssignedTables}" class="waiter">
+        <h2 th:text="${assignedTables.getWaiter().name}"></h2>
+        <p th:id="tables+${iterStat.index}" hx-get="/employee/admin/fragment/assignedTablesList" hx-trigger="path-deps" hx-target="#toto"
+           path-deps="/api/admin/table/assignTables"
+           th:text="'Tables Affectées : ' + ${#strings.listJoin(assignedTables.getTables(), ',')}"></p>
+        <form class="add-table" hx-post="/api/admin/table/assignTables"
+              hx-target="#response" hx-swap="innerHTML">
+            <input type="text" placeholder="Nouvelle Tables exemple 1,2,3"
+                   th:name="tables"
+                   th:id="'newTables' + ${iterStat.index}"/>
+            <input type="hidden" name="waiter" th:value="${assignedTables.getWaiter().getEmployeeId()}"/>
+            <button th:id="${iterStat.index}" type="submit">Ajouter</button>
+        </form>
+    </div>
+</div>
