@@ -268,9 +268,14 @@
 <header>
     Gestion des Plats
 </header>
-
-<div id="dishesContainer" hx-get="/fragments/dish/list" hx-trigger="load" hx-target="#dishesContainer">
+<div>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Rechercher par nom..." onkeyup="filterDishes()"/>
+    </div>
+    <div id="dishesContainer" hx-get="/fragments/dish/list" hx-trigger="load" hx-target="#dishesContainer">
+    </div>
 </div>
+
 
 <!-- Modal de confirmation -->
 <div id="confirmationModal" class="modal" style="display:none;">
@@ -304,6 +309,15 @@
     htmx.on("htmx:configRequest", (e) => {
         e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
     });
+
+    function filterDishes() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const dish = document.querySelectorAll('.dish');
+        dish.forEach(d => {
+            const name = d.querySelector('h3').textContent.toLowerCase();
+            d.style.display = name.includes(input) ? '' : 'none';
+        });
+    }
 </script>
 </body>
 </html>
