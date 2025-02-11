@@ -1,5 +1,6 @@
 package pheninux.xdev.gestork.web.employee.waiter.view;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +15,9 @@ import static pheninux.xdev.gestork.utils.Utils.isWaiter;
 public class CodePageController {
 
     @GetMapping("/generateCode")
-    public String displayGenerateCodePage() {
+    public String displayGenerateCodePage(HttpServletResponse response) {
         if (!isAdmin() && !isWaiter()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "error/403";
         }
         return "employee/waiter/layout/generateCode";

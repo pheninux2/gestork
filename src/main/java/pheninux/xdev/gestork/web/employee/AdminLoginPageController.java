@@ -1,14 +1,15 @@
-package pheninux.xdev.gestork.web.customer;
+package pheninux.xdev.gestork.web.employee;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/customer")
-public class LoginPageController {
+@RequestMapping("/employee")
+public class AdminLoginPageController {
+
     @GetMapping("/login")
     public String login() {
-        return "customer/login";
+        return "employee/login";
     }
 }
