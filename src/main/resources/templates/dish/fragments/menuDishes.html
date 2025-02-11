@@ -22,7 +22,7 @@
                 </div>
                 <div class="price">
                     <span th:id="${dish.name}" th:text="${dish.price}+' €'" ></span>
-                    <i class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px"
+                    <i th:if="${dish.isAvailable()}" class="fas fa-plus-circle" style="cursor: pointer; margin-left: 15px"
                        th:data-name="${dish.name}"
                        th:data-price="${dish.price}"
                        onclick="addToCart(this.dataset.name, this.dataset.price)"></i>
