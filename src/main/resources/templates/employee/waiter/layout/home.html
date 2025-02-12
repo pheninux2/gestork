@@ -4,96 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil Employé</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #a2c2e9, #d0f4e8);
-            color: #333;
-            margin: 0;
-            padding: 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-        }
-
-        h1 {
-            color: #007acc; /* Couleur bleu pour le titre */
-            margin-bottom: 20px;
-        }
-
-        .date-time {
-            font-size: 16px;
-            margin-bottom: 20px;
-            color: #555;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            margin: 15px;
-            width: 200px;
-            text-align: center;
-            position: relative; /* Pour positionner le cercle */
-            transition: transform 0.3s;
-            display: flex; /* Utiliser flexbox */
-            flex-direction: column; /* Aligner les éléments verticalement */
-            align-items: center; /* Centrer le contenu horizontalement */
-        }
-
-        .card:hover {
-            transform: scale(1.05); /* Zoom léger au survol */
-        }
-
-        .button {
-            background-color: #007acc; /* Couleur bleu pour le bouton */
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%; /* Prendre toute la largeur disponible */
-            font-size: 16px;
-            margin-top: 10px; /* Espace au-dessus du bouton */
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: #005f99; /* Couleur bleu foncé au survol */
-        }
-
-        .card-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
         }
 
         .notification-circle {
-            position: absolute;
-            top: -10px; /* Ajuster la position selon le besoin */
-            right: -10px; /* Ajuster la position selon le besoin */
-            width: 30px;
-            height: 30px;
             background-color: #ff4d4d; /* Couleur rouge pour le cercle de notification */
+        }
+
+        .round-button {
+            background: #4ecdc4;
             color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
+            padding: 10px; /* Taille réduite */
+            border: none;
+            border-radius: 30px; /* Boutons ronds */
+            font-size: 14px; /* Taille de police réduite */
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 70%; /* Largeur pleine */
+            line-height: 1.00;
+
+        }
+
+        .round-button:hover {
+            background: #45b7b0;
+            letter-spacing: 1px;
         }
     </style>
     <script>
@@ -115,45 +58,45 @@
     </script>
 </head>
 <body onload="updateDateTime()">
-<img src="/img/logo_rest.jpeg" alt="Logo du Restaurant" class="logo"> <!-- Remplacez par le chemin de votre logo -->
-<h1>Bienvenue, <span th:text="${username}">Employé</span></h1> <!-- Variable Thymeleaf -->
-<div class="date-time" id="date-time"></div>
-<div class="card-container">
-    <div class="card">
-        <h3>Générer un code d'accès</h3>
-        <button class="button" onclick="location.href='/waiter/generateCode'">
-            Accéder
-        </button>
-        <div id="response" style="display: none"></div>
-    </div>
-    <div class="card">
-        <h3>Consulter mes tables</h3>
-        <button class="button" onclick="location.href='/manage-tables'">Accéder</button>
-    </div>
-    <div class="card">
-        <h3>Prendre une commande</h3> <!-- Nouvelle carte ajoutée -->
-        <button class="button" onclick="location.href='/customer/menu'">Accéder</button>
-    </div>
-    <div class="card">
-        <h3>Consulter les commandes</h3>
-        <div class="notification-circle" th:text="${notificationOrders}">0</div> <!-- Notification dynamique -->
-        <button class="button" onclick="location.href='/view-orders'">Accéder</button>
-    </div>
-    <div class="card">
-        <h3>Voir les demandes des clients</h3>
-        <div class="notification-circle" th:text="${notificationRequests}">0</div> <!-- Notification dynamique -->
-        <button class="button" onclick="location.href='/customer-requests'">Accéder</button>
-    </div>
-    <div class="card">
-        <h3>Plats en cuisine</h3>
-        <div class="notification-circle" th:text="${notificationDishes}">0</div> <!-- Notification dynamique -->
-        <button class="button" onclick="location.href='/dishes-in-kitchen'">Accéder</button>
+<div class="flex flex-col items-center justify-center p-5">
+    <img src="/img/logo_rest.jpeg" alt="Logo du Restaurant" class="w-20 h-20 rounded-full mb-5">
+    <h1 class="text-2xl font-semibold text-blue-700 mb-2">Bienvenue, <span th:text="${username}">Employé</span></h1>
+    <div class="date-time text-gray-600 mb-5" id="date-time"></div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow-lg p-4 text-center transition-transform duration-300 hover:scale-105">
+            <h3 class="text-lg font-medium text-blue-700">Générer un code d'accès</h3>
+            <button class="round-button mt-2" onclick="location.href='/waiter/generateCode'">Accéder</button>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-4 text-center transition-transform duration-300 hover:scale-105">
+            <h3 class="text-lg font-medium text-blue-700">Consulter mes tables</h3>
+            <button class="round-button mt-2" onclick="location.href='/manage-tables'">Accéder</button>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-4 text-center transition-transform duration-300 hover:scale-105">
+            <h3 class="text-lg font-medium text-blue-700">Prendre une commande</h3>
+            <button class="round-button mt-2" onclick="location.href='/customer/menu'">Accéder</button>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-4 text-center transition-transform duration-300 hover:scale-105 relative">
+            <h3 class="text-lg font-medium text-blue-700">Consulter les commandes</h3>
+            <div class="notification-circle absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 rounded-full w-8 h-8 flex items-center justify-center text-white font-bold"
+                 th:text="${notificationOrders}">0
+            </div>
+            <button class="round-button mt-2" onclick="location.href='/view-orders'">Accéder</button>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-4 text-center transition-transform duration-300 hover:scale-105 relative">
+            <h3 class="text-lg font-medium text-blue-700">Voir les demandes des clients</h3>
+            <div class="notification-circle absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 rounded-full w-8 h-8 flex items-center justify-center text-white font-bold"
+                 th:text="${notificationRequests}">0
+            </div>
+            <button class="round-button mt-2" onclick="location.href='/customer-requests'">Accéder</button>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-4 text-center transition-transform duration-300 hover:scale-105 relative">
+            <h3 class="text-lg font-medium text-blue-700">Plats en cuisine</h3>
+            <div class="notification-circle absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 rounded-full w-8 h-8 flex items-center justify-center text-white font-bold"
+                 th:text="${notificationDishes}">0
+            </div>
+            <button class="round-button mt-2" onclick="location.href='/dishes-in-kitchen'">Accéder</button>
+        </div>
     </div>
 </div>
 </body>
-<script>
-    // htmx.on("htmx:configRequest", (e) => {
-    //     e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
-    // })
-</script>
 </html>

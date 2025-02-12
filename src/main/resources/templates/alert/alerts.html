@@ -15,6 +15,25 @@
     }, 5000);</script>
 </div>
 
+<div th:fragment="toast-danger(message)">
+    <div class="toast bg-red-600 text-white p-4 rounded-lg shadow-lg mb-4 w-full max-w-xs absolute bottom-16 reset">
+        <strong>Erreur !</strong> <span th:text="${message}" id="toast-message"></span>
+    </div>
+    <script>
+        const toast = document.querySelector('.toast');
+        toast.classList.remove('reset'); // Supprime la classe reset pour appliquer les styles de transition
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            toast.classList.add('reset'); // Réinitialise le toast après avoir retiré la classe show
+            setTimeout(() => {
+                toast.remove(); // Supprime le toast après l'animation
+            }, 500); // Temps pour l'animation de retrait
+        }, 3000);
+    </script>
+</div>
+
 <div th:fragment="alert-warning-single(message)">
     <div class="alert alert-warning"
          style="margin-top: 20px; border: 1px solid #ffc107; background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
