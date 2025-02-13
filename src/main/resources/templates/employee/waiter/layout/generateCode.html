@@ -4,80 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Générer un Code d'Accès</title>
-    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #a2c2e9, #d0f4e8);
-            color: #333;
+        * {
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
         }
 
-        h1 {
-            color: #007acc; /* Couleur bleu pour le titre */
-            margin-bottom: 20px;
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
         }
 
         .form-container {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center; /* Centre le texte */
-            display: flex;
-            flex-direction: column; /* Aligne les enfants en colonne */
-            align-items: center; /* Centre les enfants horizontalement */
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 450px;
+            margin: 0 auto; /* Centrage supplémentaire */
         }
 
-        .form-group {
-            margin-bottom: 15px;
-            width: 100%; /* Prend toute la largeur */
-            text-align: left; /* Aligne le texte à gauche */
+        .form-title {
+            color: #2d3436;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2em;
+            font-weight: 600;
+            position: relative;
         }
 
-        label {
+        .form-title::after {
+            content: '';
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            width: 50px;
+            height: 3px;
+            background: #4ecdc4;
+            margin: 10px auto;
         }
 
-        input[type="text"], input[type="number"] {
-            width: 100%; /* Prend toute la largeur du conteneur */
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
             font-size: 16px;
+            transition: all 0.3s ease;
         }
 
-        .button {
-            background-color: #007acc; /* Couleur bleu pour le bouton */
+        .input-group input:focus {
+            border-color: #4ecdc4;
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.2);
+            outline: none;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        .submit-btn {
+            background: #4ecdc4;
             color: white;
-            padding: 10px 15px;
+            padding: 15px;
+            width: 100%;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;margin-left: 15px;
+            border-radius: 30px;
             font-size: 16px;
-            transition: background-color 0.3s;
-            width: 100%; /* Prend toute la largeur */
-            margin-top: 10px; /* Marge pour espacer le bouton des inputs */
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .button:hover {
-            background-color: #005f99; /* Couleur bleu foncé au survol */
+        .submit-btn:hover {
+            background: #45b7b0;
+            letter-spacing: 2px;
         }
 
         .back-link {
+            display: block; /* Pour centrer */
             margin-top: 20px;
             text-decoration: none;
             color: #007acc;
+            text-align: center; /* Centrer le texte du lien */
         }
 
         .back-link:hover {
@@ -88,25 +111,27 @@
 <body>
 
 <div class="form-container">
+    <h1 class="form-title">Générer un Code d'Accès</h1>
     <form id="generateCodeForm"
           method="post"
           hx-post="/api/waiter/generateCode"
           hx-swap="innerHTML"
           hx-target="#response">
-        <div class="form-group">
-            <label for="clientLogin">Login du Client</label>
-            <input type="text" id="clientLogin" name="clientLogin" required>
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="clientLogin" name="clientLogin" placeholder="Login du Client" required>
         </div>
-        <div class="form-group">
-            <label for="tableNumber">Numéro de Table</label>
-            <input type="number" id="tableNumber" name="tableNumber" required>
+        <div class="input-group">
+            <i class="fas fa-table"></i> <!-- Icône de table -->
+            <input type="number" id="tableNumber" name="tableNumber" placeholder="Numéro de Table" required>
         </div>
-        <button type="submit" class="button">Générer le Code</button>
+        <button type="submit" class="submit-btn">Générer le Code</button>
     </form>
     <div id="response"></div>
     <a href="/employee/home" class="back-link">Retour à l'accueil</a>
 </div>
-</body>
+
+<script src="https://unpkg.com/htmx.org@1.9.3"></script>
 <script>
     htmx.on("htmx:configRequest", (e) => {
         e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
@@ -129,4 +154,6 @@
         });
     });
 </script>
+
+</body>
 </html>

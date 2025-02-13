@@ -4,24 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil Employé</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #a2c2e9, #d0f4e8);
-            color: #333;
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: #333;
+            padding: 20px;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
         }
 
         h1 {
-            color: #007acc; /* Couleur bleu pour le titre */
+            color: #2d3436;
             margin-bottom: 20px;
+            font-size: 2em;
+            font-weight: 600;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: #4ecdc4;
+            margin: 10px auto;
         }
 
         .date-time {
@@ -39,39 +58,40 @@
         }
 
         .card {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             padding: 20px;
             margin: 15px;
             width: 200px;
             text-align: center;
-            position: relative; /* Pour positionner le cercle */
+            position: relative;
             transition: transform 0.3s;
-            display: flex; /* Utiliser flexbox */
-            flex-direction: column; /* Aligner les éléments verticalement */
-            align-items: center; /* Centrer le contenu horizontalement */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .card:hover {
-            transform: scale(1.05); /* Zoom léger au survol */
+            transform: scale(1.05);
         }
 
         .button {
-            background-color: #007acc; /* Couleur bleu pour le bouton */
+            background-color: #4ecdc4;
             color: white;
-            padding: 10px;
+            padding: 8px;
             border: none;
-            border-radius: 4px;
+            border-radius: 30px;
             cursor: pointer;
-            width: 100%; /* Prendre toute la largeur disponible */
+            width: 100%;
             font-size: 16px;
-            margin-top: 10px; /* Espace au-dessus du bouton */
+            margin-top: 10px;
             transition: background-color 0.3s;
         }
 
         .button:hover {
-            background-color: #005f99; /* Couleur bleu foncé au survol */
+            background-color: #45b7b0;
         }
 
         .card-container {
@@ -82,11 +102,11 @@
 
         .notification-circle {
             position: absolute;
-            top: -10px; /* Ajuster la position selon le besoin */
-            right: -10px; /* Ajuster la position selon le besoin */
+            top: -10px;
+            right: -10px;
             width: 30px;
             height: 30px;
-            background-color: #ff4d4d; /* Couleur rouge pour le cercle de notification */
+            background-color: #ff4d4d;
             color: white;
             border-radius: 50%;
             display: flex;
@@ -94,6 +114,49 @@
             justify-content: center;
             font-size: 14px;
             font-weight: bold;
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 1024px) {
+            .card {
+                width: 180px;
+            }
+
+            .button {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                width: 160px;
+            }
+
+            .button {
+                font-size: 12px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 140px;
+            }
+
+            .button {
+                font-size: 10px;
+            }
+
+            h1 {
+                font-size: 1.2em;
+            }
+
+            .date-time {
+                font-size: 14px;
+            }
         }
     </style>
     <script>
@@ -111,49 +174,41 @@
             document.getElementById('date-time').innerText = now.toLocaleDateString('fr-FR', options);
         }
 
-        setInterval(updateDateTime, 1000); // Met à jour chaque seconde
+        setInterval(updateDateTime, 1000);
     </script>
 </head>
 <body onload="updateDateTime()">
-<img src="/img/logo_rest.jpeg" alt="Logo du Restaurant" class="logo"> <!-- Remplacez par le chemin de votre logo -->
-<h1>Bienvenue, <span th:text="${username}">Employé</span></h1> <!-- Variable Thymeleaf -->
+<img src="/img/logo_rest.jpeg" alt="Logo du Restaurant" class="logo">
+<h1>Bienvenue, <span th:text="${username}">Employé</span></h1>
 <div class="date-time" id="date-time"></div>
 <div class="card-container">
     <div class="card">
         <h3>Générer un code d'accès</h3>
-        <button class="button" onclick="location.href='/waiter/generateCode'">
-            Accéder
-        </button>
-        <div id="response" style="display: none"></div>
+        <button class="button" onclick="location.href='/waiter/generateCode'">Accéder</button>
     </div>
     <div class="card">
         <h3>Consulter mes tables</h3>
         <button class="button" onclick="location.href='/manage-tables'">Accéder</button>
     </div>
     <div class="card">
-        <h3>Prendre une commande</h3> <!-- Nouvelle carte ajoutée -->
+        <h3>Prendre une commande</h3>
         <button class="button" onclick="location.href='/customer/menu'">Accéder</button>
     </div>
     <div class="card">
         <h3>Consulter les commandes</h3>
-        <div class="notification-circle" th:text="${notificationOrders}">0</div> <!-- Notification dynamique -->
+        <div class="notification-circle" th:text="${notificationOrders}">0</div>
         <button class="button" onclick="location.href='/view-orders'">Accéder</button>
     </div>
     <div class="card">
         <h3>Voir les demandes des clients</h3>
-        <div class="notification-circle" th:text="${notificationRequests}">0</div> <!-- Notification dynamique -->
+        <div class="notification-circle" th:text="${notificationRequests}">0</div>
         <button class="button" onclick="location.href='/customer-requests'">Accéder</button>
     </div>
     <div class="card">
         <h3>Plats en cuisine</h3>
-        <div class="notification-circle" th:text="${notificationDishes}">0</div> <!-- Notification dynamique -->
+        <div class="notification-circle" th:text="${notificationDishes}">0</div>
         <button class="button" onclick="location.href='/dishes-in-kitchen'">Accéder</button>
     </div>
 </div>
 </body>
-<script>
-    // htmx.on("htmx:configRequest", (e) => {
-    //     e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
-    // })
-</script>
 </html>

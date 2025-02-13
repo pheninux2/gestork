@@ -1,101 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentification</title>
+    <title>Login Centré</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #a2c2e9, #d0f4e8);
-            color: #333;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
         }
 
-        .container {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
+            margin: 0 auto; /* Centrage supplémentaire */
+        }
+
+        .login-title {
+            color: #2d3436;
             text-align: center;
+            margin-bottom: 40px;
+            font-size: 2em;
+            font-weight: 600;
+            position: relative;
         }
 
-        .logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 20px;
-        }
-
-        h1 {
-            color: #007acc; /* Couleur bleu pour le titre */
-            margin-bottom: 20px;
-        }
-
-        label {
+        .login-title::after {
+            content: '';
             display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
-            text-align: left; /* Aligner le texte à gauche */
+            width: 50px;
+            height: 3px;
+            background: #4ecdc4;
+            margin: 10px auto;
         }
 
         .input-group {
-            margin-bottom: 15px; /* Espacement entre les champs */
-            text-align: left; /* Assure l'alignement à gauche */
+            margin-bottom: 25px;
+            position: relative;
         }
 
-        input[type="text"],
-        input[type="password"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #007acc; /* Couleur bleu pour le bouton */
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;margin-left: 15px;
-            width: 80%; /* Réduit la largeur du bouton */
+        .input-group input {
+            width: 100%;
+            padding: 15px 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
             font-size: 16px;
-            margin-top: 10px; /* Ajoute une marge en haut */
+            transition: all 0.3s ease;
         }
 
-        button:hover {
-            background-color: #005f99; /* Couleur bleu foncé au survol */
+        .input-group input:focus {
+            border-color: #4ecdc4;
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.2);
+            outline: none;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        .login-btn {
+            background: #4ecdc4;
+            color: white;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #45b7b0;
+            letter-spacing: 2px;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .links a {
+            color: #7f8c8d;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #4ecdc4;
+        }
+
+        .separator {
+            margin: 0 10px;
+            color: #7f8c8d;
+        }
+
+        .toast {
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            opacity: 0;
+            transform: translateY(100%);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <img src="/img/logo_rest.jpeg" alt="Logo du Restaurant" class="logo"> <!-- Remplacez par le chemin de votre logo -->
-    <h1>Connexion</h1>
-    <form id="loginFormEmployee" method="post" hx-post="/employee/authenticate" hx-target="#response"
+<div class="login-container">
+    <h1 class="login-title">Connexion</h1>
+    <form method="post" hx-post="/employee/authenticate" hx-target="#response"
           hx-swap="innerHTML">
         <div class="input-group">
-            <label for="username">Login:</label> <!-- Label pour le champ Login -->
-            <input type="text" id="username" name="username" required>
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Nom d'utilisateur" name="username" required>
         </div>
+
         <div class="input-group">
-            <label for="password">Mot de passe:</label> <!-- Label pour le champ Mot de passe -->
-            <input type="password" id="password" name="password" required>
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Mot de passe" name="password" required>
         </div>
-        <div id="response"></div>
-        <button type="submit">LOGIN</button>
+
+        <button type="submit" class="login-btn">Se connecter</button>
+
+        <div class="links">
+            <a href="#">Mot de passe oublié?</a>
+            <span class="separator">|</span>
+            <a href="#">Créer un compte</a>
+        </div>
     </form>
+    <div id="response"></div>
 </div>
 </body>
-</html>

@@ -1,6 +1,9 @@
 package pheninux.xdev.gestork.core.dish.model;
 
 import jakarta.persistence.*;
+import pheninux.xdev.gestork.core.order.model.OrderEntity;
+
+import java.util.List;
 
 
 @Entity
@@ -12,7 +15,7 @@ public class Dish {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long dishId;
 
     private String name;
 
@@ -31,12 +34,15 @@ public class Dish {
     @Enumerated(EnumType.STRING)
     private DishStatus status;
 
+    @ManyToMany(mappedBy = "dishes", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderEntity> orders;
+
     public Long getId() {
-        return id;
+        return dishId;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.dishId = id;
     }
 
     public String getName() {
@@ -101,6 +107,22 @@ public class Dish {
 
     public boolean isNotAvailable() {
         return status == DishStatus.NOT_AVAILABLE;
+    }
+
+    public List<OrderEntity> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderEntity> orders) {
+        this.orders = orders;
+    }
+
+    public Long getDishId() {
+        return dishId;
+    }
+
+    public void setDishId(Long dishId) {
+        this.dishId = dishId;
     }
 
     public boolean isComingSoon() {

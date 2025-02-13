@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast Notification</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .toast {
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            opacity: 0;
+            transform: translateY(100%);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+
+<div id="toast" class="toast bg-green-600 text-white p-4 rounded-lg shadow-lg mb-4 w-full max-w-xs absolute bottom-16">
+    <strong>Succès !</strong> <span id="toast-message">Votre action a été réalisée avec succès.</span>
+</div>
+
+<button id="show-toast" class="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4">
+    Afficher la notification
+</button>
+
+<script>
+    document.getElementById('show-toast').addEventListener('click', function() {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000); // La notification disparaît après 3 secondes
+    });
+</script>
+
+</body>
+</html>

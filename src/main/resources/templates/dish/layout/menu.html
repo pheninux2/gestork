@@ -4,33 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu du Restaurant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
     <script src="/js/menu.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #fff3e0;
-            color: #333;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            padding: 20px; /* Ajout de padding global */
-            margin-bottom: 50px;
-        }
-
-        header {
-            background-color: #e53935;
-            padding: 15px;
-            text-align: center;
-            color: white;
-            font-size: 2.5em;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            margin-bottom: 20px; /* Margin pour espacer le header */
-            margin-top: 50px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: #333;
+            padding: 20px;
+            margin-top: 100px;
         }
 
         .button-container {
@@ -41,23 +34,33 @@
             top: 0;
             left: 0;
             right: 0;
-            background-color: #f57c20;
+            background-color: rgba(255, 255, 255, 0.95);
             padding: 10px 20px;
             z-index: 1000;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
 
         .total-price {
             font-family: 'Roboto', sans-serif;
             font-size: 1.8em;
-            color: white;
+            color: #2d3436;
             margin: 0;
         }
 
+        .menu-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.8em;
+            color: #2d3436;
+            margin: 0;
+            text-align: center;
+            flex-grow: 1;
+        }
+
         .button {
-            background-color: #ffb300;
+            background-color: #4ecdc4;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             padding: 10px 20px;
             margin: 0 10px;
             cursor: pointer;
@@ -68,11 +71,11 @@
         }
 
         .button:hover {
-            background-color: #ffa000;
+            background-color: #45b7b0;
         }
 
         .category {
-            margin: 80px auto 20px; /* Margin pour espacer les catégories */
+            margin: 100px auto 20px;
             width: 90%;
             max-width: 800px;
         }
@@ -81,7 +84,7 @@
             border-bottom: 2px solid #f57c20;
             padding-bottom: 5px;
             color: #e53935;
-            margin-bottom: 10px; /* Margin pour espacer les titres */
+            margin-bottom: 10px;
         }
 
         .dish {
@@ -104,12 +107,6 @@
             margin-right: 15px;
         }
 
-        @media (max-width: 768px) {
-            .dish img {
-                margin-right: 0; /* Ajustement pour les petits écrans */
-            }
-        }
-
         .details {
             flex-grow: 1;
             display: flex;
@@ -129,21 +126,31 @@
             width: 100%;
         }
 
+        .price .dish-price {
+            margin-right: 5px;
+        }
+
         .availability {
+            display: inline-block;
+        }
+
+        .available {
             color: green;
-            font-weight: bold;
         }
 
         .unavailable {
             color: red;
-            font-weight: bold;
+        }
+
+        .coming-soon {
+            color: orange;
         }
 
         .price-special {
             position: absolute;
             top: 10px;
             left: 10px;
-            background-color: #4caf50; /* Couleur verte */
+            background-color: #4caf50;
             color: white;
             padding: 5px;
             border-radius: 5px;
@@ -151,41 +158,29 @@
             transform: rotate(-45deg);
             width: 100px;
             text-align: center;
-            display: none; /* Masqué par défaut */
+            display: none;
         }
 
         .dish:hover .price-special {
-            display: block; /* Afficher au survol */
+            display: block;
         }
 
         .alert-price-special {
-            background-color: #ffcc00; /* Jaune */
-            color: #000; /* Noir */
+            background-color: #ffcc00;
+            color: #000;
             padding: 5px 10px;
             border-radius: 5px;
-            position: absolute; /* Pour le placer dans le coin */
-            bottom: 10px; /* Ajustez selon vos besoins */
-            right: 10px; /* Ajustez selon vos besoins */
-            font-weight: bold;
-        }
-
-        .status {
-            position: absolute; /* En haut à droite par défaut */
-            top: 10px;
+            position: absolute;
+            bottom: 10px;
             right: 10px;
             font-weight: bold;
         }
 
-        /* Media query pour les écrans plus petits */
-        @media (max-width: 768px) {
-            .status {
-                position: relative; /* Déplace en bas à gauche */
-                top: auto;
-                right: auto;
-                left: 0;
-                bottom: 0;
-                margin-top: 10px; /* Espace en bas */
-            }
+        .status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-weight: bold;
         }
 
         footer {
@@ -213,28 +208,59 @@
 
         .modal .confirmBtn {
             display: inline-block;
-            padding: 12px; /* Espacement supplémentaire */
-            font-size: 1.2em; /* Agrandir la taille de police */
-            margin-top: 20px; /* Espace au-dessus du bouton */
-            text-align: center; /* Centrer le texte du bouton */
+            padding: 12px;
+            font-size: 1.2em;
+            margin-top: 20px;
+            text-align: center;
+            background-color: #4ecdc4;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .modal .confirmBtn:hover {
+            background-color: #45b7b0;
         }
 
         .modal-content {
-            background-color: #fff; /* Couleur de fond blanche */
+            background-color: rgba(255, 255, 255, 0.95);
             margin: 5% auto;
-            padding: 20px;
+            padding: 40px 30px;
             border: 1px solid #888;
             width: 80%;
             max-width: 500px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             animation: fadeIn 0.3s;
-            color: #333; /* Couleur du texte */
+            color: #333;
+        }
+
+        h3 {
+            font-weight: 600;
+        }
+
+        h2 {
+            font-weight: 900;
         }
 
         .modal-content h3 {
-            color: #e53935; /* Couleur du titre */
-            margin-bottom: 20px; /* Espacement sous le titre */
+            color: #2d3436;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2em;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .modal-content h3::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: #4ecdc4;
+            margin: 10px auto;
         }
 
         .modal ul {
@@ -250,32 +276,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #f9f9f9; /* Couleur de fond des éléments */
-            border-radius: 5px; /* Coins arrondis */
-            transition: background-color 0.3s; /* Effet de transition */
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
 
         .modal ul li:hover {
-            background-color: #ffe0b2; /* Couleur de survol */
+            background-color: #ffe0b2;
         }
 
         strong {
-            color: #4caf50; /* Couleur du prix */
-            margin-right: 20px; /* Espace à droite du prix */
+            color: #4caf50;
+            margin-right: 20px;
         }
 
         button {
-            background-color: #ffb300; /* Couleur de fond des boutons */
-            color: white; /* Couleur du texte des boutons */
+            background-color: #4ecdc4;
+            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             padding: 5px 10px;
             cursor: pointer;
-            transition: background-color 0.3s; /* Effet de transition */
+            transition: background-color 0.3s;
         }
 
         button:hover {
-            background-color: #ffa000; /* Couleur de survol des boutons */
+            background-color: #45b7b0;
         }
 
         @keyframes fadeIn {
@@ -289,7 +315,9 @@
 
         .close {
             color: #aaa;
-            float: right;
+            position: absolute;
+            top: 10px; /* Adjusted to move higher */
+            right: 10px; /* Adjusted to move to the right */
             font-size: 28px;
             font-weight: bold;
         }
@@ -301,88 +329,59 @@
             cursor: pointer;
         }
 
-        .modal ul {
-            list-style-type: none;
-            padding: 0;
-            margin-bottom: 40px;
-        }
-
-        .modal ul li {
-            margin: 10px 0;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal ul li .remove {
-            cursor: pointer;
-            color: red;
-            font-weight: bold;
-        }
-
-        .modal #orderTotal {
-            color: #e53935; /* Couleur du texte pour le total */
-            margin-top: 20px; /* Espacement au-dessus du total */
-            text-align: right; /* Aligner le texte à droite */
-            padding: 10px; /* Ajouter du padding pour un meilleur rendu */
-            background-color: #ffe0b2; /* Couleur de fond pour le total */
-            border-radius: 5px; /* Coins arrondis */
-            border: 1px solid #e53935; /* Bordure pour délimiter le total */
-        }
-
-        /* Media Queries pour les appareils mobiles */
         @media (max-width: 768px) {
-            header {
-                font-size: 2em; /* Réduit la taille de la police sur mobile */
-                margin-top: 150px;
-            }
-
             .button-container {
                 flex-direction: column;
                 align-items: stretch;
             }
 
+            body {
+                margin-top: 150px;
+            }
+
             .button {
                 width: 100%;
-                margin: 5px 0; /* Ajoute de l'espace entre les boutons */
+                margin: 5px 0;
             }
 
             .dish {
-                flex-direction: column; /* Affiche les plats en colonne */
+                flex-direction: column;
             }
 
             .details {
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between; /* Espace entre les éléments, pousse le statut en bas */
-                height: 100%; /* Assure que la zone prend toute la hauteur disponible */
+                justify-content: space-between;
+                height: 100%;
                 padding: 10px;
                 position: relative;
             }
 
             .price {
-                justify-content: flex-start; /* Aligne le prix à gauche */
+                justify-content: flex-start;
             }
         }
 
         @media (max-width: 480px) {
             .total-price {
-                font-size: 1.5em; /* Réduit encore la taille de la police pour les très petits écrans */
+                font-size: 1.5em;
+            }
+
+            body {
+                margin-top: 150px;
             }
 
             h2 {
-                font-size: 1.5em; /* Taille de police réduite pour les titres */
+                font-size: 1.5em;
             }
 
             .button {
-                font-size: 1em; /* Réduit la taille de la police des boutons */
+                font-size: 1em;
             }
         }
 
         .tooltip {
-            display: none; /* Cacher par défaut */
+            display: none;
             position: absolute;
             background-color: #f57c20;
             color: white;
@@ -391,26 +390,19 @@
             z-index: 100;
             margin-top: 5px;
         }
-
     </style>
 </head>
 <body>
 
-<header>
-    Menu du Restaurant
-</header>
-
 <div class="button-container">
     <div class="total-price" id="totalPrice">Total : 0.00€</div>
+    <div class="menu-title">Menu</div>
     <button class="button" onclick="showDetails()">Panier (0)</button>
     <div id="tooltip" class="tooltip">Aucun plat sélectionné</div>
 </div>
 
-<div id="menu" hx-get="/fragments/dish/list" hx-trigger="load" hx-target="#menu">
+<div id="menu" hx-get="/fragments/dish/list" hx-trigger="load" hx-target="#menu"></div>
 
-</div>
-
-<!-- Modal -->
 <div id="orderModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
@@ -430,7 +422,7 @@
 <script>
     htmx.on("htmx:configRequest", (e) => {
         e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
-    })
+    });
 </script>
 </body>
 </html>
