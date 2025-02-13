@@ -9,13 +9,16 @@
     <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
+            font-family: 'Roboto', sans-serif;
             background-color: #fff3e0;
             color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
         }
 
         header {
@@ -24,21 +27,51 @@
             text-align: center;
             color: white;
             font-size: 2em;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 80px; /* Adjust based on header height */
+            margin-bottom: 40px; /* Adjust based on footer height */
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
             margin-bottom: 20px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 300px;
         }
 
         .dish-container {
-            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
         }
 
         .dish {
+            display: flex;
             align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
             background-color: #ffffff;
-            flex-wrap: wrap; /* Permet aux éléments de passer à la ligne si nécessaire */
         }
 
         .dish img {
@@ -49,102 +82,104 @@
         }
 
         .details {
-            margin-bottom: 15px; /* Espace entre les plats */
+            flex: 1;
         }
 
         .form-container {
-            display: flex; /* Utilise flexbox pour organiser les éléments */
-            flex-direction: column; /* Aligne les éléments verticalement */
-            margin-top: 10px; /* Espace au-dessus du formulaire */
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
         }
 
         .form-group {
-            display: flex; /* Utilise flexbox pour aligner le label et l'input */
-            align-items: center; /* Aligne verticalement */
-            margin-bottom: 5px; /* Espace entre les groupes de formulaires */
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
         .form-group label {
-            flex: 0 0 150px; /* Largeur fixe pour les labels */
-            margin-right: 10px; /* Espace entre le label et l'input */
+            flex: 0 0 150px;
+            margin-right: 10px;
         }
 
         .input-group {
-            display: flex; /* Utilise flexbox pour aligner l'input et le symbole */
-            align-items: center; /* Aligne verticalement */
+            display: flex;
+            align-items: center;
         }
 
         .input-group input[type="number"] {
-            width: 100px; /* Largeur de l'input pour le prix */
-            margin-right: 5px; /* Espace entre l'input et le symbole */
+            width: 100px;
+            margin-right: 5px;
         }
 
         .euro-symbol {
-            font-weight: bold; /* Met le symbole en gras */
-            font-size: 1.2em; /* Ajuste la taille du symbole */
+            font-weight: bold;
+            font-size: 1.2em;
         }
 
         .form-group input[type="checkbox"] {
-            margin-left: 5px; /* Ajoute de l'espace à gauche pour le checkbox */
+            margin-left: 5px;
         }
 
         .button-container {
             display: flex;
-            justify-content: center; /* Centre les boutons horizontalement */
-            gap: 10px; /* Espace entre les boutons */
-            margin-top: 10px; /* Espacement au-dessus des boutons */
-        }
-
-
-        .button:hover {
-            background-color: #45a049; /* Couleur du bouton au survol */
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
         }
 
         .button {
-            position: relative; /* Nécessaire pour le positionnement du tooltip */
+            background-color: #e53935;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #d32f2f;
         }
 
         .tooltip {
-            visibility: hidden; /* Masquer le tooltip par défaut */
-            width: 120px; /* Largeur du tooltip */
-            background-color: #555; /* Couleur de fond */
-            color: #fff; /* Couleur du texte */
-            text-align: center; /* Centrer le texte */
-            border-radius: 5px; /* Coins arrondis */
-            padding: 5px; /* Espacement interne */
-            position: absolute; /* Positionnement absolu */
-            z-index: 1; /* Assurer qu'il est au-dessus d'autres éléments */
-            bottom: 125%; /* Positionner au-dessus du bouton */
-            left: 50%; /* Centrer horizontalement */
-            margin-left: -60px; /* Ajuster pour centrer */
-            opacity: 0; /* Rendre invisible */
-            transition: opacity 0.3s; /* Transition douce */
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .button:hover .tooltip {
-            visibility: visible; /* Afficher le tooltip au survol */
-            opacity: 1; /* Rendre visible */
-        }
-
-        input[type="number"] {
-            padding: 5px; /* Espacement interne de l'input */
-            border: 1px solid #ddd; /* Bordure grise */
-            border-radius: 5px; /* Coins arrondis */
-            width: 100px; /* Largeur de l'input */
-            margin-right: 5px;
+            visibility: visible;
+            opacity: 1;
         }
 
         .modal {
-            display: none; /* Cacher le modal par défaut */
-            position: fixed; /* Rester en place */
-            z-index: 1; /* Au-dessus du contenu */
+            display: none;
+            position: fixed;
+            z-index: 1;
             left: 0;
             top: 0;
-            width: 100%; /* Pleine largeur */
-            height: 100%; /* Pleine hauteur */
-            overflow: auto; /* Activer le défilement si nécessaire */
-            background-color: rgb(0, 0, 0); /* Fond noir */
-            background-color: rgba(0, 0, 0, 0.4); /* Fond avec transparence */
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
         }
 
         .modal-content {
@@ -153,8 +188,8 @@
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
-            border-radius: 10px; /* Rounded corners for the modal */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow for better visibility */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .close {
@@ -171,94 +206,92 @@
             cursor: pointer;
         }
 
-        .button {
-            background-color: #e53935; /* Button background color */
-            color: white; /* Button text color */
-            border: none; /* Remove border */
-            padding: 10px 20px; /* Padding for the button */
-            text-align: center; /* Center the text */
-            text-decoration: none; /* Remove underline */
-            display: inline-block; /* Inline-block display */
-            font-size: 16px; /* Font size */
-            margin: 10px 2px; /* Margin around the button */
-            cursor: pointer; /* Pointer cursor on hover */
-            border-radius: 50px; /* Rounded button */
-            transition: background-color 0.3s; /* Smooth transition for background color */
-        }
-
-        .button:hover {
-            background-color: #d32f2f; /* Darker background color on hover */
-        }
-
-        footer {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #e53935;
-            color: white;
-            text-align: center;
-        }
-
         .button-confirm {
-            background-color: #4caf50; /* Green background for confirmation */
-            color: white; /* White text */
-            border: none; /* Remove border */
-            padding: 10px 20px; /* Padding for the button */
-            text-align: center; /* Center the text */
-            text-decoration: none; /* Remove underline */
-            display: inline-block; /* Inline-block display */
-            font-size: 16px; /* Font size */
-            margin: 10px 2px; /* Margin around the button */
-            cursor: pointer; /* Pointer cursor on hover */
-            border-radius: 50px; /* Rounded button */
-            transition: background-color 0.3s; /* Smooth transition for background color */
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: background-color 0.3s;
         }
 
         .button-confirm:hover {
-            background-color: #45a049; /* Darker green on hover */
+            background-color: #45a049;
         }
 
         .button-cancel {
-            background-color: #f44336; /* Red background for cancellation */
-            color: white; /* White text */
-            border: none; /* Remove border */
-            padding: 10px 20px; /* Padding for the button */
-            text-align: center; /* Center the text */
-            text-decoration: none; /* Remove underline */
-            display: inline-block; /* Inline-block display */
-            font-size: 16px; /* Font size */
-            margin: 10px 2px; /* Margin around the button */
-            cursor: pointer; /* Pointer cursor on hover */
-            border-radius: 50px; /* Rounded button */
-            transition: background-color 0.3s; /* Smooth transition for background color */
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: background-color 0.3s;
         }
 
         .button-cancel:hover {
-            background-color: #d32f2f; /* Darker red on hover */
+            background-color: #d32f2f;
         }
 
-        /* Media Queries pour la réactivité */
+        footer {
+            background-color: #e53935;
+            color: white;
+            text-align: center;
+            width: 100%;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        .loading-spinner i {
+            font-size: 3em;
+            color: #e53935;
+        }
+
         @media (max-width: 768px) {
             .dish {
-                flex-direction: column; /* Empile les éléments sur les écrans plus petits */
-                align-items: flex-start; /* Aligne les éléments à gauche */
+                flex-direction: column;
+                align-items: flex-start;
             }
 
             .dish img {
-                margin-bottom: 10px; /* Espace en bas de l'image */
+                margin-bottom: 10px;
             }
 
-            .price-input {
-                width: 60px; /* Réduit la largeur de l'input sur les petits écrans */
+            .input-group input[type="number"] {
+                width: 60px;
             }
         }
 
         @media (max-width: 480px) {
             header {
-                font-size: 1.5em; /* Réduit la taille de la police de l'en-tête */
+                font-size: 1.5em;
             }
 
             .button {
-                padding: 8px; /* Réduit le padding du bouton */
+                padding: 8px;
             }
         }
     </style>
@@ -268,17 +301,22 @@
 <header>
     Gestion des Plats
 </header>
-<div>
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Rechercher par nom..." onkeyup="filterDishes()"/>
-    </div>
-    <div id="dishesContainer" hx-get="/fragments/dish/list" hx-trigger="load" hx-target="#dishesContainer">
+
+<div class="loading-spinner" id="loadingSpinner">
+    <i class="fas fa-spinner fa-spin"></i>
+</div>
+
+<div class="content">
+    <div class="dish-container">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Rechercher par nom..." onkeyup="filterDishes()"/>
+        </div>
+        <div id="dishesContainer" hx-get="/fragments/dish/list" hx-trigger="load" hx-target="#dishesContainer" hx-indicator="#loadingSpinner">
+        </div>
     </div>
 </div>
 
-
-<!-- Modal de confirmation -->
-<div id="confirmationModal" class="modal" style="display:none;">
+<div id="confirmationModal" class="modal">
     <div class="modal-content">
         <span class="close" id="closeModal">&times;</span>
         <h2>Confirmation</h2>
@@ -289,8 +327,7 @@
     </div>
 </div>
 
-<!-- Modal de confirmation de suppression -->
-<div id="deleteConfirmationModal" class="modal" style="display:none;">
+<div id="deleteConfirmationModal" class="modal">
     <div class="modal-content">
         <span class="close" id="closeDeleteModal">&times;</span>
         <h2>Confirmation de suppression</h2>
