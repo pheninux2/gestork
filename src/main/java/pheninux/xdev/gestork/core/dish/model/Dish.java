@@ -1,9 +1,6 @@
 package pheninux.xdev.gestork.core.dish.model;
 
 import jakarta.persistence.*;
-import pheninux.xdev.gestork.core.order.model.OrderEntity;
-
-import java.util.List;
 
 
 @Entity
@@ -34,23 +31,33 @@ public class Dish {
     @Enumerated(EnumType.STRING)
     private DishStatus status;
 
-    @ManyToMany(mappedBy = "dishes", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<OrderEntity> orders;
 
-    public Long getId() {
+    public boolean isComingSoon() {
+        return status == DishStatus.COMING_SOON;
+    }
+
+    public boolean isNotAvailable() {
+        return status == DishStatus.NOT_AVAILABLE;
+    }
+
+    public boolean isAvailable() {
+        return status == DishStatus.AVAILABLE;
+    }
+
+    public Long getDishId() {
         return dishId;
     }
 
-    public void setId(Long id) {
-        this.dishId = id;
+    public void setDishId(Long dishId) {
+        this.dishId = dishId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String nom) {
-        this.name = nom;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getImage() {
@@ -81,8 +88,8 @@ public class Dish {
         return price;
     }
 
-    public void setPrice(double prix) {
-        this.price = prix;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public boolean isSpecialPrice() {
@@ -100,33 +107,4 @@ public class Dish {
     public void setStatus(DishStatus status) {
         this.status = status;
     }
-
-    public boolean isAvailable() {
-        return status == DishStatus.AVAILABLE;
-    }
-
-    public boolean isNotAvailable() {
-        return status == DishStatus.NOT_AVAILABLE;
-    }
-
-    public List<OrderEntity> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<OrderEntity> orders) {
-        this.orders = orders;
-    }
-
-    public Long getDishId() {
-        return dishId;
-    }
-
-    public void setDishId(Long dishId) {
-        this.dishId = dishId;
-    }
-
-    public boolean isComingSoon() {
-        return status == DishStatus.COMING_SOON;
-    }
-
 }

@@ -81,7 +81,7 @@ class DishApiControllerTest {
             mockedUtils.when(Utils::isAdmin).thenReturn(true);
 
             Dish dish = new Dish();
-            dish.setId(1L);
+            dish.setDishId(1L);
             when(dishService.findById(1L)).thenReturn(dish);
 
             mockMvc.perform(post("/api/admin/dish/update/1")

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitrine du Restaurant Sindibad</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        .dark-green { background-color: #006400; }
+        .ocean-blue { background-color: #0077be; }
+        .indigo-blue { background-color: #4b0082; }
+        .text-dark-green { color: #006400; }
+        .text-ocean-blue { color: #0077be; }
+        .text-indigo-blue { color: #4b0082; }
+        .carousel-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            scroll-behavior: smooth;
+        }
+        .carousel-item {
+            display: inline-block;
+            width: 300px;
+            margin-right: 16px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Header -->
+<header class="bg-white shadow">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center flex-wrap">
+        <h1 class="text-2xl font-bold text-dark-green">Sindibad</h1>
+        <nav class="flex space-x-4 mt-2">
+            <a href="#menu" class="text-gray-700">Menu</a>
+            <a href="#contact" class="text-gray-700">Contact</a>
+            <a href="#" class="text-gray-700">Connexion</a>
+            <a href="#" class="text-gray-700">Créer un Compte</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="relative bg-cover bg-center h-96" style="background-image: url('path/to/your/background-image.jpg');">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="flex items-center justify-center h-full relative">
+        <h2 class="text-white text-4xl font-bold text-center">Bienvenue chez Sindibad</h2>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="container mx-auto px-6 py-8">
+    <h2 class="text-3xl font-bold mb-4 text-ocean-blue">Notre Histoire</h2>
+    <p class="text-gray-700 mb-4">
+        Découvrez l'histoire de Sindibad, notre passion pour la cuisine et ce qui rend notre restaurant unique.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <img src="path/to/your/image1.jpg" alt="Image 1" class="rounded-lg shadow-md">
+        <img src="path/to/your/image2.jpg" alt="Image 2" class="rounded-lg shadow-md">
+    </div>
+</section>
+
+<!-- Menu Section -->
+<section id="menu" class="bg-white py-8">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-4 text-indigo-blue">Nos plats les plus aimés</h2>
+        <div class="carousel-container">
+            <div class="carousel-item border rounded-lg p-4 shadow-md">
+                <h3 class="font-bold text-xl">Plat 1</h3>
+                <p class="text-gray-700">Description du plat 1.</p>
+                <span class="text-ocean-blue font-bold">€10.00</span>
+                <div class="flex items-center mt-2">
+                    <span class="text-yellow-500">★★★★☆</span>
+                </div>
+            </div>
+            <div class="carousel-item border rounded-lg p-4 shadow-md">
+                <h3 class="font-bold text-xl">Plat 2</h3>
+                <p class="text-gray-700">Description du plat 2.</p>
+                <span class="text-ocean-blue font-bold">€12.00</span>
+                <div class="flex items-center mt-2">
+                    <span class="text-yellow-500">★★★★★</span>
+                </div>
+            </div>
+            <div class="carousel-item border rounded-lg p-4 shadow-md">
+                <h3 class="font-bold text-xl">Plat 3</h3>
+                <p class="text-gray-700">Description du plat 3.</p>
+                <span class="text-ocean-blue font-bold">€15.00</span>
+                <div class="flex items-center mt-2">
+                    <span class="text-yellow-500">★★★☆☆</span>
+                </div>
+            </div>
+            <!-- Add more dishes here -->
+            <div class="carousel-item border rounded-lg p-4 shadow-md">
+                <h3 class="font-bold text-xl">Plat 4</h3>
+                <p class="text-gray-700">Description du plat 4.</p>
+                <span class="text-ocean-blue font-bold">€18.00</span>
+                <div class="flex items-center mt-2">
+                    <span class="text-yellow-500">★★★★☆</span>
+                </div>
+            </div>
+            <div class="carousel-item border rounded-lg p-4 shadow-md">
+                <h3 class="font-bold text-xl">Plat 5</h3>
+                <p class="text-gray-700">Description du plat 5.</p>
+                <span class="text-ocean-blue font-bold">€20.00</span>
+                <div class="flex items-center mt-2">
+                    <span class="text-yellow-500">★★★★★</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="bg-white py-8">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-4 text-dark-green">Contactez-Nous</h2>
+        <form class="bg-gray-100 p-6 rounded-lg shadow-md">
+            <div class="mb-4">
+                <label class="block text-gray-700">Nom</label>
+                <input type="text" class="mt-1 block w-full border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">Email</label>
+                <input type="email" class="mt-1 block w-full border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">Message</label>
+                <textarea class="mt-1 block w-full border-gray-300 rounded-md" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="bg-ocean-blue text-white px-4 py-2 rounded-md">Envoyer</button>
+        </form>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-4">
+    <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
+        <div class="flex space-x-4 mb-2 md:mb-0">
+            <a href="https://www.instagram.com" target="_blank" class="text-white hover:text-ocean-blue">
+                <i class="fab fa-instagram fa-lg"></i>
+            </a>
+            <a href="https://www.facebook.com" target="_blank" class="text-white hover:text-ocean-blue">
+                <i class="fab fa-facebook fa-lg"></i>
+            </a>
+        </div>
+        <p>&copy; 2025 Sindibad. Tous droits réservés.</p>
+    </div>
+</footer>
+
+<script>
+    document.querySelector('.carousel-container').addEventListener('wheel', (evt) => {
+        evt.preventDefault();
+        document.querySelector('.carousel-container').scrollLeft += evt.deltaY;
+    });
+</script>
+
+</body>
+</html>

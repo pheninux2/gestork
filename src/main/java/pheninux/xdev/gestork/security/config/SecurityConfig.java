@@ -21,6 +21,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pheninux.xdev.gestork.handler.JwtAuthenticationSuccessHandler;
 import pheninux.xdev.gestork.security.filter.CustomCustomerAuthenticationFilter;
 import pheninux.xdev.gestork.security.filter.CustomEmployeeAuthenticationFilter;
@@ -32,7 +34,7 @@ import static pheninux.xdev.gestork.utils.Utils.renderAlertSingle;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
     private final CustomClientDetailsService customClientDetailsService;
 
@@ -49,6 +51,15 @@ public class SecurityConfig {
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**") // Autoriser toutes les requêtes
+                .allowedOrigins("all") // Permettre toutes les origines (à ajuster pour la production)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*") // Permettre tous les en-têtes
+                .allowCredentials(true);
+    }
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -57,7 +68,7 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain CustomerSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain customerSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/customer/**")
                 .sessionManagement(session -> session
@@ -90,11 +101,8 @@ public class SecurityConfig {
                             }
                         })
                 )
-                .csrf(AbstractHttpConfigurer::disable)
-                .headers(headers -> headers
-                        .httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable)
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-                );
+                .csrf(AbstractHttpConfigurer::disable);
+
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -103,7 +111,7 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain EmployeeSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain employeeSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/employee/**")
                 .sessionManagement(session -> session
@@ -139,11 +147,7 @@ public class SecurityConfig {
                             }
                         })
                 )
-                .csrf(AbstractHttpConfigurer::disable)
-                .headers(headers -> headers
-                        .httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable)
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-                );
+                .csrf(AbstractHttpConfigurer::disable);
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -152,6 +156,24 @@ public class SecurityConfig {
 
     @Bean
     @Order(3)
+    public SecurityFilterChain requestSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/order/**","/api/**")
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/order/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
+                )
+                .csrf(AbstractHttpConfigurer::disable);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(4)
     public SecurityFilterChain H2SecurityFilterChain(HttpSecurity http) throws Exception {
 
         http.securityMatcher("/h2-console/**")
@@ -168,7 +190,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(4)
+    @Order(5)
     public SecurityFilterChain StaticSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
@@ -177,7 +199,7 @@ public class SecurityConfig {
                         // Ajoutez d'autres règles de sécurité ici
                         .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable()); // Désactiver CSRF si nécessaire
+                .csrf(AbstractHttpConfigurer::disable); // Désactiver CSRF si nécessaire
 
         return http.build();
 
@@ -253,5 +275,6 @@ public class SecurityConfig {
             }
         };
     }
+
 }
 
