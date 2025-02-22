@@ -6,9 +6,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import pheninux.xdev.gestork.core.notification.model.NotificationDto;
+import pheninux.xdev.gestork.core.notification.service.NotificationService;
+import pheninux.xdev.gestork.response.CustomResponseBody;
+
+import java.util.List;
 
 @Controller
 public class HomeDispatcherController {
+
+    private final NotificationService notificationService;
+
+    public HomeDispatcherController(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
 
     @GetMapping("/employee/home")
     public String employeeHomePage(Model model) {
@@ -24,6 +35,8 @@ public class HomeDispatcherController {
 
             switch (role) {
                 case "ROLE_WAITER":
+                    CustomResponseBody<List<NotificationDto>> notifications = notificationService.fetchUnreadNotificationsForWaiter(username);
+                    model.addAttribute("orderNotificationsSize", notifications.getData());
                     return "employee/waiter/layout/home";
                 case "ROLE_ADMIN":
                     return "employee/admin/layout/home";

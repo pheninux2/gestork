@@ -1,0 +1,32 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+POST localhost:8080/order/create
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZGlsIiwicm9sZSI6IltST0xFX0NVU1RPTUVSXSIsImV4cCI6MTczOTU5OTc5MCwiaWF0IjoxNzM5NTYzNzkwLCJ1c2VybmFtZSI6ImFkaWwifQ.1PNazL5Gd3Ltja0IjZhTig5SEnzACtiTdUdIaxCT5Zg
+
+Content-Type: application/json
+
+{
+  "customerLogin": "john_doe",
+  "waiter": {
+    "employeeId": 1
+  },
+  "tableId": 5,
+  "totalAmount": 100.0,
+  "orderDate": "2025-02-14T10:00:00",
+  "orderType": "DINE_IN",
+  "orderDetails": {
+    "paymentMethod": "CREDIT_CARD",
+    "paiementStatus": "PAID",
+    "commandStatus": "COMPLETED",
+    "comment": "No onions",
+    "orderedDishes": [
+      {
+        "dishId": 1
+      }
+    ]
+  }
+}

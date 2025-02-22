@@ -1,0 +1,5 @@
+<div class="notification-circle"
+     th:text="${ordersNotification.getData() != null &&
+      !ordersNotification.getData().isEmpty() ?
+       ordersNotification.getData().size() : 0}">0
+</div>

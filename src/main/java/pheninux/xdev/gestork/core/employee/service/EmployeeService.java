@@ -20,7 +20,11 @@ public class EmployeeService {
         return employeeRepository.findById(id).orElse(null);
     }
 
-    public List<Employee> getEmployeesByRole(EmployeeRole role , Sort sort) {
+    public Employee findEmployeeByLogin(String login) {
+        return employeeRepository.findEmployeeByLogin(login);
+    }
+
+    public List<Employee> getEmployeesByRole(EmployeeRole role, Sort sort) {
         return employeeRepository.findEmployeesByRole(role, sort);
     }
 
