@@ -14,6 +14,7 @@ public class NotificationDto {
     private boolean isRead;
     private Date createdAt;
 
+
     public Long getId() {
         return id;
     }

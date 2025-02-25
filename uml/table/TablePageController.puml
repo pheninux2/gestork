@@ -6,8 +6,8 @@ participant "EmployeeService" as EmployeeService
 participant "TableAssignmentService" as TableAssignmentService
 participant "HTML Page" as Page
 
-Employee -> Browser: Request (GET /employee/admin/tables/assign)
-Browser -> Controller: HTTP GET /employee/admin/tables/assign
+Employee -> Browser: Request (GET /view/table/assign)
+Browser -> Controller: HTTP GET /view/table/assign
 Controller -> EmployeeService: getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name"))
 EmployeeService -> Controller: List of Waiters
 Controller -> TableAssignmentService: getAssignedTableByEmployeeId(waiter.getEmployeeId())

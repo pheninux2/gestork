@@ -3,17 +3,21 @@ package pheninux.xdev.gestork.utils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
 public class Utils {
 
     private static TemplateEngine templateEngine = null;
+
+    public final static List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     public Utils(TemplateEngine templateEngine) {
         Utils.templateEngine = templateEngine;
@@ -59,17 +63,17 @@ public class Utils {
     public static String renderAlertSingle(String fragmentName, String message) {
         Context context = new Context();
         context.setVariable("message", message);
-        Set<String> fragmentsSelectors = new HashSet<>();
-        fragmentsSelectors.add(fragmentName);
-        return templateEngine.process("alert/alerts", fragmentsSelectors, context);
+        Set<String> fragmentSelectors = new HashSet<>();
+        fragmentSelectors.add(fragmentName);
+        return templateEngine.process("alert/alerts", fragmentSelectors, context);
     }
 
     public static String renderAlertMultiple(String fragmentName, List<String> messages) {
         Context context = new Context();
         context.setVariable("messages", messages);
-        Set<String> fragmentsSelectors = new HashSet<>();
-        fragmentsSelectors.add(fragmentName);
-        return templateEngine.process("alert/alerts", fragmentsSelectors, context);
+        Set<String> fragmentSelectors = new HashSet<>();
+        fragmentSelectors.add(fragmentName);
+        return templateEngine.process("alert/alerts", fragmentSelectors, context);
     }
 
     public static Set<Integer> parseTableNumbers(String tableNumbers) {
@@ -84,5 +88,16 @@ public class Utils {
     public static boolean isValidTableFormat(String tables) {
         String regex = "^\\d+(,\\d+)*$";
         return tables != null && tables.matches(regex);
+    }
+
+    public static void notifyWaiters() {
+        emitters.forEach(emitter -> {
+            try {
+                emitter.send(SseEmitter.event().data("New order created"));
+            } catch (Exception e) {
+                emitter.completeWithError(e);
+
+            }
+        });
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pheninux.xdev.gestork.core.table.service.TableAssignmentService;
 import pheninux.xdev.gestork.utils.Utils;
+import pheninux.xdev.gestork.web.table.api.TableApiController;
 
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
@@ -40,7 +41,7 @@ class TableApiControllerTest {
 
             when(tableAssignmentService.assignTables(1L, "1,2,3")).thenReturn(new ResponseEntity<>("Tables assigned", HttpStatus.OK));
 
-            mockMvc.perform(post("/api/admin/table/assignTables")
+            mockMvc.perform(post("/api/table/assign")
                             .param("waiter", "1")
                             .param("tables", "1,2,3"))
                     .andExpect(status().isOk())
@@ -53,7 +54,7 @@ class TableApiControllerTest {
         try (var mockedUtils = mockStatic(Utils.class)) {
             mockedUtils.when(Utils::isAdmin).thenReturn(false);
 
-            mockMvc.perform(post("/api/admin/table/assignTables")
+            mockMvc.perform(post("/api/table/assign")
                             .param("waiter", "1")
                             .param("tables", "1,2,3"))
                     .andExpect(status().isForbidden())

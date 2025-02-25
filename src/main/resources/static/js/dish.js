@@ -62,7 +62,7 @@ function showDeleteConfirmationModal(button) {
     deleteModal.style.display = "block";
 
     document.getElementById('confirmDelete').onclick = function () {
-        htmx.ajax('post', '/api/admin/dish/delete/' + dishId, {
+        htmx.ajax('post', '/api/dish/delete/' + dishId, {
             target: form.getAttribute('hx-target'),
             swap: form.getAttribute('hx-swap'),
         });

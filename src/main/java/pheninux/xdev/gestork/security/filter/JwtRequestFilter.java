@@ -37,6 +37,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader("Authorization");
         String requestURI = request.getRequestURI();
 
+        if (    requestURI.contains("/api/employee/authenticate") ||
+                requestURI.contains("/api/customer/authenticate") ||
+                requestURI.contains("/api/order/create")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (requestURI.contains("/api/")) {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Set status code
@@ -67,7 +75,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                 if (jwtService.validateToken(jwt, username)) {
                     Authentication authRequest = new UsernamePasswordAuthenticationToken(username, null);
-                //    Authentication authResult = authenticationProvider.authenticate(authRequest);
+                    //    Authentication authResult = authenticationProvider.authenticate(authRequest);
                     SecurityContextHolder.getContext().setAuthentication(authRequest);
                 } else {
                     logger.error("Authentication failed for " + username + ", invalidate token");

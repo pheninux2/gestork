@@ -29,6 +29,6 @@ public class ViewNotificationController {
         CustomResponseBody<List<NotificationDto>> ordersNotification = notificationService.fetchUnreadNotificationsForWaiter(login);
 
         model.addAttribute("ordersNotification", ordersNotification);
-        return "notification/fragment/modal"; // Chemin vers le fichier de template contenant le HTML de la modal
+        return "notification/fragment/modal";
     }
 }

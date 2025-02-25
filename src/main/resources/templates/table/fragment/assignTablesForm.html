@@ -1,9 +1,9 @@
 <div class="form-container">
-    <form id="assignForm" hx-post="/employee/admin/table/assignTables" method="post" hx-swap="innerHTML"
+    <form id="assignForm" hx-post="/api/table/assign" method="post" hx-swap="innerHTML"
           hx-target="#response">
         <label for="waiter">Sélectionner un Serveur:</label>
         <select id="waiter" name="waiter" hx-trigger="change"
-                hx-get="/employee/admin/fragment/assignedTablesList"
+                hx-get="/fragment/table/assignedTablesList"
                 hx-target="#response"
                 hx-include="[name='tables']">
             <option th:each="waiter : ${waiters}" th:value="${waiter.getEmployeeId()}"

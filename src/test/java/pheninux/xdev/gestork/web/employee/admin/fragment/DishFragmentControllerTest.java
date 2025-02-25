@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pheninux.xdev.gestork.core.dish.service.DishService;
 import pheninux.xdev.gestork.utils.Utils;
+import pheninux.xdev.gestork.web.dish.fragment.DishFragmentController;
 
 import java.util.List;
 
@@ -39,9 +40,9 @@ class DishFragmentControllerTest {
             mockedUtils.when(Utils::isAdmin).thenReturn(true);
             when(dishService.findAll()).thenReturn(List.of());
 
-            mockMvc.perform(get("/fragments/dish/list"))
+            mockMvc.perform(get("/fragment/dish/list"))
                     .andExpect(status().isOk())
-                    .andExpect(view().name("dish/fragments/adminDishes"))
+                    .andExpect(view().name("dish/fragment/adminDishes"))
                     .andExpect(model().attributeExists("dishes"));
         }
     }
@@ -52,18 +53,18 @@ class DishFragmentControllerTest {
             mockedUtils.when(Utils::isAdmin).thenReturn(false);
             when(dishService.findAll()).thenReturn(List.of());
 
-            mockMvc.perform(get("/fragments/dish/list"))
+            mockMvc.perform(get("/fragment/dish/list"))
                     .andExpect(status().isOk())
-                    .andExpect(view().name("dish/fragments/menuDishes"))
+                    .andExpect(view().name("dish/fragment/menuDishes"))
                     .andExpect(model().attributeExists("dishes"));
         }
     }
 
     @Test
     void testGetDishFormFragment() throws Exception {
-        mockMvc.perform(get("/fragments/dish/form"))
+        mockMvc.perform(get("/fragment/dish/form"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("dish/fragments/dishForm"))
+                .andExpect(view().name("dish/fragment/dishForm"))
                 .andExpect(model().attributeExists("dish"));
     }
 }

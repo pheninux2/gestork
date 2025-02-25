@@ -70,7 +70,7 @@ public class TableService {
             }
 
             // Réponse HTML avec redirection
-            String htmlResponse = "<script>window.location.href='/waiter/displayCode?code=" + code + "';</script>";
+            String htmlResponse = "<script>window.location.href='/view/code/display?code=" + code + "';</script>";
             return ResponseEntity.ok(htmlResponse);
 
         } catch (

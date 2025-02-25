@@ -11,7 +11,7 @@
                     <p th:text="${dish.description}" class="text-gray-700"></p>
                 </div>
                 <div class="form-container">
-                    <form id="updateForm" th:action="@{/api/admin/dish/update/{id}(id=${dish.id})}" method="post" hx-target="#dishesContainer" hx-swap="innerHTML" class="flex flex-col">
+                    <form id="updateForm" th:action="@{/api/dish/update/{id}(id=${dish.id})}" method="post" hx-target="#dishesContainer" hx-swap="innerHTML" class="flex flex-col">
                         <div class="form-group flex items-center mb-4">
                             <label for="oldPrice" th:text="'Ancien prix'" class="w-32 mr-2"></label>
                             <div class="input-group flex items-center">

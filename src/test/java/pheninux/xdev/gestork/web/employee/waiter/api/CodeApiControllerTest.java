@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pheninux.xdev.gestork.core.table.service.TableService;
 import pheninux.xdev.gestork.utils.Utils;
+import pheninux.xdev.gestork.web.accesscode.api.CodeApiController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mockStatic;
@@ -45,7 +46,7 @@ class CodeApiControllerTest {
 
             when(tableService.generateCode(clientLogin, tableNumber)).thenReturn(expectedResponse);
 
-            ResponseEntity<String> responseEntity = codeApiController.generateCode(clientLogin, tableNumber, response);
+            ResponseEntity<String> responseEntity = codeApiController.generate(clientLogin, tableNumber, response);
 
             assertEquals(expectedResponse, responseEntity);
         }
@@ -63,7 +64,7 @@ class CodeApiControllerTest {
 
             when(tableService.generateCode(clientLogin, tableNumber)).thenReturn(expectedResponse);
 
-            ResponseEntity<String> responseEntity = codeApiController.generateCode(clientLogin, tableNumber, response);
+            ResponseEntity<String> responseEntity = codeApiController.generate(clientLogin, tableNumber, response);
 
             assertEquals(expectedResponse, responseEntity);
         }
@@ -80,7 +81,7 @@ class CodeApiControllerTest {
             String expectedAlert = renderAlertSingle("alert-danger", "Vous n'êtes pas autorisé à accéder à cette ressource.");
             ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedAlert, HttpStatus.OK);
 
-            ResponseEntity<String> responseEntity = codeApiController.generateCode(clientLogin, tableNumber, response);
+            ResponseEntity<String> responseEntity = codeApiController.generate(clientLogin, tableNumber, response);
 
             assertEquals(expectedResponse, responseEntity);
         }
