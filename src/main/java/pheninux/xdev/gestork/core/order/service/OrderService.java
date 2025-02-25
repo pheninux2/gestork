@@ -1,15 +1,15 @@
 package pheninux.xdev.gestork.core.order.service;
 
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import pheninux.xdev.gestork.core.dish.model.Dish;
 import pheninux.xdev.gestork.core.dish.service.DishService;
 import pheninux.xdev.gestork.core.notification.model.Notification;
 import pheninux.xdev.gestork.core.notification.service.NotificationService;
 import pheninux.xdev.gestork.core.order.mapper.OrderMapper;
+import pheninux.xdev.gestork.core.order.model.OrderDishes;
 import pheninux.xdev.gestork.core.order.model.OrderEntity;
+import pheninux.xdev.gestork.core.order.model.OrderStatus;
 import pheninux.xdev.gestork.core.order.model.dto.OrderEntityDto;
 import pheninux.xdev.gestork.core.order.repository.OrderRepository;
 import pheninux.xdev.gestork.response.CustomResponseBody;
@@ -18,7 +18,6 @@ import pheninux.xdev.gestork.utils.Utils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class OrderService {
@@ -38,13 +37,13 @@ public class OrderService {
 
     public CustomResponseBody<OrderEntityDto> createOrder(OrderEntity orderEntity) {
         try {
-            List<Dish> orderDishes = new ArrayList<>();
+            List<Dish> dishes = new ArrayList<>();
 
-            for (Dish dish : orderEntity.getOrderDetails().getOrderedDishes()) {
-                Dish dishEntity = dishService.findById(dish.getDishId());
-                orderDishes.add(dishEntity);
+            for (OrderDishes orderDishes : orderEntity.getOrderDetails().getOrderDishes()) {
+                Dish dishEntity = dishService.findById(orderDishes.getDish().getDishId());
+                dishes.add(dishEntity);
             }
-            orderEntity.getOrderDetails().setOrderedDishes(orderDishes);
+            orderEntity.setOrderStatus(OrderStatus.PENDING);
             OrderEntity order = orderRepository.save(orderEntity);
             OrderEntityDto orderEntityDto = OrderMapper.toDto(order);
             String alertMessage = Utils.renderAlertSingle("alert-success",
@@ -83,7 +82,9 @@ public class OrderService {
 
     public OrderEntityDto getOrderById(Long id) {
 
-        return new OrderEntityDto();
+        return orderRepository.findById(id)
+                .map(OrderMapper::toDto)
+                .orElse(null);
     }
 
     public List<OrderEntityDto> getAllOrders() {

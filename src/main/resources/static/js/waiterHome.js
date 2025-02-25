@@ -15,7 +15,7 @@ function updateDateTime() {
 setInterval(updateDateTime, 1000);
 
 
-const eventSource = new EventSource('/order/stream');
+const eventSource = new EventSource('/public/order/stream');
 
 eventSource.onmessage = function (event) {
     htmx.ajax("GET", "/fragment/notification/orders", "#ordersNotificationTarget");

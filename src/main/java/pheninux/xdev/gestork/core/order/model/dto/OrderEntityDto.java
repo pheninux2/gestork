@@ -1,6 +1,6 @@
 package pheninux.xdev.gestork.core.order.model.dto;
 
-import pheninux.xdev.gestork.core.dish.model.DishDto;
+import pheninux.xdev.gestork.core.order.model.OrderStatus;
 
 import java.util.Date;
 import java.util.List;
@@ -15,7 +15,8 @@ public class OrderEntityDto {
     private Date orderDate;
     private String orderType; // Peut être une chaîne ou un Enum
     private Long orderDetailsId; // ID des détails de la commande
-    private List<DishDto> orderedDishes; // Liste des plats commandés
+    private List<OrderDishesDto> orderDishesDto; // Liste des plats commandés
+    private OrderStatus orderStatus; // Indique si la commande a été payée
 
     // Getters et Setters
     public Long getOrderId() {
@@ -82,11 +83,23 @@ public class OrderEntityDto {
         this.orderDetailsId = orderDetailsId;
     }
 
-    public List<DishDto> getOrderedDishes() {
-        return orderedDishes;
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setOrderedDishes(List<DishDto> orderedDishes) {
-        this.orderedDishes = orderedDishes;
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public boolean waiterApproved() {
+        return orderStatus == OrderStatus.VALIDATE;
+    }
+
+    public List<OrderDishesDto> getOrderDishesDto() {
+        return orderDishesDto;
+    }
+
+    public void setOrderDishesDto(List<OrderDishesDto> orderDishesDto) {
+        this.orderDishesDto = orderDishesDto;
     }
 }
