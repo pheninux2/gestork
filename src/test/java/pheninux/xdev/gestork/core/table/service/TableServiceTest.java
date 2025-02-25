@@ -95,7 +95,7 @@ class TableServiceTest {
         ResponseEntity<String> response = tableService.generateCode(clientLogin, tableNumber);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("<script>window.location.href='/waiter/displayCode?code=" + code + "';</script>", response.getBody());
+        assertEquals("<script>window.location.href='/view/code/display?code=" + code + "';</script>", response.getBody());
     }
 
     @Test
@@ -117,7 +117,7 @@ class TableServiceTest {
         ResponseEntity<String> response = tableService.generateCode(clientLogin, tableNumber);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("<script>window.location.href='/waiter/displayCode?code=" + code + "';</script>", response.getBody());
+        assertEquals("<script>window.location.href='/view/code/display?code=" + code + "';</script>", response.getBody());
         verify(customerRepository, times(1)).saveAndFlush(any(Customer.class));
     }
 }

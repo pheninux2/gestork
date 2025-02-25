@@ -145,13 +145,13 @@
     <div th:if="${!employeeAssignedTables.isEmpty()}" class="search-container">
         <input type="text" id="searchInput" placeholder="Rechercher par nom..." onkeyup="filterWaiters()"/>
     </div>
-    <div hx-get="/employee/admin/fragment/assignedTablesList"
+    <div hx-get="/fragment/table/assignedTablesList"
          hx-trigger="load"
          hx-swap="innerHTML"></div>
 
     <div class="empty-message" th:if="${employeeAssignedTables.isEmpty()}">Aucun serveur disponible.</div>
-    <div hx-get="/employee/admin/fragment/assignedTablesList" hx-trigger="path-deps" hx-target="#assignedTables"
-         path-deps="/api/admin/table/assignTables"></div>
+    <div hx-get="/fragment/table/assignedTablesList" hx-trigger="path-deps" hx-target="#assignedTables"
+         path-deps="/api/table/assignTables"></div>
 </div>
 
 <script>

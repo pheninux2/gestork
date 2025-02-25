@@ -66,5 +66,4 @@ public class DishDto {
         this.status = status;
     }
 
-
 }

@@ -1,0 +1,18 @@
+<table class="min-w-full bg-gray-100 border border-gray-300 mt-4">
+    <thead>
+    <tr class="bg-gray-200 text-gray-700">
+        <th class="py-2 px-4 border-b">Plat</th>
+        <th class="py-2 px-4 border-b">Prix Unitaire (€)</th>
+        <th class="py-2 px-4 border-b">Quantité</th>
+        <th class="py-2 px-4 border-b">Commentaire</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="orderDish : ${order.getOrderDishesDto()}">
+        <td class="py-2 px-4 border-b" th:text="${orderDish.getDish().getName()}"></td>
+        <td class="py-2 px-4 border-b" th:text="${orderDish.getDish().getPrice()}"></td>
+        <td class="py-2 px-4 border-b" th:text="${orderDish.getQuantity()}"></td>
+        <td class="py-2 px-4 border-b" th:text="${orderDish.getComment()}"></td>
+    </tr>
+    </tbody>
+</table>

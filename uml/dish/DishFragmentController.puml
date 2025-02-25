@@ -5,21 +5,21 @@ participant "DishFragmentController" as Controller
 participant "DishService" as DishService
 participant "HTML Page" as Page
 
-Employee -> Browser: Request (GET /fragments/dish/list)
-Browser -> Controller: HTTP GET /fragments/dish/list
+Employee -> Browser: Request (GET /fragment/dish/list)
+Browser -> Controller: HTTP GET /fragment/dish/list
 Controller -> DishService: findAll()
 DishService -> Controller: List of Dishes
 alt User is admin
-    Controller -> Page: Render HTML (dish/fragments/adminDishes)
+    Controller -> Page: Render HTML (dish/fragment/adminDishes)
 else User is not admin
-    Controller -> Page: Render HTML (dish/fragments/menuDishes)
+    Controller -> Page: Render HTML (dish/fragment/menuDishes)
 end
 Page -> Browser: HTML Content
 Browser -> Employee: Display HTML Page
 
-Employee -> Browser: Request (GET /fragments/dish/form)
-Browser -> Controller: HTTP GET /fragments/dish/form
-Controller -> Page: Render HTML (dish/fragments/dishForm)
+Employee -> Browser: Request (GET /fragment/dish/form)
+Browser -> Controller: HTTP GET /fragment/dish/form
+Controller -> Page: Render HTML (dish/fragment/dishForm)
 Page -> Browser: HTML Content
 Browser -> Employee: Display HTML Page
 @enduml

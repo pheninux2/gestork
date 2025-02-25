@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,11 +36,8 @@ import static pheninux.xdev.gestork.utils.Utils.renderAlertSingle;
 public class SecurityConfig implements WebMvcConfigurer {
 
     private final CustomClientDetailsService customClientDetailsService;
-
     private final CustomEmployeeDetailsService customEmployeeDetailsService;
-
     private final JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
-
     private final JwtRequestFilter jwtRequestFilter;
 
     public SecurityConfig(CustomClientDetailsService customClientDetailsService, CustomEmployeeDetailsService customEmployeeDetailsService, JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler, JwtRequestFilter jwtRequestFilter) {
@@ -53,13 +49,12 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // Autoriser toutes les requêtes
-                .allowedOrigins("all") // Permettre toutes les origines (à ajuster pour la production)
+        registry.addMapping("/**")
+                .allowedOrigins("all")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*") // Permettre tous les en-têtes
+                .allowedHeaders("*")
                 .allowCredentials(true);
     }
-
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -69,40 +64,34 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     @Order(1)
     public SecurityFilterChain customerSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/customer/**")
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
+        http.securityMatcher("/view/customer/**", "/api/customer/**", "/fragment/customer/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/customer/login").permitAll()
-                        .requestMatchers("/customer/**").authenticated()
-                        .requestMatchers("/customer/home").authenticated()
+                        .requestMatchers("/view/customer/login",
+                                "/api/customer/authenticate").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/customer/login")
+                        .loginPage("/view/customer/login")
                         .passwordParameter("accessCode")
-                        .loginProcessingUrl("/customer/authenticate")
+                        .loginProcessingUrl("/api/customer/authenticate")
                         .successHandler(jwtAuthenticationSuccessHandler)
                         .failureHandler(clientAuthenticationFailureHandler())
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/customer/logout")
-                        .logoutSuccessUrl("/customer/login?logout")
+                        .logoutUrl("/view/customer/logout")
+                        .logoutSuccessUrl("/view/customer/login?logout")
                         .invalidateHttpSession(true)
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             String uri = request.getRequestURI();
-                            if (uri.startsWith("/client/")) {
-                                response.sendRedirect("/client/login");
+                            if (uri.startsWith("/view/customer")) {
+                                response.sendRedirect("/view/customer/login");
                             }
                         })
                 )
                 .csrf(AbstractHttpConfigurer::disable);
-
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -112,38 +101,29 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     @Order(2)
     public SecurityFilterChain employeeSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/employee/**")
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
+        http.securityMatcher("/view/**", "/api/**", "/fragment/**", "/public/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/waiter/**").hasRole("WAITER")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/chef/**").hasRole("CHEF")
+                        .requestMatchers("/view/employee/**", "/api/employee/**", "/public/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/employee/login").permitAll()
-                        .requestMatchers("/employee/**").authenticated()
-                        .requestMatchers("/employee/home").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/employee/login")
-                        .loginProcessingUrl("/employee/authenticate")
+                        .loginPage("/view/employee/login")
+                        .loginProcessingUrl("/api/employee/authenticate")
                         .successHandler(jwtAuthenticationSuccessHandler)
                         .failureHandler(employeeAuthenticationFailureHandler())
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/employee/logout")
-                        .logoutSuccessUrl("/employee/login?logout")
+                        .logoutUrl("/view/employee/logout")
+                        .logoutSuccessUrl("/view/employee/login?logout")
                         .invalidateHttpSession(true)
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             String uri = request.getRequestURI();
-                            if (uri.startsWith("/employee/")) {
-                                response.sendRedirect("/employee/login");
+                            if (uri.startsWith("/view/employee/")) {
+                                response.sendRedirect("/view/employee/login");
                             }
                         })
                 )
@@ -156,26 +136,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     @Order(3)
-    public SecurityFilterChain requestSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/order/**","/api/**")
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/order/**").permitAll()
-                        .requestMatchers("/api/**").permitAll()
-                )
-                .csrf(AbstractHttpConfigurer::disable);
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
-
-    @Bean
-    @Order(4)
     public SecurityFilterChain H2SecurityFilterChain(HttpSecurity http) throws Exception {
-
         http.securityMatcher("/h2-console/**")
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/h2-console/**").authenticated()
@@ -190,21 +151,17 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    @Order(5)
+    @Order(4)
     public SecurityFilterChain StaticSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
+        http.securityMatcher("/css/**", "/js/**", "/img/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        // Autoriser l'accès aux fichiers statiques
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                        // Ajoutez d'autres règles de sécurité ici
                         .anyRequest().authenticated()
                 )
-                .csrf(AbstractHttpConfigurer::disable); // Désactiver CSRF si nécessaire
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
-
     }
-
 
     private AuthenticationFailureHandler employeeAuthenticationFailureHandler() {
         return (request, response, exception) -> {
@@ -252,13 +209,11 @@ public class SecurityConfig implements WebMvcConfigurer {
         return new AuthenticationProvider() {
             @Override
             public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-
                 String username = authentication.getName();
                 String password = (String) authentication.getCredentials();
-
                 UserDetails userDetails;
 
-                if (httpServletRequest.getRequestURI().startsWith("/employee")) {
+                if (httpServletRequest.getRequestURI().startsWith("/api/employee")) {
                     userDetails = customEmployeeDetailsService.loadUserByUsername(username);
                     if (!passwordEncoder().matches(password, userDetails.getPassword())) {
                         throw new BadCredentialsException("Invalid credentials");
@@ -275,6 +230,4 @@ public class SecurityConfig implements WebMvcConfigurer {
             }
         };
     }
-
 }
-

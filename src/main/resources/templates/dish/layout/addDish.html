@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire d'Ajout de Plat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: #333;
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            color: #2d3436;
+            margin-bottom: 20px;
+            font-size: 2em;
+            font-weight: 600;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: #4ecdc4;
+            margin: 10px auto;
+        }
+
+        form {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            padding: 15px 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #4ecdc4;
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.2);
+            outline: none;
+        }
+
+        input[type="file"] {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        input[type="submit"] {
+            background-color: #4ecdc4;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            align-self: center;
+            width: 100%;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45b7b0;
+        }
+
+        .message {
+            margin-top: 20px;
+            text-align: center;
+            color: green;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                padding: 15px;
+            }
+
+            input[type="submit"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Ajouter un Plat au Menu</h1>
+<form id="menuForm"
+      hx-encoding='multipart/form-data'
+      method="post"
+      hx-post="/api/dish/add"
+      hx-target="#response"
+      hx-swap="innerHTML"
+      onsubmit="resetForm(event)">
+
+    <div class="form-group">
+        <i class="fas fa-utensils"></i>
+        <input type="text" id="name" name="name" placeholder="Nom du Plat" required>
+    </div>
+
+    <div class="form-group">
+        <i class="fas fa-align-left"></i>
+        <textarea id="description" name="description" placeholder="Description" rows="4" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <i class="fas fa-dollar-sign"></i>
+        <input type="number" id="price" name="price" placeholder="Prix (€)" step="0.01" required>
+    </div>
+
+    <div class="form-group">
+        <i class="fas fa-list"></i>
+        <select id="category" name="category" required>
+            <option value="">Sélectionner une catégorie</option>
+            <option value="PLAT_CHEF">Plat du Chef</option>
+            <option value="PLAT">Plat</option>
+            <option value="ENTREE_CHAUDE">Entrée Chaude</option>
+            <option value="ENTREE_FROIDE">Entrée Froide</option>
+            <option value="DESSERT">Dessert</option>
+            <option value="BOISSON_CHAUDE">Boisson Chaude</option>
+            <option value="BOISSON_FROIDE">Boisson Froide</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <i class="fas fa-info-circle"></i>
+        <select id="dishStatus" name="dishStatus">
+            <option value="AVAILABLE">Disponible</option>
+            <option value="NOT_AVAILABLE">Non disponible</option>
+            <option value="COMING_SOON">À venir</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <input type="file" id="image" name="image" accept="image/*" required>
+    </div>
+
+    <input type="submit" value="Ajouter">
+    <div class="message" id="successMessage" style="display:none;">Plat ajouté avec succès !</div>
+    <div id="response"></div>
+</form>
+
+<script>
+    function resetForm(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: form.method,
+            body: formData,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+            }
+        }).then(response => {
+            if (response.ok) {
+                form.reset();
+                document.getElementById('successMessage').style.display = 'block';
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

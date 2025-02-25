@@ -13,6 +13,7 @@ import pheninux.xdev.gestork.core.employee.model.EmployeeRole;
 import pheninux.xdev.gestork.core.employee.model.dto.AssignedTableDto;
 import pheninux.xdev.gestork.core.employee.service.EmployeeService;
 import pheninux.xdev.gestork.core.table.service.TableAssignmentService;
+import pheninux.xdev.gestork.web.table.fragment.TableFragmentController;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,7 @@ class TableFragmentControllerTest {
     void testAssignTablesList() throws Exception {
         when(employeeService.getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name"))).thenReturn(List.of());
 
-        mockMvc.perform(get("/employee/admin/fragment/assignTablesForm"))
+        mockMvc.perform(get("/fragment/table/assignTablesForm"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("table/fragment/assignTablesForm"))
                 .andExpect(model().attributeExists("waiters"));
@@ -65,7 +66,7 @@ class TableFragmentControllerTest {
         when(employeeService.getEmployeesByRole(EmployeeRole.WAITER, Sort.by("name"))).thenReturn(List.of(waiter));
         when(tableAssignmentService.getAssignedTableByEmployeeId(1L)).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/employee/admin/fragment/assignedTablesList"))
+        mockMvc.perform(get("/fragment/table/assignedTablesList"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("table/fragment/assignedTablesList"))
                 .andExpect(model().attributeExists("employeeAssignedTables"));

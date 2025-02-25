@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 public class DishMapper {
 
+
     public static List<DishDto> toDtoList(List<Dish> dishes) {
         return dishes.stream().map(DishMapper::toDto).collect(Collectors.toList());
     }

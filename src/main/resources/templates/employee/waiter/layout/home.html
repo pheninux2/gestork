@@ -207,7 +207,7 @@
 <div class="card-container">
     <div class="card">
         <h3>Générer un code d'accès</h3>
-        <button class="button" onclick="location.href='/waiter/generateCode'">Accéder</button>
+        <button class="button" onclick="location.href='/view/code/generate'">Accéder</button>
     </div>
     <div class="card">
         <h3>Consulter mes tables</h3>
@@ -215,13 +215,13 @@
     </div>
     <div class="card">
         <h3>Prendre une commande</h3>
-        <button class="button" onclick="location.href='/customer/menu'">Accéder</button>
+        <button class="button" onclick="location.href='/view/customer/menu'">Accéder</button>
     </div>
     <div class="card">
         <h3>Consulter les commandes</h3>
         <div id="ordersNotificationTarget" hx-get="/fragment/notification/orders" hx-swap="outerHTML">
         </div>
-        <button class="button" onclick="location.href='/view-orders'">Accéder</button>
+        <button class="button" onclick="location.href='/view/order/orderSummary'">Accéder</button>
     </div>
     <div class="card">
         <h3>Voir les demandes des clients</h3>

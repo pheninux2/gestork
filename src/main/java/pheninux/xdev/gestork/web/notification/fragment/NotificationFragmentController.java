@@ -30,6 +30,6 @@ public class NotificationFragmentController {
         CustomResponseBody<List<NotificationDto>> notifications =
                 notificationService.fetchUnreadNotificationsForWaiter(login);
         model.addAttribute("ordersNotification", notifications);
-        return "notification/fragment/orders";
+        return "notification/fragment/notificationOrder";
     }
 }

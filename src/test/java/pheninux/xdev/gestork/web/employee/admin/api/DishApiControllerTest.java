@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pheninux.xdev.gestork.core.dish.model.Dish;
 import pheninux.xdev.gestork.core.dish.service.DishService;
 import pheninux.xdev.gestork.utils.Utils;
+import pheninux.xdev.gestork.web.dish.api.DishApiController;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ class DishApiControllerTest {
             mockedUtils.when(() -> renderAlertSingle("alert-success", "Le plat est ajouté avec succès.")).thenReturn("Le plat est ajouté avec succès.");
             MockMultipartFile imageFile = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image content".getBytes());
 
-            mockMvc.perform(multipart("/api/admin/dish/add")
+            mockMvc.perform(multipart("/api/dish/add")
                             .file(imageFile)
                             .param("name", "Dish Name")
                             .param("description", "Dish Description")
@@ -64,7 +65,7 @@ class DishApiControllerTest {
 
             MockMultipartFile imageFile = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image content".getBytes());
 
-            mockMvc.perform(multipart("/api/admin/dish/add")
+            mockMvc.perform(multipart("/api/dish/add")
                             .file(imageFile)
                             .param("name", "Dish Name")
                             .param("description", "Dish Description")
@@ -84,11 +85,11 @@ class DishApiControllerTest {
             dish.setDishId(1L);
             when(dishService.findById(1L)).thenReturn(dish);
 
-            mockMvc.perform(post("/api/admin/dish/update/1")
+            mockMvc.perform(post("/api/dish/update/1")
                             .param("newPrice", "15.0")
                             .param("specialPrice", "true"))
                     .andExpect(status().isFound())
-                    .andExpect(redirectedUrl("/fragments/dish/list"));
+                    .andExpect(redirectedUrl("/fragment/dish/list"));
         }
     }
 
@@ -97,7 +98,7 @@ class DishApiControllerTest {
         try (var mockedUtils = mockStatic(Utils.class)) {
             mockedUtils.when(Utils::isAdmin).thenReturn(false);
 
-            mockMvc.perform(post("/api/admin/dish/update/1")
+            mockMvc.perform(post("/api/dish/update/1")
                             .param("newPrice", "15.0")
                             .param("specialPrice", "true"))
                     .andExpect(status().isForbidden())
@@ -110,9 +111,9 @@ class DishApiControllerTest {
         try (var mockedUtils = mockStatic(Utils.class)) {
             mockedUtils.when(Utils::isAdmin).thenReturn(true);
 
-            mockMvc.perform(post("/api/admin/dish/delete/1"))
+            mockMvc.perform(post("/api/dish/delete/1"))
                     .andExpect(status().isFound())
-                    .andExpect(redirectedUrl("/fragments/dish/list"));
+                    .andExpect(redirectedUrl("/fragment/dish/list"));
         }
     }
 
@@ -121,7 +122,7 @@ class DishApiControllerTest {
         try (var mockedUtils = mockStatic(Utils.class)) {
             mockedUtils.when(Utils::isAdmin).thenReturn(false);
 
-            mockMvc.perform(post("/api/admin/dish/delete/1"))
+            mockMvc.perform(post("/api/dish/delete/1"))
                     .andExpect(status().isForbidden())
                     .andExpect(redirectedUrl("/error/403"));
         }
@@ -131,7 +132,7 @@ class DishApiControllerTest {
     void testFindAll() throws Exception {
         when(dishService.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/api/admin/dish/all"))
+        mockMvc.perform(get("/api/dish/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
