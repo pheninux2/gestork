@@ -2,7 +2,6 @@ package pheninux.xdev.gestork.core.order.model;
 
 import jakarta.persistence.*;
 import pheninux.xdev.gestork.core.delivery.model.DeliveryDetails;
-import pheninux.xdev.gestork.core.dish.model.Dish;
 import pheninux.xdev.gestork.core.payment.model.PaymentStatus;
 
 import java.util.List;
@@ -19,25 +18,17 @@ public class OrderDetails {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus commandStatus;
-
     private String comment;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "dish_order", // Nom de la table de jointure
-            joinColumns = @JoinColumn(name = "order_id"), // Clé étrangère vers Order
-            inverseJoinColumns = @JoinColumn(name = "dish_id") // Clé étrangère vers Dish
-    )
-    private List<Dish> orderedDishes;
-
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_details_id")
+    private List<OrderDishes> orderDishes;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_details_id")
     private DeliveryDetails deliveryDetails;
 
-
+    // Getters et Setters
     public Long getOrderDetailsId() {
         return orderDetailsId;
     }
@@ -62,14 +53,6 @@ public class OrderDetails {
         this.paymentStatus = paymentStatus;
     }
 
-    public OrderStatus getCommandStatus() {
-        return commandStatus;
-    }
-
-    public void setCommandStatus(OrderStatus commandStatus) {
-        this.commandStatus = commandStatus;
-    }
-
     public String getComment() {
         return comment;
     }
@@ -78,12 +61,12 @@ public class OrderDetails {
         this.comment = comment;
     }
 
-    public List<Dish> getOrderedDishes() {
-        return orderedDishes;
+    public List<OrderDishes> getOrderDishes() {
+        return orderDishes;
     }
 
-    public void setOrderedDishes(List<Dish> orderedDishes) {
-        this.orderedDishes = orderedDishes;
+    public void setOrderDishes(List<OrderDishes> orderDishes) {
+        this.orderDishes = orderDishes;
     }
 
     public DeliveryDetails getDeliveryDetails() {

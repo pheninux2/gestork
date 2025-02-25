@@ -2,7 +2,6 @@ package pheninux.xdev.gestork.core.order.model;
 
 import jakarta.persistence.*;
 import pheninux.xdev.gestork.core.employee.model.Employee;
-import pheninux.xdev.gestork.core.notification.model.Notification;
 
 import java.util.Date;
 
@@ -34,13 +33,12 @@ public class OrderEntity {
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "order_details_id")
     private OrderDetails orderDetails;
-
-//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "notification_id")
-//    private Notification notification;
 
     public Long getOrderId() {
         return orderId;
@@ -108,4 +106,15 @@ public class OrderEntity {
         this.orderDetails = orderDetails;
     }
 
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus commandStatus) {
+        this.orderStatus = commandStatus;
+    }
+
+    public boolean isValidate() {
+        return this.orderStatus == OrderStatus.VALIDATE;
+    }
 }

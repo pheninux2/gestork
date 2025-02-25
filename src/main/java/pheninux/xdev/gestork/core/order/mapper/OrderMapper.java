@@ -1,7 +1,6 @@
 package pheninux.xdev.gestork.core.order.mapper;
 
 
-import pheninux.xdev.gestork.core.dish.mapper.DishMapper;
 import pheninux.xdev.gestork.core.order.model.OrderEntity;
 import pheninux.xdev.gestork.core.order.model.dto.OrderEntityDto;
 
@@ -18,10 +17,11 @@ public class OrderMapper {
         orderDto.setWaiterId(orderEntity.getWaiter() != null ? orderEntity.getWaiter().getEmployeeId() : null);
         orderDto.setTableNumber(orderEntity.getTableNumber());
         orderDto.setTotalAmount(orderEntity.getTotalAmount());
+        orderDto.setOrderStatus(orderEntity.getOrderStatus());
         orderDto.setOrderDate(orderEntity.getOrderDate());
         orderDto.setOrderType(orderEntity.getOrderType() != null ? orderEntity.getOrderType().name() : null);
         orderDto.setOrderDetailsId(orderEntity.getOrderDetails() != null ? orderEntity.getOrderDetails().getOrderDetailsId() : null);
-        orderDto.setOrderedDishes(DishMapper.toDtoList(orderEntity.getOrderDetails().getOrderedDishes()));
+        orderDto.setOrderDishesDto(OrderDishesMapper.toDtoList(orderEntity.getOrderDetails().getOrderDishes()));
         return orderDto;
     }
 
@@ -38,6 +38,7 @@ public class OrderMapper {
         orderEntity.setTableNumber(orderDto.getTableNumber());
         orderEntity.setTotalAmount(orderDto.getTotalAmount());
         orderEntity.setOrderDate(orderDto.getOrderDate());
+        orderEntity.setOrderStatus(orderDto.getOrderStatus());
         // Vous devrez gérer la conversion de OrderType ici si c'est un enum
         // orderEntity.setOrderType(OrderType.valueOf(orderDto.getOrderType()));
         return orderEntity;
