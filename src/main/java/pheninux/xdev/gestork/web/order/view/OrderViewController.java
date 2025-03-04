@@ -31,4 +31,9 @@ public class OrderViewController {
         model.addAttribute("ordersNotification", ordersNotification);
         return "order/layout/orderSummary";
     }
+
+    @GetMapping("/status")
+    public String orderStatus() {
+        return "order/layout/orderStatusLayout";
+    }
 }

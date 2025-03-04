@@ -1,0 +1,14 @@
+<!-- Contenu de l'ordre -->
+<h1 th:text="|Statut de la Commande : ${order.getOrderStatus()}|"
+    th:class="${order.getOrderStatus().name() == 'PENDING' ? 'status pending' :
+               order.getOrderStatus().name() ==   'VALIDATE' ? 'status validated' :
+               order.getOrderStatus().name() == 'CANCELED' ? 'status cancel' :
+               order.getOrderStatus().name() == 'PREPARING' ? 'status preparation' :
+               order.getOrderStatus().name() == 'READY' ? 'status ready' : ''}"
+    class="status">
+</h1>
+<div class="order-info">
+    <p><strong>Numéro de Commande : <span class="result" th:text="${order.getOrderId()}"></span></strong></p>
+    <p><strong>Total Payé : <span class="result" th:text="${order.getTotalAmount()} + ' €'"></span></strong></p>
+    <p><strong>Numéro de la Table : <span class="result" th:text="${order.getTableNumber()}"></span></strong></p>
+</div>

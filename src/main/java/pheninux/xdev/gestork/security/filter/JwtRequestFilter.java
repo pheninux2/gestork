@@ -37,15 +37,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader("Authorization");
         String requestURI = request.getRequestURI();
 
-        if (    requestURI.contains("/api/employee/authenticate") ||
+        if (requestURI.contains("/api/employee/authenticate") ||
                 requestURI.contains("/api/customer/authenticate") ||
-                requestURI.contains("/api/order/create")) {
+                requestURI.contains("/api/order/create") ||
+                requestURI.contains("/api/code/check")) {
 
             filterChain.doFilter(request, response);
             return;
         }
 
-        if (requestURI.contains("/api/")) {
+        if (requestURI.startsWith("/api/")) {
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Set status code
                 response.setContentType("text/plain"); // Set content type

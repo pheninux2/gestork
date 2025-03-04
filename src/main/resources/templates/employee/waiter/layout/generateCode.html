@@ -134,7 +134,7 @@
 <script src="https://unpkg.com/htmx.org@1.9.3"></script>
 <script>
     htmx.on("htmx:configRequest", (e) => {
-        e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
+        e.detail.headers["Authorization"] = "Bearer " + sessionStorage.getItem('jwt');
     });
 
     document.addEventListener('htmx:afterSwap', (event) => {

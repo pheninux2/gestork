@@ -62,7 +62,7 @@
 <div class="code-container">
     <p>Le code d'accès est :</p>
     <div class="code" th:text="${accessCode}"></div> <!-- Exemple de code, remplacez par le code réel -->
-    <a hx-headers='{"Authorization": "Bearer " + localStorage.getItem("jwt")}'
+    <a hx-headers='{"Authorization": "Bearer " + sessionStorage.getItem("jwt")}'
        href="/employee/home"
        class="back-link">Retour à l'accueil</a>
 </div>

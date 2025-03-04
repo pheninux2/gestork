@@ -26,9 +26,6 @@ class CodeApiControllerTest {
     @Mock
     private TableService tableService;
 
-    @Mock
-    private HttpServletResponse response;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -46,7 +43,7 @@ class CodeApiControllerTest {
 
             when(tableService.generateCode(clientLogin, tableNumber)).thenReturn(expectedResponse);
 
-            ResponseEntity<String> responseEntity = codeApiController.generate(clientLogin, tableNumber, response);
+            ResponseEntity<String> responseEntity = codeApiController.generate(clientLogin, tableNumber);
 
             assertEquals(expectedResponse, responseEntity);
         }
@@ -64,7 +61,7 @@ class CodeApiControllerTest {
 
             when(tableService.generateCode(clientLogin, tableNumber)).thenReturn(expectedResponse);
 
-            ResponseEntity<String> responseEntity = codeApiController.generate(clientLogin, tableNumber, response);
+            ResponseEntity<String> responseEntity = codeApiController.generate(clientLogin, tableNumber);
 
             assertEquals(expectedResponse, responseEntity);
         }
@@ -81,7 +78,7 @@ class CodeApiControllerTest {
             String expectedAlert = renderAlertSingle("alert-danger", "Vous n'êtes pas autorisé à accéder à cette ressource.");
             ResponseEntity<String> expectedResponse = new ResponseEntity<>(expectedAlert, HttpStatus.OK);
 
-            ResponseEntity<String> responseEntity = codeApiController.generate(clientLogin, tableNumber, response);
+            ResponseEntity<String> responseEntity = codeApiController.generate(clientLogin, tableNumber);
 
             assertEquals(expectedResponse, responseEntity);
         }

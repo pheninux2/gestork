@@ -87,6 +87,7 @@
         <div th:each="order : ${ordersNotification.getData()}" class="card"
              th:classappend="${order.getOrder().waiterApproved()} ? 'validated'">
             <div><strong>Client:</strong> <span th:text="${order.getOrder().getCustomerLogin()}"></span></div>
+            <div><strong>OrderID:</strong> <span th:text="${order.getOrder().getOrderId()}"></span></div>
             <div><strong>Table:</strong> <span th:text="${order.getOrder().getTableNumber()}"></span></div>
             <div><strong>Total:</strong> <span th:text="${order.getOrder().getTotalAmount()} + ' €'"></span></div>
             <div><strong>Date de Commande:</strong> <span
@@ -96,6 +97,7 @@
                         th:attr="onclick='loadOrderDetails(' + ${order.getOrder().getOrderId()} + ')'">Voir Détails
                 </button>
                 <button class="bg-green-500 text-white py-1 px-3 rounded"
+                        th:attr="onclick='valideOrder(' + ${order.getOrder().getOrderId()} + ', this)'"
                         th:classappend="${order.getOrder().waiterApproved()} ? 'disabled-button'"
                         th:disabled="${order.getOrder().waiterApproved()}">
                     <span th:text="${order.getOrder().waiterApproved()} ? 'Validée' : 'Valider'"></span>
@@ -107,9 +109,9 @@
 
 <div id="orderDetailsModal" class="modal">
     <div class="modal-content">
-        <h2 class="text-xl font-bold mb-4">Détails des Plats Commandés</h2>
-        <div id="orderDetails">
-            <!-- Détails de la commande ici, chargés par HTMX -->
+        <h2 class="text-xl font-bold mb-4">Message de Validation</h2>
+        <div id="responseMessage">
+            <!-- Message de réponse ici -->
         </div>
         <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded" onclick="closeModal()">Fermer</button>
     </div>
@@ -120,15 +122,35 @@
         htmx.ajax("GET", "/fragment/order/dishesSummary/" + orderId, "#orderDetails");
     }
 
+    function valideOrder(orderId, button) {
+        htmx.ajax("POST", "/api/order/validate/" + orderId, "#responseMessage")
+            .then(function (response) {
+                // Désactiver le bouton après validation
+                button.disabled = true;
+                button.classList.add('disabled-button');
+                // Ajouter la classe .validated à la carte correspondante
+                const card = button.closest('.card');
+                if (card) {
+                    card.classList.add('validated');
+                }
+            });
+        // Ouvrir la modal après l'envoi de la requête
+        document.getElementById('orderDetailsModal').style.display = 'block';
+    }
+
     function closeModal() {
         document.getElementById('orderDetailsModal').style.display = 'none';
     }
 
     document.addEventListener('htmx:afterSwap', function (evt) {
         // Afficher le modal après le remplissage du contenu
-        if (evt.target.id === "orderDetails") {
+        if (evt.target.id === "responseMessage") {
             document.getElementById('orderDetailsModal').style.display = 'block';
         }
+    });
+
+    htmx.on("htmx:configRequest", (e) => {
+        e.detail.headers["Authorization"] = "Bearer " + sessionStorage.getItem('jwt');
     });
 </script>
 </body>

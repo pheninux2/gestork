@@ -141,7 +141,7 @@
       hx-post="/api/dish/add"
       hx-target="#response"
       hx-swap="innerHTML"
-      onsubmit="resetForm(event)">
+>
 
     <div class="form-group">
         <i class="fas fa-utensils"></i>
@@ -191,24 +191,9 @@
 </form>
 
 <script>
-    function resetForm(event) {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-
-        fetch(form.action, {
-            method: form.method,
-            body: formData,
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('jwt')
-            }
-        }).then(response => {
-            if (response.ok) {
-                form.reset();
-                document.getElementById('successMessage').style.display = 'block';
-            }
-        });
-    }
+    htmx.on("htmx:configRequest", (e) => {
+        e.detail.headers["Authorization"] = "Bearer " + sessionStorage.getItem('jwt');
+    });
 </script>
 
 </body>

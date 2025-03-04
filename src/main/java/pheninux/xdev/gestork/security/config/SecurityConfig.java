@@ -66,8 +66,10 @@ public class SecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain customerSecurityFilterChain(HttpSecurity http) throws Exception {
         http.securityMatcher("/view/customer/**", "/api/customer/**", "/fragment/customer/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/view/customer/login", "/view/customer/home", "view/customer/menu",
-                                "/api/customer/authenticate").permitAll()
+                        .requestMatchers("/view/customer/login",
+                                "/view/**",
+                                "/fragment/**",
+                                "/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -107,6 +109,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 "/view/**",
                                 "/fragment/**",
                                 "/public/**").permitAll()
+                        .requestMatchers("/api/code/check").permitAll()
+                        .requestMatchers("/api/order/create").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
                 )

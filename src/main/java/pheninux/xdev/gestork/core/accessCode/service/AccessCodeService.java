@@ -71,4 +71,17 @@ public class AccessCodeService {
 
         return true;
     }
+
+    public AccessCode getAccessCodeEntityWhenCodeIsValide(String code) {
+        AccessCode accessCode = accessCodeRepository.findByCode(code);
+        if (accessCode == null || accessCode.isUsed() || accessCode.getExpiryDate().before(new Timestamp(System.currentTimeMillis()))) {
+            return null;
+        }
+
+        return accessCode;
+    }
+
+    public void updateAccessCodeToUsed(String code) {
+        accessCodeRepository.updateAccessCodeToUsed(code);
+    }
 }

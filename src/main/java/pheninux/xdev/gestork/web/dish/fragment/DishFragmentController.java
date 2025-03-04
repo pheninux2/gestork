@@ -23,8 +23,6 @@ public class DishFragmentController {
 
     @GetMapping("/list")
     public String getDishListFragment(Model model) {
-        List<Dish> dishes = dishService.findAll();
-
         model.addAttribute("dishes", dishService.findAll());
         if (isAdmin()) {
             return "dish/fragment/adminDishes";
