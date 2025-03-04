@@ -17,7 +17,8 @@ public class Utils {
 
     private static TemplateEngine templateEngine = null;
 
-    public final static List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+    public final static List<SseEmitter> waiterEmitters = new CopyOnWriteArrayList<>();
+    public final static List<SseEmitter> customerEmitters = new CopyOnWriteArrayList<>();
 
     public Utils(TemplateEngine templateEngine) {
         Utils.templateEngine = templateEngine;
@@ -91,9 +92,20 @@ public class Utils {
     }
 
     public static void notifyWaiters() {
-        emitters.forEach(emitter -> {
+        waiterEmitters.forEach(emitter -> {
             try {
                 emitter.send(SseEmitter.event().data("New order created"));
+            } catch (Exception e) {
+                emitter.completeWithError(e);
+
+            }
+        });
+    }
+
+    public static void notifyCustomer() {
+        customerEmitters.forEach(emitter -> {
+            try {
+                emitter.send(SseEmitter.event().data("changed status"));
             } catch (Exception e) {
                 emitter.completeWithError(e);
 

@@ -5,7 +5,7 @@ function updateTotalPrice() {
     document.getElementById('totalPrice').innerText = 'Total : ' + total.toFixed(2) + '€';
 }
 
-function addToCart(itemName, price) {
+function addToCart(id, itemName, price) {
 
     price = parseFloat(price); // Convertir le prix en nombre
     if (isNaN(price)) {
@@ -17,7 +17,7 @@ function addToCart(itemName, price) {
         orderItems[itemName].quantity += 1;
         orderItems[itemName].price += price;
     } else {
-        orderItems[itemName] = {price: price, quantity: 1};
+        orderItems[itemName] = {id: id, price: price, quantity: 1};
     }
     total += price;
     document.querySelector('.button-container .button').innerText = 'Panier (' + getTotalItems() + ')';
@@ -116,16 +116,69 @@ function closeModal() {
     document.getElementById('orderModal').style.display = "none";
 }
 
-function validateOrder() {
-    if (getTotalItems() > 0) {
-        alert('Commande validée avec succès !');
-        total = 0;
-        orderItems = {};
-        document.querySelector('.button-container .button').innerText = 'Panier (0)';
-        updateTotalPrice();
-    } else {
-        alert('Votre panier est vide.');
+function confirmOrder() {
+    if (getTotalItems() <= 0) {
+        console.log("Aucun article dans la commande.");
+        return;
     }
+
+    const orderDishes = Object.values(orderItems).map(item => ({
+        dish: {dishId: item.id},
+        quantity: item.quantity,
+        comment: ""
+    }));
+
+    const orderEntity = {
+        customerLogin: sessionStorage.getItem("login"),
+        totalAmount: total,
+        orderDate: new Date().toISOString(),
+        orderType: "INDOOR",
+        orderDetails: {
+            paymentStatus: "UNPAID",
+            comment: "No onions",
+            orderDishes: orderDishes,
+        }
+    };
+    console.log(JSON.stringify(orderEntity))
+    const code = sessionStorage.getItem("code");
+
+    let element = document.getElementById('response');
+
+    fetch(`/api/order/create?code=${encodeURIComponent(code)}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderEntity)
+    })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 500) {
+                element.innerHTML = data.alert.replace(/[\r\n]+/g, ' ');
+            } else {
+
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'loading';
+                loadingDiv.innerHTML = `
+        <div class="spinner"></div>
+        <p>Votre commande est en cours d'envoi...</p>
+    `;
+                document.body.appendChild(loadingDiv);
+
+                // Simuler un appel API et rediriger après 3 secondes
+                setTimeout(() => {
+                    sessionStorage.setItem('orderId', data.data.orderId);
+                    // Rediriger vers la page de statut de commande
+                    window.location.href = '/view/order/status';
+                }, 3000);
+                // eventSource.onmessage = function (event) {
+                //     let orderId = localStorage.getItem('orderId');
+                //     htmx.ajax("GET", "/view/fragment/orderStatus/" + orderId, "#orderStatusTarget");
+                // };
+            }
+        })
 }
 
 window.onclick = function (event) {
@@ -133,4 +186,53 @@ window.onclick = function (event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }
+}
+
+function validateOrder() {
+    if (getTotalItems() > 0) {
+        closeModal();
+        openPaymentChoiceModal();
+    }
+}
+
+function openPaymentChoiceModal() {
+    document.getElementById('paymentChoiceModal').style.display = 'block';
+}
+
+function closePaymentChoiceModal() {
+    document.getElementById('paymentChoiceModal').style.display = 'none';
+}
+
+function openPaymentModal() {
+    document.getElementById('paymentModal').style.display = 'block';
+    closePaymentChoiceModal();
+}
+
+function closePaymentModal() {
+    document.getElementById('paymentModal').style.display = 'none';
+}
+
+function confirmPayment() {
+    event.preventDefault();
+
+    const cardNumber = document.getElementById('cardNumber').value;
+    const expiryDate = document.getElementById('expiryDate').value;
+    const cvv = document.getElementById('cvv').value;
+
+    // Logique pour traiter le paiement
+    alert(`Paiement confirmé avec la carte: ${cardNumber}`);
+    closePaymentModal();
+    total = 0;
+    orderItems = {};
+    document.querySelector('.button-container .button').innerText = 'Panier (0)';
+    updateTotalPrice();
+}
+
+window.onclick = function (event) {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    });
 }

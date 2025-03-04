@@ -390,6 +390,58 @@
             z-index: 100;
             margin-top: 5px;
         }
+
+        .payment-buttons {
+            display: flex;
+            justify-content: center; /* Centre les boutons horizontalement */
+            margin-top: 20px; /* Ajoute une marge supérieure */
+        }
+
+        .payment-buttons button {
+            margin: 0 10px; /* Espace entre les boutons */
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column; /* Aligne verticalement les inputs */
+            align-items: center; /* Centre les inputs horizontalement */
+        }
+
+        input {
+            width: 80%; /* Largeur des inputs */
+            padding: 10px;
+            margin: 10px 0; /* Espace entre les champs */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            z-index: 1000;
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #4ecdc4;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -415,13 +467,64 @@
     </div>
 </div>
 
+<!-- Modal Choix de Paiement -->
+<div id="paymentChoiceModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closePaymentChoiceModal()">&times;</span>
+        <h3>Choisissez une Option de Paiement</h3>
+        <div class="payment-buttons">
+            <button class="confirmBtn" onclick="openPaymentModal()">Payer Maintenant</button>
+            <button class="confirmBtn" onclick="confirmOrder()">Payer Plus Tard</button>
+        </div>
+        <div id="response"></div>
+    </div>
+</div>
+
+<!-- Modal Paiement -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closePaymentModal()">&times;</span>
+        <h3>Détails du Paiement</h3>
+
+        <form id="paymentForm">
+            <div class="input-container">
+                <label for="cardNumber">Numéro de Carte: <span style="color: red;">*</span></label>
+                <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required/>
+            </div>
+            <div class="input-container">
+                <label for="expiryDate">Date d'Expiration: <span style="color: red;">*</span></label>
+                <input type="text" id="expiryDate" placeholder="MM/AA" required/>
+            </div>
+            <div class="input-container">
+                <label for="cvv">CVV: <span style="color: red;">*</span></label>
+                <input type="text" id="cvv" placeholder="123" required/>
+            </div>
+
+            <hr style="margin: 20px 0;"> <!-- Ligne de séparation -->
+
+            <div class="input-container">
+                <label for="phone">Téléphone:</label>
+                <input type="tel" id="phone" placeholder="0123456789"/>
+            </div>
+            <div class="input-container">
+                <label for="email">Email: <span style="color: red;">*</span></label>
+                <input type="email" id="email" placeholder="exemple@mail.com" required/>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="submit" class="confirmBtn">Confirmer le Paiement</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <footer>
     &copy; 2025 Votre Restaurant
 </footer>
 
 <script>
     htmx.on("htmx:configRequest", (e) => {
-        e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
+        e.detail.headers["Authorization"] = "Bearer " + sessionStorage.getItem('jwt');
     });
 </script>
 </body>

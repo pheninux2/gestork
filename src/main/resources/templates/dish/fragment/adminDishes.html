@@ -1,0 +1,51 @@
+<div id="dishesContainer" class="p-4">
+    <div th:each="category : ${T(pheninux.xdev.gestork.core.dish.model.Category).values()}">
+        <h2 th:text="${category.description}" class="text-2xl font-bold mb-4"></h2>
+        <div class="dish flex flex-wrap" th:each="dish : ${dishes}" th:if="${dish.category.getDescription() == category.getDescription()}">
+            <img th:src="'data:image/png;base64,' + ${dish.image}" th:alt="${dish.name}" class="w-32 h-32 rounded-lg mr-4 mb-4"/>
+            <div class="details flex-1">
+                <div class="description mb-4">
+                    <div>
+                        <h3 th:text="${dish.name}" class="text-xl font-semibold"></h3>
+                    </div>
+                    <p th:text="${dish.description}" class="text-gray-700"></p>
+                </div>
+                <div class="form-container">
+                    <form id="updateForm" th:action="@{/api/dish/update/{id}(id=${dish.id})}" method="post" hx-target="#dishesContainer" hx-swap="innerHTML" class="flex flex-col">
+                        <div class="form-group flex items-center mb-4">
+                            <label for="oldPrice" th:text="'Ancien prix'" class="w-32 mr-2"></label>
+                            <div class="input-group flex items-center">
+                                <input type="number" id="oldPrice" name="oldPrice" th:value="${dish.price}" readonly class="border-2 border-gray-300 rounded-lg p-2 w-24"/>
+                                <span class="euro-symbol ml-2">€</span>
+                            </div>
+                        </div>
+                        <div class="form-group flex items-center mb-4">
+                            <label for="newPrice" class="w-32 mr-2">Nouveau prix</label>
+                            <div class="input-group flex items-center">
+                                <input type="number" id="newPrice" name="newPrice" placeholder="Entrez le nouveau prix" step="0.01" min="0" required class="border-2 border-gray-300 rounded-lg p-2 w-24"/>
+                                <span class="euro-symbol ml-2">€</span>
+                            </div>
+                        </div>
+                        <div class="form-group flex items-center mb-4">
+                            <label for="specialPrice" class="w-32 mr-2">Prix spécial</label>
+                            <input type="checkbox" id="specialPrice" name="specialPrice" th:checked="${dish.isSpecialPrice()}" class="ml-2"/>
+                        </div>
+                        <div class="button-container flex justify-center gap-4">
+                            <input id="dishId" type="hidden" th:value="${dish.getId()}">
+                            <button type="button" class="button bg-green-500 text-white rounded-full p-2" onclick="showUpdateConfirmationModal(this)">
+                                <i class="fas fa-save text-2xl"></i>
+                                <span class="tooltip">Mettre à jour le plat</span>
+                                <span class="sr-only">Mettre à jour</span>
+                            </button>
+                            <button type="button" class="button bg-red-500 text-white rounded-full p-2" onclick="showDeleteConfirmationModal(this)">
+                                <i class="fas fa-trash text-2xl"></i>
+                                <span class="tooltip">Supprimer le plat</span>
+                                <span class="sr-only">Supprimer</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

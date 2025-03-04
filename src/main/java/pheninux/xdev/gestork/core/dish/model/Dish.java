@@ -22,6 +22,7 @@ public class Dish {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Column(length = 1000)
     private String description;
 
     private double price;

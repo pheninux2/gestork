@@ -344,7 +344,7 @@
 
 <script>
     htmx.on("htmx:configRequest", (e) => {
-        e.detail.headers["Authorization"] = "Bearer " + localStorage.getItem('jwt');
+        e.detail.headers["Authorization"] = "Bearer " + sessionStorage.getItem('jwt');
     });
 
     function filterDishes() {

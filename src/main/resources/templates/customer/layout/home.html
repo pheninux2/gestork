@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
     <title>Page d'Accueil Client</title>
     <style>
         body {
@@ -17,38 +19,155 @@
             justify-content: center;
             height: 100vh;
         }
+
         header {
             width: 100%;
             padding: 15px;
             text-align: center;
-            color: #333; /* Couleur du texte */
+            color: #333;
             font-size: 2em;
-            border-bottom: 5px solid #ff4f50; /* Couleur de la bordure */
+            border-bottom: 5px solid #ff4f50;
         }
+
         .container {
             text-align: center;
             margin: 20px;
         }
+
         .option {
             background-color: #ffffff;
-            border: 2px solid #ff6f61; /* Couleur de la bordure */
+            border: 2px solid #ff6f61;
             border-radius: 10px;
             padding: 20px;
             margin: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s;
-            cursor: pointer;margin-left: 15px
+            cursor: pointer;
         }
+
         .option:hover {
             transform: scale(1.05);
         }
+
+        .advantages {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .advantage-card {
+            background-color: #fff;
+            border: 2px solid #ff6f61;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px;
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .advantage-card:hover {
+            transform: scale(1.05);
+        }
+
         footer {
             margin-top: auto;
             padding: 10px;
-            background-color: #ff6f61; /* Couleur du footer */
+            background-color: #ff6f61;
             color: white;
             width: 100%;
             text-align: center;
+        }
+
+        .create-account {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ff6f61;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .create-account:hover {
+            background-color: #ff4f50;
+        }
+
+        .options-wrapper {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .delivery-option {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        /* Styles pour le modal */
+        .modal {
+            display: none; /* Masqué par défaut */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        select {
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+            border: 1px solid #ff6f61;
+            border-radius: 5px;
+        }
+
+        .confirm-button {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ff6f61;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%; /* Prend toute la largeur du modal */
+            border: none; /* Supprime la bordure */
+        }
+
+        .confirm-button:hover {
+            background-color: #ff4f50;
         }
     </style>
 </head>
@@ -59,20 +178,85 @@
 </header>
 
 <div class="container">
-    <h2>Choisissez une option :</h2>
-    <div class="option" onclick="window.location.href='/view/customer/menu'">
-        <h3>Consulter le Menu</h3>
-        <p>Découvrez nos plats délicieux!</p>
+    <h2>Avantages d'avoir un Compte :</h2>
+    <div class="advantages">
+        <div class="advantage-card">
+            <h4>🌟 Cumulez des Points</h4>
+            <p>Accumulez des points pour obtenir des plats gratuits.</p>
+        </div>
+        <div class="advantage-card">
+            <h4>📅 Nouveaux Plats</h4>
+            <p>Recevez des notifications sur nos nouveaux plats et remises.</p>
+        </div>
+        <div class="advantage-card">
+            <h4>🎁 Offres Spéciales</h4>
+            <p>Accédez à des offres exclusives réservées aux membres.</p>
+        </div>
     </div>
-    <div class="option" onclick="window.location.href='profil.html'">
-        <h3>Compléter mon Profil</h3>
-        <p>Mettez à jour vos informations personnelles.</p>
+
+    <div class="create-account" onclick="window.location.href='/view/customer/create-account'">
+        Créez un Compte Maintenant
+    </div>
+</div>
+
+<div class="options-wrapper">
+    <h2>Choisissez une Option :</h2>
+    <div class="delivery-option">
+        <div class="option" id="eat-in-option">
+            <h3>Manger sur Place</h3>
+            <p>Profitez d'une expérience culinaire sur place.</p>
+        </div>
+        <div class="option" onclick="window.location.href='/view/customer/delivery'">
+            <h3>Se Faire Livrer</h3>
+            <p>Commandez depuis chez vous et faites-vous livrer!</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour entrer le code -->
+<div id="codeModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h2>Entrez votre code d'entrée</h2>
+        <form hx-post="/api/code/check" hx-target="#response" hx-swap="innerHTML">
+            <div class="input-container">
+                <label for="code">Code d'entrée:</label>
+                <input type="text" id="code" name="code" placeholder="Entrez votre code" required/>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="confirm-button" type="submit">
+                    <i class="fas fa-check"></i
+                    >Confirmer
+                </button>
+            </div>
+        </form>
+        <div id="response"></div>
     </div>
 </div>
 
 <footer>
     &copy; 2025 Votre Restaurant
 </footer>
+
+<script>
+    // Ouvrir le modal
+    document.getElementById('eat-in-option').onclick = function () {
+        document.getElementById('codeModal').style.display = 'block';
+    }
+
+    // Fermer le modal
+    document.getElementById('closeModal').onclick = function () {
+        document.getElementById('codeModal').style.display = 'none';
+    }
+
+    // Fermer le modal si l'utilisateur clique en dehors de la modal
+    window.onclick = function (event) {
+        if (event.target == document.getElementById('codeModal')) {
+            document.getElementById('codeModal').style.display = 'none';
+        }
+    }
+
+</script>
 
 </body>
 </html>
