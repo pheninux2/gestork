@@ -131,4 +131,8 @@ public class TableAssignmentService {
         return ResponseEntity.status(200).body(message);
 
     }
+
+    public Optional<TableAssignment> findTableAssignmentByTableNumber(int tableNumber) {
+        return Optional.of(tableAssignmentRepository.findTableAssignmentByTableNumber(tableNumber));
+    }
 }

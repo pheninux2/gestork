@@ -4,8 +4,8 @@ participant "Web Browser" as Browser
 participant "TableApiController" as Controller
 participant "TableAssignmentService" as TableAssignmentService
 
-Admin -> Browser: Request (POST /api/table/assignTables)
-Browser -> Controller: HTTP POST /api/table/assignTables
+Admin -> Browser: Request (POST /api/table/assign)
+Browser -> Controller: HTTP POST /api/table/assign
 alt User is not admin
     Controller -> Browser: Redirect to error/403
 else User is admin

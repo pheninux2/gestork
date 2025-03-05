@@ -151,7 +151,7 @@
 
     <div class="empty-message" th:if="${employeeAssignedTables.isEmpty()}">Aucun serveur disponible.</div>
     <div hx-get="/fragment/table/assignedTablesList" hx-trigger="path-deps" hx-target="#assignedTables"
-         path-deps="/api/table/assignTables"></div>
+         path-deps="/api/table/assign"></div>
 </div>
 
 <script>

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pheninux.xdev.gestork.core.accessCode.service.AccessCodeService;
+import pheninux.xdev.gestork.core.config.model.service.ConfigService;
 import pheninux.xdev.gestork.core.customer.model.Customer;
 import pheninux.xdev.gestork.core.customer.model.CustomerRole;
 import pheninux.xdev.gestork.core.customer.repository.CustomerRepository;
@@ -37,6 +38,12 @@ class TableServiceTest {
 
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Mock
+    private TableAssignmentService tableAssignmentService;
+
+    @Mock
+    private ConfigService configService;
 
     @BeforeEach
     void setUp() {
@@ -74,7 +81,7 @@ class TableServiceTest {
             ResponseEntity<String> response = tableService.generateCode(clientLogin, tableNumber);
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(renderAlertSingle("alert-danger", "La table est déjà occupée."), response.getBody());
+            assertEquals(renderAlertSingle("alert-danger", "La table est déjà attribué."), response.getBody());
         }
 
     }
@@ -91,6 +98,8 @@ class TableServiceTest {
         when(tableRepository.findTableByNumber(tableNumber)).thenReturn(customerTable);
         when(customerRepository.findClientByLogin(clientLogin)).thenReturn(customer);
         when(accessCodeService.generateAndSaveAccessCode(customer, tableNumber)).thenReturn(code);
+        when(tableAssignmentService.findTableAssignmentByTableNumber(tableNumber)).thenReturn(null);
+        when(configService.permitTableAssignmentToAll()).thenReturn(true);
 
         ResponseEntity<String> response = tableService.generateCode(clientLogin, tableNumber);
 
@@ -113,6 +122,8 @@ class TableServiceTest {
         when(customerRepository.findClientByLogin(clientLogin)).thenReturn(null);
         when(passwordEncoder.encode("123456")).thenReturn("encodedPassword");
         when(accessCodeService.generateAndSaveAccessCode(any(Customer.class), eq(tableNumber))).thenReturn(code);
+        when(tableAssignmentService.findTableAssignmentByTableNumber(tableNumber)).thenReturn(null);
+        when(configService.permitTableAssignmentToAll()).thenReturn(true);
 
         ResponseEntity<String> response = tableService.generateCode(clientLogin, tableNumber);
 
