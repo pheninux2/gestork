@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pheninux.xdev.gestork.core.table.model.CustomerTable;
+import pheninux.xdev.gestork.core.table.model.TableAssignment;
 import pheninux.xdev.gestork.core.table.model.TableStatus;
 
 public interface TableRepository extends JpaRepository<CustomerTable, Long> {
@@ -17,5 +18,6 @@ public interface TableRepository extends JpaRepository<CustomerTable, Long> {
 
     @Query("SELECT c FROM CustomerTable c WHERE c.numeroTable = :tableNumber")
     CustomerTable findTableByNumber(@Param("tableNumber") int tableNumber);
+
 }
 

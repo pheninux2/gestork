@@ -2,9 +2,9 @@
     <div  hx-ext="path-deps" th:each="assignedTables, iterStat : ${employeeAssignedTables}" class="waiter">
         <h2 th:text="${assignedTables.getWaiter().name}"></h2>
         <p th:id="tables+${iterStat.index}" hx-get="/fragment/table/assignedTablesList" hx-trigger="path-deps" hx-target="#toto"
-           path-deps="/api/table/assignTables"
+           path-deps="/api/table/assign"
            th:text="'Tables Affectées : ' + ${#strings.listJoin(assignedTables.getTables(), ',')}"></p>
-        <form class="add-table" hx-post="/api/table/assignTables"
+        <form class="add-table" hx-post="/api/table/assign"
               hx-target="#response" hx-swap="innerHTML">
             <input type="text" placeholder="Nouvelle Tables exemple 1,2,3"
                    th:name="tables"

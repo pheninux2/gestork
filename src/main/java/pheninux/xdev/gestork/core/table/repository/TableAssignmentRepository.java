@@ -12,4 +12,6 @@ public interface TableAssignmentRepository extends JpaRepository<TableAssignment
 
     @Query("SELECT ta FROM TableAssignment ta WHERE ta.employee.employeeId = ?1")
     List<TableAssignment> findTableAssignmentsByEmployeeId(Long employeeId);
+
+    TableAssignment findTableAssignmentByTableNumber(int tableNumber);
 }
