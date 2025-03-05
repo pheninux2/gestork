@@ -20,7 +20,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml # Exécutez les tests par défaut
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: my-artifact
         path: target/*.jar # Ou *.war selon votre projet
