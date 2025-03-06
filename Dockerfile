@@ -20,8 +20,12 @@ WORKDIR /app
 # Copier le fichier JAR construit depuis l'étape précédente
 COPY --from=build /app/target/gestork-0.0.1-SNAPSHOT.jar gestork.jar
 
-# Exposer le port sur lequel l'application écoute
-EXPOSE 8080
+# Copier le JAR H2
+COPY h2-2.3.232.jar h2.jar
 
-# Commande pour exécuter l'application
-ENTRYPOINT ["java", "-jar", "gestork.jar"]
+# Exposer les ports pour l'application et H2
+EXPOSE 8080
+EXPOSE 9092
+
+# Commande pour exécuter le serveur H2 et l'application
+CMD ["sh", "-c", "java -cp h2.jar:gestork.jar org.h2.tools.Server -tcp -tcpAllowOthers & java -jar gestork.jar"]
