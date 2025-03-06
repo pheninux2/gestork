@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=build /app/target/gestork-0.0.1-SNAPSHOT.jar gestork.jar
 
 # Copier le JAR H2
-COPY h2-2.3.232.jar h2.jar
+COPY h2-2.3.232.jar h2-2.3.232.jar
 
 # Créer le répertoire pour la base de données
 RUN mkdir -p /app/data
