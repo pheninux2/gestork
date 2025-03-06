@@ -26,9 +26,6 @@ COPY h2-2.3.232.jar h2.jar
 # Créer le répertoire pour la base de données
 RUN mkdir -p /app/data
 
-# Ajouter un script d'initialisation pour créer la base de données
-COPY init-db.sql /app/init-db.sql
-
 # Exposer les ports pour l'application et H2
 EXPOSE 8080
 EXPOSE 9092
