@@ -1,8 +1,27 @@
-FROM amazoncorretto:21.0.5 as build
-COPY . .
+# Étape de construction avec Amazon Corretto
+FROM amazoncorretto:21.0.5 AS build
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier le fichier pom.xml et le code source
+COPY pom.xml .
+COPY src ./src
+
+# Construire l'application (en ignorant les tests)
 RUN mvn clean package -DskipTests
 
+# Étape de production avec OpenJDK
 FROM openjdk:21-jdk-slim
-COPY --from=build /target/gestork-0.0.1-SNAPSHOT.jar gestork.jar
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier le fichier JAR construit depuis l'étape précédente
+COPY --from=build /app/target/gestork-0.0.1-SNAPSHOT.jar gestork.jar
+
+# Exposer le port sur lequel l'application écoute
 EXPOSE 8080
+
+# Commande pour exécuter l'application
 ENTRYPOINT ["java", "-jar", "gestork.jar"]
