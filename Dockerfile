@@ -31,4 +31,4 @@ EXPOSE 8080
 EXPOSE 9092
 
 # Commande pour lancer le serveur H2, créer la base de données et démarrer l'application
-CMD ["sh", "-c", "java -cp h2.jar org.h2.tools.Server -tcp -tcpAllowOthers & sleep 5 && java -jar gestork.jar"]
+CMD ["sh", "-c", "java -cp h2-2.3.232.jar org.h2.tools.Server -tcp -tcpAllowOthers & sleep 5 && java -jar gestork.jar"]
