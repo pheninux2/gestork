@@ -23,9 +23,15 @@ COPY --from=build /app/target/gestork-0.0.1-SNAPSHOT.jar gestork.jar
 # Copier le JAR H2
 COPY h2-2.3.232.jar h2.jar
 
+# Créer le répertoire pour la base de données
+RUN mkdir -p /app/data
+
+# Ajouter un script d'initialisation pour créer la base de données
+COPY init-db.sql /app/init-db.sql
+
 # Exposer les ports pour l'application et H2
 EXPOSE 8080
 EXPOSE 9092
 
-# Commande pour exécuter le serveur H2 et l'application
-CMD ["sh", "-c", "java -cp h2.jar:gestork.jar org.h2.tools.Server -tcp -tcpAllowOthers & java -jar gestork.jar"]
+# Commande pour lancer le serveur H2, créer la base de données et démarrer l'application
+CMD ["sh", "-c", "java -cp h2.jar org.h2.tools.Server -tcp -tcpAllowOthers & sleep 5 && java -jar gestork.jar"]
