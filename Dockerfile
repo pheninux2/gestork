@@ -1,5 +1,5 @@
-# Étape de construction avec Amazon Corretto
-FROM amazoncorretto:21.0.5 AS build
+# Étape de construction avec une image Maven
+FROM maven:3.9.5-amazoncorretto-21 AS build
 
 # Définir le répertoire de travail
 WORKDIR /app
