@@ -6,11 +6,11 @@ spring:
     enabled: true
 
   datasource:
-    # url: jdbc:h2:tcp://localhost/./data/gestokdb
-    url: jdbc:h2:tcp:https://gestork-x8e0.onrender.com/./data/gestokdb;auto_server=true
-    driver-class-name: org.h2.Driver
-    username: admin
-    password: admin
+     #url: jdbc:h2:tcp:localhost/./data/gestokdb
+     url: jdbc:h2:tcp:https://gestork-x8e0.onrender.com/~app/data/gestokdb;auto_server=true
+     driver-class-name: org.h2.Driver
+     username: admin
+     password: admin
 
   jpa:
     hibernate:
