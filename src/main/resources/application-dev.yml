@@ -6,15 +6,15 @@ spring:
     enabled: true
 
   datasource:
-    #url: jdbc:h2:tcp://localhost/./data/gestokdb
-    url: jdbc:h2:file:/app/data/gestokdb.h2.db
+    url: jdbc:h2:tcp://localhost/./data/gestokdb
+    #url: jdbc:h2:file:/app/data/gestokdb.h2.db
     driver-class-name: org.h2.Driver
     username: admin
     password: admin
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       show-sql: true
     properties:
       hibernate:
