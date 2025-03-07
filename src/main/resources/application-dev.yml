@@ -7,7 +7,7 @@ spring:
 
   datasource:
     #url: jdbc:h2:tcp://localhost/./data/gestokdb
-    url: jdbc:h2:tcp://localhost:9092/~/app/data/gestokdb;AUTO_SERVER=TRUE;IFEXISTS=FALSE
+    url: jdbc:h2:mem:gestork
     driver-class-name: org.h2.Driver
     username: admin
     password: admin
