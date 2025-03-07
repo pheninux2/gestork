@@ -28,6 +28,8 @@ RUN mkdir -p /app/data
 
 # Copier la base de données existante dans le répertoire /app/data
 COPY data/gestokdb.h2.db /app/data/gestokdb.h2.db
+COPY data/gestokdb.mv.db /app/data/gestokdb.mv.db
+COPY data/gestokdb.trace.db /app/data/gestokdb.trace.db
 
 # Exposer les ports pour l'application et H2
 EXPOSE 8080
