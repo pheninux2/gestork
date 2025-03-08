@@ -11,7 +11,7 @@
                     <p th:text="${dish.description}" class="text-gray-700"></p>
                 </div>
                 <div class="form-container">
-                    <form id="updateForm" th:action="@{/api/dish/update/{id}(id=${dish.id})}" method="post" hx-target="#dishesContainer" hx-swap="innerHTML" class="flex flex-col">
+                    <form id="updateForm" th:action="@{/api/dish/update/{id}(id=${dish.dishId})}" method="post" hx-target="#dishesContainer" hx-swap="innerHTML" class="flex flex-col">
                         <div class="form-group flex items-center mb-4">
                             <label for="oldPrice" th:text="'Ancien prix'" class="w-32 mr-2"></label>
                             <div class="input-group flex items-center">
@@ -31,7 +31,7 @@
                             <input type="checkbox" id="specialPrice" name="specialPrice" th:checked="${dish.isSpecialPrice()}" class="ml-2"/>
                         </div>
                         <div class="button-container flex justify-center gap-4">
-                            <input id="dishId" type="hidden" th:value="${dish.getId()}">
+                            <input id="dishId" type="hidden" th:value="${dish.getDishId()}">
                             <button type="button" class="button bg-green-500 text-white rounded-full p-2" onclick="showUpdateConfirmationModal(this)">
                                 <i class="fas fa-save text-2xl"></i>
                                 <span class="tooltip">Mettre à jour le plat</span>
