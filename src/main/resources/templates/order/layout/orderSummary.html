@@ -78,6 +78,98 @@
             background-color: gray; /* Couleur pour le bouton désactivé */
             cursor: not-allowed;
         }
+
+        .order-button {
+            background: #4ecdc4;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+            font-size: 14px;
+            width: auto;
+        }
+
+        .order-button:hover {
+            background: #45b7b0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            max-width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .status {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: brown; /* Couleur du nom du plat */
+        }
+
+        .pending { background-color: #fff3cd; color: #856404; }
+        .validated { background-color: #d4edda; color: #155724; }
+        .preparation { background-color: #cce5ff; color: #004085; }
+        .ready { background-color: #fff3cd; color: #856404; }
+        .cancel { background-color: #ffe5e5; color: #721c24; }
+
+        .result {
+            background-color: #f0f9ff;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            color: #333;
+            display: inline-block;
+        }
+
+        .order-details {
+            width: 100%;
+        }
+
+        .order-details p {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .dish-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .modal-content .order-button {
+            display: block;
+            margin: 0 auto; /* Centrer le bouton "Fermer" */
+        }
     </style>
 </head>
 <body>
@@ -120,7 +212,7 @@
 
 <div id="orderSummaryModal" class="modal">
     <div class="modal-content">
-        <h2 class="text-xl font-bold mb-4">Message de Validation</h2>
+        <h2 class="text-xl font-bold mb-4">Plats commandées</h2>
         <div id="orderDetails">
             <!-- Message de réponse ici -->
         </div>
