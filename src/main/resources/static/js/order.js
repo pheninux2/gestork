@@ -14,17 +14,29 @@ function valideOrder(orderId, button) {
                 card.classList.add('validated');
             }
         });
-    // Ouvrir la modal après l'envoi de la requête
-    document.getElementById('orderValidationModal').style.display = 'block';
 }
 
 function closeValidationModal() {
     document.getElementById('orderValidationModal').style.display = 'none';
 }
+
 function closeSummaryModal() {
     document.getElementById('orderSummaryModal').style.display = 'none';
 }
 
+// Écouter l'événement afterSwap
 document.addEventListener('htmx:afterSwap', function (evt) {
-    document.getElementById('orderSummaryModal').style.display = 'block';
+    // Vérifier quel élément a été mis à jour
+    const targetId = evt.detail.target.id;
+
+    // Ouvrir la modal correspondante selon l'élément ciblé
+    if (targetId === 'orderDetails') {
+        document.getElementById('orderSummaryModal').style.display = 'block';
+    } else if (targetId === 'validationMessage') {
+        document.getElementById('orderValidationModal').style.display = 'block';
+    }
 });
+
+function getOrderSummary(orderId) {
+    htmx.ajax("GET", "/fragment/order/dishesSummary/" + orderId, "#orderDetails");
+}
