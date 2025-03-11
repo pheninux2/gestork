@@ -86,6 +86,11 @@ public class Utils {
         return tables;
     }
 
+    public static int getTableNumber(String code) {
+        String[] codeParts = code.split("-");
+        return Integer.parseInt(codeParts[1]);
+    }
+
     public static boolean isValidTableFormat(String tables) {
         String regex = "^\\d+(,\\d+)*$";
         return tables != null && tables.matches(regex);

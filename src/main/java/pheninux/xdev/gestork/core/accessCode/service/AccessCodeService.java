@@ -30,7 +30,7 @@ public class AccessCodeService {
         try {
             Employee waiter = employeeRepository.findEmployeeByLogin(Utils.getLogin());
             String code = generateAccessCode(tableNumber);
-            Timestamp expiryDate = Timestamp.valueOf(LocalDateTime.now().plusMinutes(6)); // Code valide 1 heure
+            Timestamp expiryDate = Timestamp.valueOf(LocalDateTime.now().plusMinutes(60)); // Code valide 1 heure
             AccessCode accessCode = new AccessCode();
             accessCode.setCustomer(customer);
             accessCode.setEmployee(waiter);
@@ -65,7 +65,7 @@ public class AccessCodeService {
 
     public boolean isAccessCodeValid(String code) {
         AccessCode accessCode = accessCodeRepository.findByCode(code);
-        if (accessCode == null || accessCode.isUsed() || accessCode.getExpiryDate().before(new Timestamp(System.currentTimeMillis()))) {
+        if (accessCode == null || accessCode.getExpiryDate().before(new Timestamp(System.currentTimeMillis()))) {
             return false;
         }
 
@@ -74,7 +74,7 @@ public class AccessCodeService {
 
     public AccessCode getAccessCodeEntityWhenCodeIsValide(String code) {
         AccessCode accessCode = accessCodeRepository.findByCode(code);
-        if (accessCode == null || accessCode.isUsed() || accessCode.getExpiryDate().before(new Timestamp(System.currentTimeMillis()))) {
+        if (accessCode == null || accessCode.getExpiryDate().before(new Timestamp(System.currentTimeMillis()))) {
             return null;
         }
 
