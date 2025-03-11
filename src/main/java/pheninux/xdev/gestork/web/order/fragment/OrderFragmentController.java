@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pheninux.xdev.gestork.core.order.model.dto.OrderEntityDto;
 import pheninux.xdev.gestork.core.order.service.OrderService;
 
+import java.util.List;
+
+import static pheninux.xdev.gestork.utils.Utils.getTableNumber;
+
 @Controller
 @RequestMapping("/fragment/order")
 public class OrderFragmentController {
@@ -27,12 +31,13 @@ public class OrderFragmentController {
         return "order/fragment/dishesSummary";
     }
 
-    @GetMapping("/status/{orderId}")
-    public String orderStatus(@PathVariable Long orderId, Model model) {
+    @GetMapping("/status/{code}")
+    public String orderStatus(@PathVariable String code, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String login = authentication.getName();
-        OrderEntityDto order = orderService.getOrderById(orderId);
-        model.addAttribute("order", order);
+        int tableNumber = getTableNumber(code);
+        List<OrderEntityDto> orders = orderService.getOrdersByTableNumber(tableNumber);
+        model.addAttribute("orders", orders);
         model.addAttribute("login", login);
         return "order/fragment/orderStatusFragment";
     }

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 @EntityScan("pheninux.xdev.gestork")
 public class GestorkApplication {
 
+
     public static void main(String[] args) {
         SpringApplication.run(GestorkApplication.class, args);
     }

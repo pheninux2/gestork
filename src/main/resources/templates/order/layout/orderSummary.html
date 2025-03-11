@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <script src="/js/order.js"></script>
     <style>
         * {
             margin: 0;
@@ -107,48 +108,27 @@
     </div>
 </div>
 
-<div id="orderDetailsModal" class="modal">
+<div id="orderValidationModal" class="modal">
     <div class="modal-content">
         <h2 class="text-xl font-bold mb-4">Message de Validation</h2>
-        <div id="responseMessage">
+        <div id="validationMessage">
             <!-- Message de réponse ici -->
         </div>
-        <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded" onclick="closeModal()">Fermer</button>
+        <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded" onclick="closeValidationModal()">Fermer</button>
+    </div>
+</div>
+
+<div id="orderSummaryModal" class="modal">
+    <div class="modal-content">
+        <h2 class="text-xl font-bold mb-4">Message de Validation</h2>
+        <div id="orderDetails">
+            <!-- Message de réponse ici -->
+        </div>
+        <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded" onclick="closeSummaryModal()">Fermer</button>
     </div>
 </div>
 
 <script>
-    function loadOrderDetails(orderId) {
-        htmx.ajax("GET", "/fragment/order/dishesSummary/" + orderId, "#orderDetails");
-    }
-
-    function valideOrder(orderId, button) {
-        htmx.ajax("POST", "/api/order/validate/" + orderId, "#responseMessage")
-            .then(function (response) {
-                // Désactiver le bouton après validation
-                button.disabled = true;
-                button.classList.add('disabled-button');
-                // Ajouter la classe .validated à la carte correspondante
-                const card = button.closest('.card');
-                if (card) {
-                    card.classList.add('validated');
-                }
-            });
-        // Ouvrir la modal après l'envoi de la requête
-        document.getElementById('orderDetailsModal').style.display = 'block';
-    }
-
-    function closeModal() {
-        document.getElementById('orderDetailsModal').style.display = 'none';
-    }
-
-    document.addEventListener('htmx:afterSwap', function (evt) {
-        // Afficher le modal après le remplissage du contenu
-        if (evt.target.id === "responseMessage") {
-            document.getElementById('orderDetailsModal').style.display = 'block';
-        }
-    });
-
     htmx.on("htmx:configRequest", (e) => {
         e.detail.headers["Authorization"] = "Bearer " + sessionStorage.getItem('jwt');
     });

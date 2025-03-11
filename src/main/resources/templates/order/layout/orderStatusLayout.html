@@ -6,12 +6,15 @@
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="/js/menu.js"></script>
+    <script src="/js/order.js"></script>
     <title>État de la Commande</title>
     <style>
         .status {
             padding: 1rem;
             border-radius: 0.5rem;
             font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
         }
 
         .pending {
@@ -39,9 +42,9 @@
         }
 
         .cancel {
-            background-color: #ffe5e5; /* Fond rouge clair */
-            color: #721c24; /* Texte couleur rouge foncé */
-            border-left: 4px solid #dc3545; /* Bordure gauche rouge */
+            background-color: #ffe5e5;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
         }
 
         .order-info {
@@ -49,47 +52,72 @@
             padding: 2rem;
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-top: 2rem;
+            margin: 1rem 0;
             width: 100%;
             max-width: 600px;
         }
 
         .result {
-            background-color: #f0f9ff; /* Couleur de fond pour les résultats */
+            background-color: #f0f9ff;
             padding: 0.5rem;
             border-radius: 0.25rem;
             font-weight: bold;
             color: #333;
-            display: inline-block; /* Pour que cela ne prenne que la place nécessaire */
-            margin-top: 0.5rem; /* Espacement au-dessus */
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .order-button {
+            background-color: #4ecdc4;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 20px 0;
+        }
+
+        .order-button:hover {
+            background-color: #45b7b0;
         }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen bg-gray-100 font-sans text-gray-800">
 
-<div id="orderStatusTarget"></div>
+<!-- Bouton pour créer une nouvelle commande -->
+<button class="order-button" onclick="window.location.href='/menu'">Créer une Nouvelle Commande</button>
+
+<div id="orderStatusTarget" class="flex flex-col items-center w-full mt-4">
+    <!-- Order status will be dynamically loaded here -->
+</div>
+
+
+<div id="orderSummaryModal" class="modal">
+    <div class="modal-content">
+        <div id="orderDetails">
+            <!-- Message de réponse ici -->
+        </div>
+        <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded" onclick="closeSummaryModal()">Fermer</button>
+    </div>
+</div>
 
 <script>
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     const orderId = localStorage.getItem('orderId');
-    //     if (orderId) {
-    //         const orderStatusTarget = document.getElementById('orderStatusTarget');
-    //         orderStatusTarget.setAttribute('hx-get', `/fragment/order/status/${orderId}`);
-    //         htmx.process(orderStatusTarget);
-    //     }
-    // });
+
+    document.getElementById('orderSummaryModal').style.display = 'none';
+
     const eventSource = new EventSource("/public/order/status/stream");
     eventSource.onmessage = function (event) {
-        htmx.ajax("GET",
-            "/fragment/order/status/" + sessionStorage.getItem("orderId"),
-            "#orderStatusTarget")
+        htmx.ajax("GET", "/fragment/order/status/" + sessionStorage.getItem("code"), "#orderStatusTarget");
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        htmx.ajax("GET",
-            "/fragment/order/status/" + sessionStorage.getItem("orderId"),
-            "#orderStatusTarget")
+        htmx.ajax("GET", "/fragment/order/status/" + sessionStorage.getItem("code"), "#orderStatusTarget");
     });
+
+    function getOrderSummary(orderId) {
+        htmx.ajax("GET", "/fragment/order/dishesSummary/" + orderId, "#orderDetails");
+    }
 </script>
 
 </body>

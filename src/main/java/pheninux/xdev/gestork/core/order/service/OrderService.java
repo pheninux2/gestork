@@ -17,6 +17,7 @@ import pheninux.xdev.gestork.utils.Utils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -38,8 +39,6 @@ public class OrderService {
 
     public CustomResponseBody<OrderEntityDto> createOrder(OrderEntity orderEntity, String code) {
         try {
-            // List<Dish> dishes = new ArrayList<>();
-
             if (!accessCodeService.isAccessCodeValid(code)) {
                 return new CustomResponseBody<>(null,
                         "Invalid code",
@@ -49,11 +48,6 @@ public class OrderService {
             } else {
                 enrichOrderEntityWithCode(orderEntity, code);
             }
-
-//            for (OrderDishes orderDishes : orderEntity.getOrderDetails().getOrderDishes()) {
-//                Dish dishEntity = dishService.findById(orderDishes.getDish().getDishId());
-//                dishes.add(dishEntity);
-//            }
 
             orderEntity.setOrderStatus(OrderStatus.PENDING);
             OrderEntity order = orderRepository.save(orderEntity);
@@ -92,6 +86,11 @@ public class OrderService {
         return orderRepository.findById(id)
                 .map(OrderMapper::toDto)
                 .orElse(null);
+    }
+
+    public List<OrderEntityDto> getOrdersByTableNumber(int tableNumber) {
+        List<OrderEntity> orderEntities = orderRepository.findOrderEntityByTableNumber(tableNumber);
+        return orderEntities.stream().map(OrderMapper::toDto).collect(Collectors.toList());
     }
 
     public List<OrderEntityDto> getAllOrders() {
