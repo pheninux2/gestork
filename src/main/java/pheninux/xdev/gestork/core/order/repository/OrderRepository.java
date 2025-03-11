@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pheninux.xdev.gestork.core.order.model.OrderEntity;
 
+import java.util.List;
+
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
@@ -14,4 +16,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     @Transactional
     @Query("update OrderEntity o set o.orderStatus = 'VALIDATE' where o.orderId = :orderId")
     void validateOrder(Long orderId);
+
+
+    List<OrderEntity> findOrderEntityByTableNumber(Integer tableNumber);
 }
